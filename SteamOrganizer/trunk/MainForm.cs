@@ -6,11 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace SteamOrganizer {
     public partial class FormMain : Form {
 
         GameData gameData;
+        int sortColumn = 0;
+        int sortDirection = 1;
 
         public FormMain() {
             gameData = new GameData();
@@ -31,7 +34,6 @@ namespace SteamOrganizer {
                         lstGames.Items.Add( item );
                     }
                 }
-                lstGames.Sort();
             }
             lstGames.EndUpdate();
         }
@@ -90,6 +92,39 @@ namespace SteamOrganizer {
 
         private void lstCategories_ItemSelectionChanged( object sender, ListViewItemSelectionChangedEventArgs e ) {
             FillGameList();
+        }
+
+        private void lstGames_ColumnClick( object sender, ColumnClickEventArgs e ) {
+            if( e.Column == this.sortColumn ) {
+                this.sortDirection *= -1;
+            } else {
+                this.sortDirection = 1;
+                this.sortColumn = e.Column;
+            }
+            lstGames.ListViewItemSorter = new ListViewItemComparer( sortColumn, sortDirection, sortColumn == 2 );
+        }
+    }
+
+    // Implements the manual sorting of items by columns.
+    class ListViewItemComparer : IComparer {
+        private int col;
+        private int direction;
+        private bool asInt;
+        public ListViewItemComparer( int column = 0, int dir = 1, bool asInt = false ) {
+            this.col = column;
+            this.direction = dir;
+            this.asInt = asInt;
+        }
+        public int Compare( object x, object y ) {
+            if( asInt ) {
+                int a, b;
+                if( int.TryParse( ( (ListViewItem)x ).SubItems[col].Text, out a ) && int.TryParse( ( (ListViewItem)y ).SubItems[col].Text, out b ) ) {
+                    return direction * ( a - b );
+                }
+                return (int)x - (int)y;
+            } else {
+                return direction * String.Compare( ( (ListViewItem)x ).SubItems[col].Text, ( (ListViewItem)y ).SubItems[col].Text );
+            }
         }
     }
 }

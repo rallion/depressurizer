@@ -244,6 +244,7 @@
             this.lstGames.TabIndex = 0;
             this.lstGames.UseCompatibleStateImageBehavior = false;
             this.lstGames.View = System.Windows.Forms.View.Details;
+            this.lstGames.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler( this.lstGames_ColumnClick );
             this.lstGames.ItemDrag += new System.Windows.Forms.ItemDragEventHandler( this.lstGames_ItemDrag );
             // 
             // colTitle
