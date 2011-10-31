@@ -23,8 +23,6 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem( "<All>" );
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem( "<Uncategorized>" );
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileSave = new System.Windows.Forms.ToolStripMenuItem();
@@ -148,15 +146,17 @@
             // lstCategories
             // 
             this.lstCategories.AllowDrop = true;
-            this.lstCategories.Items.AddRange( new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2} );
+            this.lstCategories.FullRowSelect = true;
+            this.lstCategories.HideSelection = false;
+            this.lstCategories.LabelEdit = true;
             this.lstCategories.Location = new System.Drawing.Point( 3, 16 );
+            this.lstCategories.MultiSelect = false;
             this.lstCategories.Name = "lstCategories";
             this.lstCategories.Size = new System.Drawing.Size( 306, 377 );
             this.lstCategories.TabIndex = 2;
             this.lstCategories.UseCompatibleStateImageBehavior = false;
             this.lstCategories.View = System.Windows.Forms.View.List;
+            this.lstCategories.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler( this.lstCategories_BeforeLabelEdit );
             this.lstCategories.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler( this.lstCategories_ItemSelectionChanged );
             this.lstCategories.DragDrop += new System.Windows.Forms.DragEventHandler( this.lstCategories_DragDrop );
             this.lstCategories.DragEnter += new System.Windows.Forms.DragEventHandler( this.lstCategories_DragEnter );
