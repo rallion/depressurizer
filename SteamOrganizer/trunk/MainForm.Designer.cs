@@ -156,6 +156,7 @@
             this.lstCategories.TabIndex = 2;
             this.lstCategories.UseCompatibleStateImageBehavior = false;
             this.lstCategories.View = System.Windows.Forms.View.List;
+            this.lstCategories.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler( this.lstCategories_ItemSelectionChanged );
             this.lstCategories.DragDrop += new System.Windows.Forms.DragEventHandler( this.lstCategories_DragDrop );
             this.lstCategories.DragEnter += new System.Windows.Forms.DragEventHandler( this.lstCategories_DragEnter );
             // 
@@ -188,6 +189,7 @@
             this.cmdCatAdd.TabIndex = 0;
             this.cmdCatAdd.Text = "Add";
             this.cmdCatAdd.UseVisualStyleBackColor = true;
+            this.cmdCatAdd.Click += new System.EventHandler( this.cmdCatAdd_Click );
             // 
             // cmdCatDelete
             // 
@@ -243,7 +245,6 @@
             this.lstGames.UseCompatibleStateImageBehavior = false;
             this.lstGames.View = System.Windows.Forms.View.Details;
             this.lstGames.ItemDrag += new System.Windows.Forms.ItemDragEventHandler( this.lstGames_ItemDrag );
-            this.lstGames.DragOver += new System.Windows.Forms.DragEventHandler( this.lstGames_DragOver );
             // 
             // colTitle
             // 
