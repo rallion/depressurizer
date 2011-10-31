@@ -42,9 +42,10 @@
             this.cmdCatRename = new System.Windows.Forms.Button();
             this.grpGames = new System.Windows.Forms.GroupBox();
             this.lstGames = new System.Windows.Forms.ListView();
+            this.colGameID = ( (System.Windows.Forms.ColumnHeader)( new System.Windows.Forms.ColumnHeader() ) );
             this.colTitle = ( (System.Windows.Forms.ColumnHeader)( new System.Windows.Forms.ColumnHeader() ) );
             this.colCategory = ( (System.Windows.Forms.ColumnHeader)( new System.Windows.Forms.ColumnHeader() ) );
-            this.colGameID = ( (System.Windows.Forms.ColumnHeader)( new System.Windows.Forms.ColumnHeader() ) );
+            this.colFavorite = ( (System.Windows.Forms.ColumnHeader)( new System.Windows.Forms.ColumnHeader() ) );
             this.menuStrip.SuspendLayout();
             ( (System.ComponentModel.ISupportInitialize)( this.splitContainer ) ).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -233,9 +234,10 @@
                         | System.Windows.Forms.AnchorStyles.Left )
                         | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.lstGames.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
+            this.colGameID,
             this.colTitle,
             this.colCategory,
-            this.colGameID} );
+            this.colFavorite} );
             this.lstGames.FullRowSelect = true;
             this.lstGames.GridLines = true;
             this.lstGames.Location = new System.Drawing.Point( 3, 16 );
@@ -247,19 +249,23 @@
             this.lstGames.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler( this.lstGames_ColumnClick );
             this.lstGames.ItemDrag += new System.Windows.Forms.ItemDragEventHandler( this.lstGames_ItemDrag );
             // 
+            // colGameID
+            // 
+            this.colGameID.Text = "Game ID";
+            // 
             // colTitle
             // 
             this.colTitle.Text = "Title";
-            this.colTitle.Width = 427;
+            this.colTitle.Width = 353;
             // 
             // colCategory
             // 
             this.colCategory.Text = "Category";
             this.colCategory.Width = 124;
             // 
-            // colGameID
+            // colFavorite
             // 
-            this.colGameID.Text = "Game ID";
+            this.colFavorite.Text = "Favorite";
             // 
             // FormMain
             // 
@@ -307,6 +313,7 @@
         private System.Windows.Forms.Button cmdCatDelete;
         private System.Windows.Forms.Button cmdCatRename;
         private System.Windows.Forms.ListView lstCategories;
+        private System.Windows.Forms.ColumnHeader colFavorite;
     }
 }
 

@@ -12,12 +12,13 @@ namespace SteamOrganizer {
     public partial class FormMain : Form {
 
         GameData gameData;
-        int sortColumn = 0;
+        int sortColumn = 1;
         int sortDirection = 1;
 
         public FormMain() {
             gameData = new GameData();
             InitializeComponent();
+            UpdateSorter();
         }
 
         private void FillGameList() {
@@ -29,11 +30,12 @@ namespace SteamOrganizer {
                 foreach( Game g in gameData.Games.Values ) {
                     if( showAll || g.Category == cat ) {
                         string catName = ( g.Category == null ) ? "<Uncategorized>" : g.Category.Name;
-                        ListViewItem item = new ListViewItem( new string[] { g.Name, catName, g.Id.ToString() } );
+                        ListViewItem item = new ListViewItem( new string[] { g.Id.ToString(), g.Name, catName, g.Favorite?"Y":"N" } );
                         item.Tag = g;
                         lstGames.Items.Add( item );
                     }
                 }
+                lstGames.Sort();
             }
             lstGames.EndUpdate();
         }
@@ -101,7 +103,11 @@ namespace SteamOrganizer {
                 this.sortDirection = 1;
                 this.sortColumn = e.Column;
             }
-            lstGames.ListViewItemSorter = new ListViewItemComparer( sortColumn, sortDirection, sortColumn == 2 );
+            UpdateSorter();
+        }
+
+        private void UpdateSorter() {
+            lstGames.ListViewItemSorter = new ListViewItemComparer( sortColumn, sortDirection, sortColumn == 0 );
         }
     }
 
