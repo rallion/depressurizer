@@ -77,19 +77,20 @@
             // menuFileSave
             // 
             this.menuFileSave.Name = "menuFileSave";
-            this.menuFileSave.Size = new System.Drawing.Size( 100, 22 );
+            this.menuFileSave.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileSave.Text = "Save";
             // 
             // menuFileLoad
             // 
             this.menuFileLoad.Name = "menuFileLoad";
-            this.menuFileLoad.Size = new System.Drawing.Size( 100, 22 );
+            this.menuFileLoad.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileLoad.Text = "Load";
+            this.menuFileLoad.Click += new System.EventHandler( this.menuFileLoad_Click );
             // 
             // menuFileExit
             // 
             this.menuFileExit.Name = "menuFileExit";
-            this.menuFileExit.Size = new System.Drawing.Size( 100, 22 );
+            this.menuFileExit.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileExit.Text = "Exit";
             // 
             // menuTools
@@ -156,6 +157,7 @@
             this.lstCategories.TabIndex = 2;
             this.lstCategories.UseCompatibleStateImageBehavior = false;
             this.lstCategories.View = System.Windows.Forms.View.List;
+            this.lstCategories.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler( this.lstCategories_AfterLabelEdit );
             this.lstCategories.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler( this.lstCategories_BeforeLabelEdit );
             this.lstCategories.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler( this.lstCategories_ItemSelectionChanged );
             this.lstCategories.DragDrop += new System.Windows.Forms.DragEventHandler( this.lstCategories_DragDrop );
@@ -215,6 +217,7 @@
             this.cmdCatRename.TabIndex = 2;
             this.cmdCatRename.Text = "Rename";
             this.cmdCatRename.UseVisualStyleBackColor = true;
+            this.cmdCatRename.Click += new System.EventHandler( this.cmdCatRename_Click );
             // 
             // grpGames
             // 

@@ -67,6 +67,14 @@ namespace SteamOrganizer {
             }
         }
 
+        public bool RenameCategory( Category c, string newName ) {
+            if( !CategoryExists( newName ) ) {
+                c.Name = newName;
+                return true;
+            }
+            return false;
+        }
+
         public void SetGameCategories( int[] gameIDs, Category newCat ) {
             for( int i = 0; i < gameIDs.Length; i++ ) {
                 Games[gameIDs[i]].Category = newCat;
@@ -127,6 +135,61 @@ namespace SteamOrganizer {
                 return e;
             }
 
+        }
+
+        /*   private void SetGameInfo( int gameId, string title, string category, bool? favorite ) {
+               if( Games.ContainsKey() ) {
+
+               } else {
+                   Game newGame = new Game( gameId, (title == null)?string.Empty:title );
+                   if( cate
+                   Games.Add( gameId, newGame );
+               }
+           }
+
+   */
+        public Category GetCategory( string name ) {
+            foreach( Category c in Categories ) {
+                if( c.Name == name ) return c;
+            }
+            Category newCat = new Category( name );
+            Categories.Add( newCat );
+            return newCat;
+        }
+
+        public Exception GetDataFromSteamFile( FileInfo file ) {
+            StreamReader reader = new StreamReader( file.OpenRead() );
+            FileData dataRoot = FileData.ParseText( reader );
+            reader.Close();
+
+            FileData appsNode = dataRoot["UserLocalConfigStore"]["Software"]["Valve"]["Steam"]["apps"];
+            foreach( KeyValuePair<string, FileData> gameNode in (Dictionary<string, FileData>)appsNode.ValueData ) {
+                int gameId;
+                if( int.TryParse( gameNode.Key, out gameId ) ) {
+                    Category cat = null;
+                    bool fav = false;
+                    if( gameNode.Value.ContainsKey( "tags" ) ) {
+                        FileData tagsNode = gameNode.Value["tags"];
+                        foreach( FileData tag in ( (Dictionary<string, FileData>)tagsNode.ValueData ).Values ) {
+                            if( tag.ValueType == ValueType.Value ) {
+                                string tagName = (string)tag.ValueData;
+                                if( tagName == "favorite" ) {
+                                    fav = true;
+                                } else {
+                                    cat = GetCategory( tagName );
+                                }
+                            }
+                        }
+                    }
+                    if( !Games.ContainsKey( gameId ) ) {
+                        Game newGame = new Game( gameId, string.Empty );
+                        Games.Add( gameId, newGame );
+                    }
+                    Games[gameId].Category = cat;
+                    Games[gameId].Favorite = fav;
+                }
+            }
+            return null;
         }
     }
 

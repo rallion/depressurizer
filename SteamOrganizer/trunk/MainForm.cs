@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections;
+using System.IO;
 
 namespace SteamOrganizer {
     public partial class FormMain : Form {
@@ -145,6 +146,27 @@ namespace SteamOrganizer {
             ListViewItem item = lstCategories.Items[e.Item];
             Category cat = item.Tag as Category;
             if( cat == null ) {
+                e.CancelEdit = true;
+            }
+        }
+
+        private void menuFileLoad_Click( object sender, EventArgs e ) {
+
+            gameData.GetDataFromSteamFile( new FileInfo("sharedconfig.vdf") );
+        }
+
+        private void cmdCatRename_Click( object sender, EventArgs e ) {
+
+        }
+
+        private void lstCategories_AfterLabelEdit( object sender, LabelEditEventArgs e ) {
+            Category c = lstCategories.Items[e.Item].Tag as Category;
+            if( c == null ) {
+                e.CancelEdit = true;
+            } else if( gameData.RenameCategory( c, e.Label ) ) {
+                //FillCategoryList();
+                lstCategories.Sorting = SortOrder.Ascending;
+            } else {
                 e.CancelEdit = true;
             }
         }
