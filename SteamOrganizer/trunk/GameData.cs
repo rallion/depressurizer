@@ -33,6 +33,8 @@ namespace SteamOrganizer {
         #region Fields
         public Dictionary<int, Game> Games;
         public List<Category> Categories;
+
+        private FileNode backingData;
         #endregion
 
         public GameData() {
@@ -44,6 +46,14 @@ namespace SteamOrganizer {
         public void AddGame( int id, string name ) {
             if( !Games.ContainsKey( id ) ) {
                 Games.Add( id, new Game( id, name ) );
+            }
+        }
+
+        private void SetGameName( int id, string name ) {
+            if( !Games.ContainsKey( id ) ) {
+                Games.Add( id, new Game( id, name ) );
+            } else {
+                Games[id].Name = name;
             }
         }
 
@@ -102,9 +112,18 @@ namespace SteamOrganizer {
             } while( CategoryExists( currName ) );
             return currName;
         }
+
+        public Category GetCategory( string name ) {
+            foreach( Category c in Categories ) {
+                if( c.Name == name ) return c;
+            }
+            Category newCat = new Category( name );
+            Categories.Add( newCat );
+            return newCat;
+        }
         #endregion
 
-        public Exception AddFromProfile( string profileName ) {
+        public Exception LoadProfile( string profileName ) {
             try {
                 string url = string.Format( @"http://steamcommunity.com/id/{0}/games/?tab=all", profileName );
                 WebRequest req = HttpWebRequest.Create( url );
@@ -125,7 +144,7 @@ namespace SteamOrganizer {
                     if( m.Success ) {
                         int id;
                         if( int.TryParse( m.Groups[1].Value, out id ) ) {
-                            AddGame( id, m.Groups[2].Value );
+                            SetGameName( id, m.Groups[2].Value );
                         }
                     }
                     line = reader.ReadLine();
@@ -137,61 +156,78 @@ namespace SteamOrganizer {
 
         }
 
-        /*   private void SetGameInfo( int gameId, string title, string category, bool? favorite ) {
-               if( Games.ContainsKey() ) {
+        public Exception LoadSteamFile( string path ) {
+            try {
+                FileNode dataRoot;
+                using( StreamReader reader = new StreamReader( path, false ) ) {
+                    dataRoot = FileNode.Load( reader );
+                }
 
-               } else {
-                   Game newGame = new Game( gameId, (title == null)?string.Empty:title );
-                   if( cate
-                   Games.Add( gameId, newGame );
-               }
-           }
+                this.backingData = dataRoot;
 
-   */
-        public Category GetCategory( string name ) {
-            foreach( Category c in Categories ) {
-                if( c.Name == name ) return c;
-            }
-            Category newCat = new Category( name );
-            Categories.Add( newCat );
-            return newCat;
-        }
-
-        public Exception GetDataFromSteamFile( FileInfo file ) {
-            StreamReader reader = new StreamReader( file.OpenRead() );
-            FileData dataRoot = FileData.ParseText( reader );
-            reader.Close();
-
-            FileData appsNode = dataRoot["UserLocalConfigStore"]["Software"]["Valve"]["Steam"]["apps"];
-            foreach( KeyValuePair<string, FileData> gameNode in (Dictionary<string, FileData>)appsNode.ValueData ) {
-                int gameId;
-                if( int.TryParse( gameNode.Key, out gameId ) ) {
-                    Category cat = null;
-                    bool fav = false;
-                    if( gameNode.Value.ContainsKey( "tags" ) ) {
-                        FileData tagsNode = gameNode.Value["tags"];
-                        foreach( FileData tag in ( (Dictionary<string, FileData>)tagsNode.ValueData ).Values ) {
-                            if( tag.ValueType == ValueType.Value ) {
-                                string tagName = (string)tag.ValueData;
-                                if( tagName == "favorite" ) {
-                                    fav = true;
-                                } else {
-                                    cat = GetCategory( tagName );
+                FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true );
+                foreach( KeyValuePair<string, FileNode> gameNode in (Dictionary<string, FileNode>)appsNode.NodeData ) {
+                    int gameId;
+                    if( int.TryParse( gameNode.Key, out gameId ) ) {
+                        Category cat = null;
+                        bool fav = false;
+                        if( gameNode.Value.ContainsKey( "tags" ) ) {
+                            FileNode tagsNode = gameNode.Value["tags"];
+                            foreach( FileNode tag in ( (Dictionary<string, FileNode>)tagsNode.NodeData ).Values ) {
+                                if( tag.NodeType == ValueType.Value ) {
+                                    string tagName = (string)tag.NodeData;
+                                    if( tagName == "favorite" ) {
+                                        fav = true;
+                                    } else {
+                                        cat = GetCategory( tagName );
+                                    }
                                 }
                             }
                         }
+                        if( !Games.ContainsKey( gameId ) ) {
+                            Game newGame = new Game( gameId, string.Empty );
+                            Games.Add( gameId, newGame );
+                        }
+                        Games[gameId].Category = cat;
+                        Games[gameId].Favorite = fav;
                     }
-                    if( !Games.ContainsKey( gameId ) ) {
-                        Game newGame = new Game( gameId, string.Empty );
-                        Games.Add( gameId, newGame );
-                    }
-                    Games[gameId].Category = cat;
-                    Games[gameId].Favorite = fav;
                 }
+                return null;
+            } catch( Exception e ) {
+                return e;
             }
-            return null;
+        }
+
+        public Exception SaveSteamFile( string path ) {
+          //  try {
+
+                FileNode appListNode = backingData.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" } );
+
+                foreach( Game game in Games.Values ) {
+                    FileNode gameNode = appListNode[game.Id.ToString()];
+                    gameNode.RemoveSubnode( "tags" );
+                    if( game.Category != null || game.Favorite ) {
+                        FileNode tagsNode = gameNode["tags"];
+                        int key = 0;
+                        if( game.Category != null ) {
+                            tagsNode[key.ToString()] = new FileNode( game.Category.Name );
+                            key++;
+                        }
+                        if( game.Favorite ) {
+                            tagsNode[key.ToString()] = new FileNode( "favorite" );
+                        }
+                    }
+                }
+
+                appListNode.CleanTree();
+
+                using( StreamWriter writer = new StreamWriter( path, false ) ) {
+                    backingData.Save( writer );
+                }
+                return null;
+        //    } catch( Exception e ) {
+        //        return e;
+        //    }
         }
     }
-
-
 }

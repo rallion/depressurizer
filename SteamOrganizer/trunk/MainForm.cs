@@ -67,7 +67,7 @@ namespace SteamOrganizer {
         private void FillCategoryList() {
             lstCategories.BeginUpdate();
             lstCategories.Items.Clear();
-            ListViewItem item = new ListViewItem(CAT_ALL_NAME );
+            ListViewItem item = new ListViewItem( CAT_ALL_NAME );
             item.Tag = CAT_ALL_ID;
             lstCategories.Items.Add( item );
             item = new ListViewItem( CAT_FAV_NAME );
@@ -112,7 +112,7 @@ namespace SteamOrganizer {
         #endregion
         #region Main menu
         private void menuToolsGetList_Click( object sender, EventArgs e ) {
-            gameData.AddFromProfile( "rallion" );
+            gameData.LoadProfile( "rallion" );
             FillGameList();
         }
         #endregion
@@ -152,7 +152,11 @@ namespace SteamOrganizer {
 
         private void menuFileLoad_Click( object sender, EventArgs e ) {
 
-            gameData.GetDataFromSteamFile( new FileInfo("sharedconfig.vdf") );
+            Exception result = gameData.LoadSteamFile( "sharedconfig.vdf" );
+            if( result != null ) {
+                MessageBox.Show( result.ToString() );
+            }
+            FillCategoryList();
         }
 
         private void cmdCatRename_Click( object sender, EventArgs e ) {
@@ -169,6 +173,17 @@ namespace SteamOrganizer {
             } else {
                 e.CancelEdit = true;
             }
+        }
+
+        private void menuFileSave_Click( object sender, EventArgs e ) {
+            Exception result = gameData.SaveSteamFile( "savedFile" );
+            if( result != null ) {
+                MessageBox.Show( result.ToString() );
+            }
+        }
+
+        private void menuFileExit_Click( object sender, EventArgs e ) {
+            this.Close();
         }
     }
 

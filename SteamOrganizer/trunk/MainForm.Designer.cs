@@ -79,6 +79,7 @@
             this.menuFileSave.Name = "menuFileSave";
             this.menuFileSave.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileSave.Text = "Save";
+            this.menuFileSave.Click += new System.EventHandler( this.menuFileSave_Click );
             // 
             // menuFileLoad
             // 
@@ -92,6 +93,7 @@
             this.menuFileExit.Name = "menuFileExit";
             this.menuFileExit.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileExit.Text = "Exit";
+            this.menuFileExit.Click += new System.EventHandler( this.menuFileExit_Click );
             // 
             // menuTools
             // 
@@ -147,6 +149,9 @@
             // lstCategories
             // 
             this.lstCategories.AllowDrop = true;
+            this.lstCategories.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
+                        | System.Windows.Forms.AnchorStyles.Left )
+                        | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.lstCategories.FullRowSelect = true;
             this.lstCategories.HideSelection = false;
             this.lstCategories.LabelEdit = true;
@@ -278,7 +283,9 @@
             this.Controls.Add( this.splitContainer );
             this.Controls.Add( this.menuStrip );
             this.MainMenuStrip = this.menuStrip;
+            this.MinimumSize = new System.Drawing.Size( 450, 300 );
             this.Name = "FormMain";
+            this.ShowIcon = false;
             this.Text = "Depressurizer";
             this.menuStrip.ResumeLayout( false );
             this.menuStrip.PerformLayout();

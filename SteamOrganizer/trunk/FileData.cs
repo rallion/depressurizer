@@ -11,26 +11,26 @@ namespace SteamOrganizer {
         Value
     }
 
-    public class FileData {
-        public ValueType ValueType;
-        public Object ValueData;
+    public class FileNode {
+        public ValueType NodeType;
+        public Object NodeData;
 
-        public FileData this[string key] {
+        public FileNode this[string key] {
             get {
-                if( this.ValueType == ValueType.Value ) {
+                if( this.NodeType == ValueType.Value ) {
                     throw new Exception( string.Format( "Node is a value, not an array. Cannot get key {0}", key ) );
                 }
-                Dictionary<string, FileData> arrayData = (Dictionary<string, FileData>)ValueData;
+                Dictionary<string, FileNode> arrayData = (Dictionary<string, FileNode>)NodeData;
                 if( !arrayData.ContainsKey( key ) ) {
-                    arrayData.Add( key, new FileData( ) );
+                    arrayData.Add( key, new FileNode() );
                 }
                 return arrayData[key];
             }
             set {
-                if( this.ValueType == ValueType.Value ) {
+                if( this.NodeType == ValueType.Value ) {
                     throw new Exception( string.Format( "Node is a value, not an array. Cannot set key {0}", key ) );
                 }
-                Dictionary<string, FileData> arrayData = (Dictionary<string, FileData>)ValueData;
+                Dictionary<string, FileNode> arrayData = (Dictionary<string, FileNode>)NodeData;
                 if( !arrayData.ContainsKey( key ) ) {
                     arrayData.Add( key, value );
                 } else {
@@ -38,52 +38,24 @@ namespace SteamOrganizer {
                 }
             }
         }
-
-        public FileData() {
-            ValueType = ValueType.Array;
-            ValueData = new Dictionary<string, FileData>();
-
-        }
-
-        public FileData( string value ) {
-            ValueType = ValueType.Value;
-            ValueData = value;
-        }
-
-        public bool ContainsKey( string key ) {
-            if( ValueType != ValueType.Array ) {
-                return false;
+        public Dictionary<string, FileNode> NodeArray {
+            get {
+                return NodeData as Dictionary<string, FileNode>;
             }
-            return ( (Dictionary<string, FileData>)ValueData ).ContainsKey( key );
         }
 
-        public static FileData ParseText( StreamReader stream ) {
-            FileData thisLevel = new FileData();
-            while( !stream.EndOfStream ) {
+        public FileNode() {
+            NodeType = ValueType.Array;
+            NodeData = new Dictionary<string, FileNode>();
 
-                SkipWhitespace( stream );
-                // Get key
-                char nextChar = (char)stream.Read();
-                string key = null;
-                if( nextChar == '"' ) {
-                    key = GetStringToken( stream );
-                } else {
-                    break;
-                }
-                SkipWhitespace( stream );
-
-                // Get value
-                nextChar = (char)stream.Read();
-                if( nextChar == '"' ) {
-                    string value = GetStringToken( stream );
-                    thisLevel[key] = new FileData( value );
-                } else if( nextChar == '{' ) {
-                    FileData value = ParseText( stream );
-                    thisLevel[key] = value;
-                }
-            }
-            return thisLevel;
         }
+
+        public FileNode( string value ) {
+            NodeType = ValueType.Value;
+            NodeData = value;
+        }
+
+        #region Utility
 
         private static string GetStringToken( StreamReader stream ) {
             bool escaped = false;
@@ -129,34 +101,127 @@ namespace SteamOrganizer {
                 nextChar = (char)stream.Peek();
             }
         }
-        /*
-        public Object GetAt( string[] args, int index = 0 ) {
+
+        private void WriteFormattedString( StreamWriter stream, string s ) {
+            stream.Write( "\"" );
+            stream.Write( s.Replace( "\"", "\\\"" ) );
+            stream.Write( "\"" );
+        }
+
+        private void WriteWhitespace( StreamWriter stream, int indent ) {
+            for( int i = 0; i < indent; i++ ) {
+                stream.Write( '\t' );
+            }
+        }
+
+        private bool IsEmpty() {
+            if( NodeArray != null ) {
+                return NodeArray.Count == 0;
+            } else {
+                return ( NodeData as string ) == null;
+            }
+        }
+        #endregion
+        #region Accessors
+        public FileNode GetNodeAt( string[] args, bool create = true, int index = 0 ) {
             if( index >= args.Length ) {
                 return this;
             }
-            if( this.ValueType == ValueType.Array ) {
-                Dictionary<String, FileData> data = (Dictionary<String, FileData>)Data;
-                string childKey = args[index];
-                if( data.ContainsKey( childKey ) ) {
-                    FileData child = data[childKey];
-                    return child.GetAt( args, index + 1 );
+            if( this.NodeType == ValueType.Array ) {
+                Dictionary<String, FileNode> data = (Dictionary<String, FileNode>)NodeData;
+                if( ContainsKey( args[index] ) ) {
+                    return data[args[index]].GetNodeAt( args, create, index + 1 );
+                } else if( create ) {
+                    FileNode newNode = new FileNode();
+                    data.Add( args[index], newNode );
+                    return newNode.GetNodeAt( args, create, index + 1 );
                 }
             }
             return null;
         }
 
-        public bool SetAt( string[] args, string value, int argIndex = 0 ) {
-            if( argIndex >= args.Length ) {
-                this.ValueType = ValueType.Value;
-                this.Data = value;
-                return true;
-            }
-            if( this.ValueType == ValueType.Value ) {
+        public bool ContainsKey( string key ) {
+            if( NodeType != ValueType.Array ) {
                 return false;
             }
-
-            
+            return ( (Dictionary<string, FileNode>)NodeData ).ContainsKey( key );
         }
-        */
+
+        #endregion
+
+        public bool RemoveSubnode( string key ) {
+            return NodeArray.Remove( key );
+        }
+
+        public static FileNode Load( StreamReader stream ) {
+            FileNode thisLevel = new FileNode();
+            while( !stream.EndOfStream ) {
+
+                SkipWhitespace( stream );
+                // Get key
+                char nextChar = (char)stream.Read();
+                string key = null;
+                if( nextChar == '"' ) {
+                    key = GetStringToken( stream );
+                } else {
+                    break;
+                }
+                SkipWhitespace( stream );
+
+                // Get value
+                nextChar = (char)stream.Read();
+                if( nextChar == '"' ) {
+                    string value = GetStringToken( stream );
+                    thisLevel[key] = new FileNode( value );
+                } else if( nextChar == '{' ) {
+                    FileNode value = Load( stream );
+                    thisLevel[key] = value;
+                }
+            }
+            return thisLevel;
+        }
+
+        public void Save( StreamWriter stream, int indent = 0 ) {
+            if( NodeType == ValueType.Array ) {
+                Dictionary<string, FileNode> data = NodeArray;
+                foreach( KeyValuePair<string, FileNode> entry in data ) {
+                    if( entry.Value.NodeType == ValueType.Array ) {
+                        WriteWhitespace( stream, indent );
+                        WriteFormattedString( stream, entry.Key );
+                        stream.WriteLine();
+
+                        WriteWhitespace( stream, indent );
+                        stream.WriteLine( '{' );
+
+                        entry.Value.Save( stream, indent + 1 );
+
+                        WriteWhitespace( stream, indent );
+                        stream.WriteLine( '}' );
+                    } else {
+                        WriteWhitespace( stream, indent );
+                        WriteFormattedString( stream, entry.Key );
+                        stream.Write( "\t\t" );
+
+                        WriteFormattedString( stream, entry.Value.NodeData as string );
+                        stream.WriteLine();
+                    }
+                }
+            } else {
+
+            }
+        }
+
+        public void CleanTree() {
+            Dictionary<string,FileNode> nodes = NodeArray;
+            if( nodes != null ) {
+                string[] keys = nodes.Keys.ToArray<string>();
+                foreach( string key in keys ) {
+                    nodes[key].CleanTree();
+                    if( nodes[key].IsEmpty() ) {
+                        NodeArray.Remove( key );
+                    }
+                }
+            }
+        }
     }
 }
