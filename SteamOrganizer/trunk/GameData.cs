@@ -6,7 +6,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace SteamOrganizer {
+namespace Depressurizer {
     public class Game {
         public string Name;
         public int Id;
@@ -21,11 +21,19 @@ namespace SteamOrganizer {
         }
     }
 
-    public class Category {
+    public class Category : IComparable {
         public string Name;
 
         public Category( string name ) {
             Name = name;
+        }
+
+        public override string ToString() {
+            return Name;
+        }
+
+        public int CompareTo( object o ) {
+            return Name.CompareTo( Name as string );
         }
     }
 
@@ -57,16 +65,14 @@ namespace SteamOrganizer {
             }
         }
 
-        public bool AddCategory() {
-            return AddCategory( GetNewCategoryName() );
-        }
-
-        public bool AddCategory( string name ) {
+        public Category AddCategory( string name ) {
             if( CategoryExists( name ) ) {
-                return false;
+                return null;
             } else {
-                Categories.Add( new Category( name ) );
-                return true;
+                Category newCat = new Category( name );
+                Categories.Add( newCat );
+                Categories.Sort();
+                return newCat;
             }
         }
 
@@ -90,6 +96,12 @@ namespace SteamOrganizer {
                 Games[gameIDs[i]].Category = newCat;
             }
         }
+
+        public void SetGameFavorites( int[] gameIDs, bool fav ) {
+            for( int i = 0; i < gameIDs.Length; i++ ) {
+                Games[gameIDs[i]].Favorite = fav;
+            }
+        }
         #endregion
 
         #region Accessors
@@ -100,17 +112,6 @@ namespace SteamOrganizer {
                 }
             }
             return false;
-        }
-
-        public string GetNewCategoryName() {
-            string baseName = "New Category";
-            int number = 0;
-            string currName;
-            do {
-                number++;
-                currName = string.Format( "{0} {1}", baseName, number );
-            } while( CategoryExists( currName ) );
-            return currName;
         }
 
         public Category GetCategory( string name ) {
@@ -135,7 +136,9 @@ namespace SteamOrganizer {
                 // Get to relevant javascript
                 do {
                     line = reader.ReadLine();
-                } while( !line.Contains( "rgGames" ) );
+                    //TODO: return error here if necessary
+                    if( line == null ) return null;
+                } while( line != null && !line.Contains( "rgGames" ) );
 
                 line = reader.ReadLine();
                 Regex regex = new Regex( @"rgGames\['(\d+)'\]\s*=\s*'(.*)';" );
@@ -163,6 +166,8 @@ namespace SteamOrganizer {
                     dataRoot = FileNode.Load( reader );
                 }
 
+                Games.Clear();
+                Categories.Clear();
                 this.backingData = dataRoot;
 
                 FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true );
@@ -199,35 +204,35 @@ namespace SteamOrganizer {
         }
 
         public Exception SaveSteamFile( string path ) {
-          //  try {
+            //  try {
 
-                FileNode appListNode = backingData.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" } );
+            FileNode appListNode = backingData.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" } );
 
-                foreach( Game game in Games.Values ) {
-                    FileNode gameNode = appListNode[game.Id.ToString()];
-                    gameNode.RemoveSubnode( "tags" );
-                    if( game.Category != null || game.Favorite ) {
-                        FileNode tagsNode = gameNode["tags"];
-                        int key = 0;
-                        if( game.Category != null ) {
-                            tagsNode[key.ToString()] = new FileNode( game.Category.Name );
-                            key++;
-                        }
-                        if( game.Favorite ) {
-                            tagsNode[key.ToString()] = new FileNode( "favorite" );
-                        }
+            foreach( Game game in Games.Values ) {
+                FileNode gameNode = appListNode[game.Id.ToString()];
+                gameNode.RemoveSubnode( "tags" );
+                if( game.Category != null || game.Favorite ) {
+                    FileNode tagsNode = gameNode["tags"];
+                    int key = 0;
+                    if( game.Category != null ) {
+                        tagsNode[key.ToString()] = new FileNode( game.Category.Name );
+                        key++;
+                    }
+                    if( game.Favorite ) {
+                        tagsNode[key.ToString()] = new FileNode( "favorite" );
                     }
                 }
+            }
 
-                appListNode.CleanTree();
+            appListNode.CleanTree();
 
-                using( StreamWriter writer = new StreamWriter( path, false ) ) {
-                    backingData.Save( writer );
-                }
-                return null;
-        //    } catch( Exception e ) {
-        //        return e;
-        //    }
+            using( StreamWriter writer = new StreamWriter( path, false ) ) {
+                backingData.Save( writer );
+            }
+            return null;
+            //    } catch( Exception e ) {
+            //        return e;
+            //    }
         }
     }
 }

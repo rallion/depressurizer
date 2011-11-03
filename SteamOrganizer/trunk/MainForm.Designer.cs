@@ -1,4 +1,4 @@
-﻿namespace SteamOrganizer {
+﻿namespace Depressurizer {
     partial class FormMain {
         /// <summary>
         /// Required designer variable.
@@ -25,11 +25,11 @@
         private void InitializeComponent() {
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuFileSave = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileLoad = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuFileSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuFileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuTools = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuToolsOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToolsGetList = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.grpCategories = new System.Windows.Forms.GroupBox();
@@ -39,6 +39,13 @@
             this.cmdCatDelete = new System.Windows.Forms.Button();
             this.cmdCatRename = new System.Windows.Forms.Button();
             this.grpGames = new System.Windows.Forms.GroupBox();
+            this.combFavorite = new System.Windows.Forms.ComboBox();
+            this.cmdGameAdd = new System.Windows.Forms.Button();
+            this.cmdGameRemove = new System.Windows.Forms.Button();
+            this.cmdGameEdit = new System.Windows.Forms.Button();
+            this.combCategory = new System.Windows.Forms.ComboBox();
+            this.cmdGameSetCategory = new System.Windows.Forms.Button();
+            this.cmdGameSetFavorite = new System.Windows.Forms.Button();
             this.lstGames = new System.Windows.Forms.ListView();
             this.colGameID = ( (System.Windows.Forms.ColumnHeader)( new System.Windows.Forms.ColumnHeader() ) );
             this.colTitle = ( (System.Windows.Forms.ColumnHeader)( new System.Windows.Forms.ColumnHeader() ) );
@@ -61,32 +68,38 @@
             this.menuTools} );
             this.menuStrip.Location = new System.Drawing.Point( 0, 0 );
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size( 938, 24 );
+            this.menuStrip.Size = new System.Drawing.Size( 772, 24 );
             this.menuStrip.TabIndex = 4;
             // 
             // menuFile
             // 
             this.menuFile.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuFileSave,
             this.menuFileLoad,
+            this.menuFileSave,
+            this.toolStripMenuItem1,
             this.menuFileExit} );
             this.menuFile.Name = "menuFile";
             this.menuFile.Size = new System.Drawing.Size( 37, 20 );
             this.menuFile.Text = "File";
             // 
-            // menuFileSave
-            // 
-            this.menuFileSave.Name = "menuFileSave";
-            this.menuFileSave.Size = new System.Drawing.Size( 152, 22 );
-            this.menuFileSave.Text = "Save";
-            this.menuFileSave.Click += new System.EventHandler( this.menuFileSave_Click );
-            // 
             // menuFileLoad
             // 
             this.menuFileLoad.Name = "menuFileLoad";
             this.menuFileLoad.Size = new System.Drawing.Size( 152, 22 );
-            this.menuFileLoad.Text = "Load";
+            this.menuFileLoad.Text = "Manual Load...";
             this.menuFileLoad.Click += new System.EventHandler( this.menuFileLoad_Click );
+            // 
+            // menuFileSave
+            // 
+            this.menuFileSave.Name = "menuFileSave";
+            this.menuFileSave.Size = new System.Drawing.Size( 152, 22 );
+            this.menuFileSave.Text = "Manual Save...";
+            this.menuFileSave.Click += new System.EventHandler( this.menuFileSave_Click );
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size( 149, 6 );
             // 
             // menuFileExit
             // 
@@ -98,23 +111,16 @@
             // menuTools
             // 
             this.menuTools.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuToolsOptions,
             this.menuToolsGetList} );
             this.menuTools.Name = "menuTools";
             this.menuTools.Size = new System.Drawing.Size( 48, 20 );
             this.menuTools.Text = "Tools";
             // 
-            // menuToolsOptions
-            // 
-            this.menuToolsOptions.Name = "menuToolsOptions";
-            this.menuToolsOptions.Size = new System.Drawing.Size( 147, 22 );
-            this.menuToolsOptions.Text = "Options";
-            // 
             // menuToolsGetList
             // 
             this.menuToolsGetList.Name = "menuToolsGetList";
-            this.menuToolsGetList.Size = new System.Drawing.Size( 147, 22 );
-            this.menuToolsGetList.Text = "Get Game List";
+            this.menuToolsGetList.Size = new System.Drawing.Size( 182, 22 );
+            this.menuToolsGetList.Text = "Load Steam Profile...";
             this.menuToolsGetList.Click += new System.EventHandler( this.menuToolsGetList_Click );
             // 
             // splitContainer
@@ -126,12 +132,14 @@
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add( this.grpCategories );
+            this.splitContainer.Panel1MinSize = 100;
             // 
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add( this.grpGames );
-            this.splitContainer.Size = new System.Drawing.Size( 938, 432 );
-            this.splitContainer.SplitterDistance = 312;
+            this.splitContainer.Panel2MinSize = 500;
+            this.splitContainer.Size = new System.Drawing.Size( 772, 406 );
+            this.splitContainer.SplitterDistance = 268;
             this.splitContainer.TabIndex = 5;
             // 
             // grpCategories
@@ -141,7 +149,7 @@
             this.grpCategories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpCategories.Location = new System.Drawing.Point( 0, 0 );
             this.grpCategories.Name = "grpCategories";
-            this.grpCategories.Size = new System.Drawing.Size( 312, 432 );
+            this.grpCategories.Size = new System.Drawing.Size( 268, 406 );
             this.grpCategories.TabIndex = 0;
             this.grpCategories.TabStop = false;
             this.grpCategories.Text = "Categories";
@@ -152,18 +160,15 @@
             this.lstCategories.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
                         | System.Windows.Forms.AnchorStyles.Left )
                         | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.lstCategories.FullRowSelect = true;
+            this.lstCategories.GridLines = true;
             this.lstCategories.HideSelection = false;
-            this.lstCategories.LabelEdit = true;
             this.lstCategories.Location = new System.Drawing.Point( 3, 16 );
             this.lstCategories.MultiSelect = false;
             this.lstCategories.Name = "lstCategories";
-            this.lstCategories.Size = new System.Drawing.Size( 306, 377 );
+            this.lstCategories.Size = new System.Drawing.Size( 262, 355 );
             this.lstCategories.TabIndex = 2;
             this.lstCategories.UseCompatibleStateImageBehavior = false;
             this.lstCategories.View = System.Windows.Forms.View.List;
-            this.lstCategories.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler( this.lstCategories_AfterLabelEdit );
-            this.lstCategories.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler( this.lstCategories_BeforeLabelEdit );
             this.lstCategories.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler( this.lstCategories_ItemSelectionChanged );
             this.lstCategories.DragDrop += new System.Windows.Forms.DragEventHandler( this.lstCategories_DragDrop );
             this.lstCategories.DragEnter += new System.Windows.Forms.DragEventHandler( this.lstCategories_DragEnter );
@@ -179,11 +184,11 @@
             this.tableLayoutPanel1.Controls.Add( this.cmdCatAdd, 0, 0 );
             this.tableLayoutPanel1.Controls.Add( this.cmdCatDelete, 2, 0 );
             this.tableLayoutPanel1.Controls.Add( this.cmdCatRename, 1, 0 );
-            this.tableLayoutPanel1.Location = new System.Drawing.Point( 3, 396 );
+            this.tableLayoutPanel1.Location = new System.Drawing.Point( 3, 374 );
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add( new System.Windows.Forms.RowStyle( System.Windows.Forms.SizeType.Percent, 100F ) );
-            this.tableLayoutPanel1.Size = new System.Drawing.Size( 309, 30 );
+            this.tableLayoutPanel1.Size = new System.Drawing.Size( 265, 30 );
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // cmdCatAdd
@@ -193,7 +198,7 @@
                         | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.cmdCatAdd.Location = new System.Drawing.Point( 3, 3 );
             this.cmdCatAdd.Name = "cmdCatAdd";
-            this.cmdCatAdd.Size = new System.Drawing.Size( 97, 24 );
+            this.cmdCatAdd.Size = new System.Drawing.Size( 82, 24 );
             this.cmdCatAdd.TabIndex = 0;
             this.cmdCatAdd.Text = "Add";
             this.cmdCatAdd.UseVisualStyleBackColor = true;
@@ -204,21 +209,22 @@
             this.cmdCatDelete.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
                         | System.Windows.Forms.AnchorStyles.Left )
                         | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.cmdCatDelete.Location = new System.Drawing.Point( 209, 3 );
+            this.cmdCatDelete.Location = new System.Drawing.Point( 179, 3 );
             this.cmdCatDelete.Name = "cmdCatDelete";
-            this.cmdCatDelete.Size = new System.Drawing.Size( 97, 24 );
+            this.cmdCatDelete.Size = new System.Drawing.Size( 83, 24 );
             this.cmdCatDelete.TabIndex = 1;
             this.cmdCatDelete.Text = "Delete";
             this.cmdCatDelete.UseVisualStyleBackColor = true;
+            this.cmdCatDelete.Click += new System.EventHandler( this.cmdCatDelete_Click );
             // 
             // cmdCatRename
             // 
             this.cmdCatRename.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
                         | System.Windows.Forms.AnchorStyles.Left )
                         | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.cmdCatRename.Location = new System.Drawing.Point( 106, 3 );
+            this.cmdCatRename.Location = new System.Drawing.Point( 91, 3 );
             this.cmdCatRename.Name = "cmdCatRename";
-            this.cmdCatRename.Size = new System.Drawing.Size( 97, 24 );
+            this.cmdCatRename.Size = new System.Drawing.Size( 82, 24 );
             this.cmdCatRename.TabIndex = 2;
             this.cmdCatRename.Text = "Rename";
             this.cmdCatRename.UseVisualStyleBackColor = true;
@@ -226,14 +232,99 @@
             // 
             // grpGames
             // 
+            this.grpGames.Controls.Add( this.combFavorite );
+            this.grpGames.Controls.Add( this.cmdGameAdd );
+            this.grpGames.Controls.Add( this.cmdGameRemove );
+            this.grpGames.Controls.Add( this.cmdGameEdit );
+            this.grpGames.Controls.Add( this.combCategory );
+            this.grpGames.Controls.Add( this.cmdGameSetCategory );
+            this.grpGames.Controls.Add( this.cmdGameSetFavorite );
             this.grpGames.Controls.Add( this.lstGames );
             this.grpGames.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpGames.Location = new System.Drawing.Point( 0, 0 );
             this.grpGames.Name = "grpGames";
-            this.grpGames.Size = new System.Drawing.Size( 622, 432 );
+            this.grpGames.Size = new System.Drawing.Size( 500, 406 );
             this.grpGames.TabIndex = 0;
             this.grpGames.TabStop = false;
             this.grpGames.Text = "Games";
+            // 
+            // combFavorite
+            // 
+            this.combFavorite.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.combFavorite.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combFavorite.FormattingEnabled = true;
+            this.combFavorite.Items.AddRange( new object[] {
+            "No",
+            "Yes"} );
+            this.combFavorite.Location = new System.Drawing.Point( 328, 378 );
+            this.combFavorite.Name = "combFavorite";
+            this.combFavorite.Size = new System.Drawing.Size( 68, 21 );
+            this.combFavorite.TabIndex = 8;
+            // 
+            // cmdGameAdd
+            // 
+            this.cmdGameAdd.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
+            this.cmdGameAdd.Enabled = false;
+            this.cmdGameAdd.Location = new System.Drawing.Point( 2, 378 );
+            this.cmdGameAdd.Name = "cmdGameAdd";
+            this.cmdGameAdd.Size = new System.Drawing.Size( 75, 23 );
+            this.cmdGameAdd.TabIndex = 7;
+            this.cmdGameAdd.Text = "Add";
+            this.cmdGameAdd.UseVisualStyleBackColor = true;
+            // 
+            // cmdGameRemove
+            // 
+            this.cmdGameRemove.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
+            this.cmdGameRemove.Enabled = false;
+            this.cmdGameRemove.Location = new System.Drawing.Point( 81, 378 );
+            this.cmdGameRemove.Name = "cmdGameRemove";
+            this.cmdGameRemove.Size = new System.Drawing.Size( 75, 23 );
+            this.cmdGameRemove.TabIndex = 6;
+            this.cmdGameRemove.Text = "Remove Game";
+            this.cmdGameRemove.UseVisualStyleBackColor = true;
+            // 
+            // cmdGameEdit
+            // 
+            this.cmdGameEdit.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
+            this.cmdGameEdit.Enabled = false;
+            this.cmdGameEdit.Location = new System.Drawing.Point( 3, 352 );
+            this.cmdGameEdit.Name = "cmdGameEdit";
+            this.cmdGameEdit.Size = new System.Drawing.Size( 153, 23 );
+            this.cmdGameEdit.TabIndex = 5;
+            this.cmdGameEdit.Text = "Edit Game";
+            this.cmdGameEdit.UseVisualStyleBackColor = true;
+            // 
+            // combCategory
+            // 
+            this.combCategory.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.combCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combCategory.FormattingEnabled = true;
+            this.combCategory.Location = new System.Drawing.Point( 243, 354 );
+            this.combCategory.Name = "combCategory";
+            this.combCategory.Size = new System.Drawing.Size( 153, 21 );
+            this.combCategory.TabIndex = 4;
+            // 
+            // cmdGameSetCategory
+            // 
+            this.cmdGameSetCategory.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.cmdGameSetCategory.Location = new System.Drawing.Point( 400, 352 );
+            this.cmdGameSetCategory.Name = "cmdGameSetCategory";
+            this.cmdGameSetCategory.Size = new System.Drawing.Size( 93, 23 );
+            this.cmdGameSetCategory.TabIndex = 3;
+            this.cmdGameSetCategory.Text = "Set Category";
+            this.cmdGameSetCategory.UseVisualStyleBackColor = true;
+            this.cmdGameSetCategory.Click += new System.EventHandler( this.cmdGameSetCategory_Click );
+            // 
+            // cmdGameSetFavorite
+            // 
+            this.cmdGameSetFavorite.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.cmdGameSetFavorite.Location = new System.Drawing.Point( 400, 378 );
+            this.cmdGameSetFavorite.Name = "cmdGameSetFavorite";
+            this.cmdGameSetFavorite.Size = new System.Drawing.Size( 93, 23 );
+            this.cmdGameSetFavorite.TabIndex = 1;
+            this.cmdGameSetFavorite.Text = "Set Favorite";
+            this.cmdGameSetFavorite.UseVisualStyleBackColor = true;
+            this.cmdGameSetFavorite.Click += new System.EventHandler( this.cmdGameSetFavorite_Click );
             // 
             // lstGames
             // 
@@ -248,9 +339,11 @@
             this.colFavorite} );
             this.lstGames.FullRowSelect = true;
             this.lstGames.GridLines = true;
-            this.lstGames.Location = new System.Drawing.Point( 3, 16 );
+            this.lstGames.HideSelection = false;
+            this.lstGames.Location = new System.Drawing.Point( 3, 20 );
             this.lstGames.Name = "lstGames";
-            this.lstGames.Size = new System.Drawing.Size( 616, 368 );
+            this.lstGames.Size = new System.Drawing.Size( 491, 327 );
+            this.lstGames.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lstGames.TabIndex = 0;
             this.lstGames.UseCompatibleStateImageBehavior = false;
             this.lstGames.View = System.Windows.Forms.View.Details;
@@ -264,26 +357,27 @@
             // colTitle
             // 
             this.colTitle.Text = "Title";
-            this.colTitle.Width = 353;
+            this.colTitle.Width = 223;
             // 
             // colCategory
             // 
             this.colCategory.Text = "Category";
-            this.colCategory.Width = 124;
+            this.colCategory.Width = 118;
             // 
             // colFavorite
             // 
             this.colFavorite.Text = "Favorite";
+            this.colFavorite.Width = 52;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size( 938, 456 );
+            this.ClientSize = new System.Drawing.Size( 772, 430 );
             this.Controls.Add( this.splitContainer );
             this.Controls.Add( this.menuStrip );
             this.MainMenuStrip = this.menuStrip;
-            this.MinimumSize = new System.Drawing.Size( 450, 300 );
+            this.MinimumSize = new System.Drawing.Size( 650, 250 );
             this.Name = "FormMain";
             this.ShowIcon = false;
             this.Text = "Depressurizer";
@@ -309,7 +403,6 @@
         private System.Windows.Forms.ToolStripMenuItem menuFileLoad;
         private System.Windows.Forms.ToolStripMenuItem menuFileExit;
         private System.Windows.Forms.ToolStripMenuItem menuTools;
-        private System.Windows.Forms.ToolStripMenuItem menuToolsOptions;
         private System.Windows.Forms.ToolStripMenuItem menuToolsGetList;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.GroupBox grpCategories;
@@ -324,6 +417,14 @@
         private System.Windows.Forms.Button cmdCatRename;
         private System.Windows.Forms.ListView lstCategories;
         private System.Windows.Forms.ColumnHeader colFavorite;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ComboBox combFavorite;
+        private System.Windows.Forms.Button cmdGameAdd;
+        private System.Windows.Forms.Button cmdGameRemove;
+        private System.Windows.Forms.Button cmdGameEdit;
+        private System.Windows.Forms.ComboBox combCategory;
+        private System.Windows.Forms.Button cmdGameSetCategory;
+        private System.Windows.Forms.Button cmdGameSetFavorite;
     }
 }
 

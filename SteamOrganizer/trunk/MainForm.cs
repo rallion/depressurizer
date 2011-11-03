@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Collections;
 using System.IO;
 
-namespace SteamOrganizer {
+namespace Depressurizer {
     public partial class FormMain : Form {
 
         const int CAT_ALL_ID = 0;
@@ -19,6 +19,9 @@ namespace SteamOrganizer {
         const int CAT_UNC_ID = 2;
         const string CAT_UNC_NAME = "<Uncategorized>";
 
+        const string COMBO_ADD = "Add new...";
+        const string COMBO_REMOVE = "Remove category";
+
         GameData gameData;
         int sortColumn = 1;
         int sortDirection = 1;
@@ -26,11 +29,165 @@ namespace SteamOrganizer {
         public FormMain() {
             gameData = new GameData();
             InitializeComponent();
+            combFavorite.SelectedIndex = 0;
             UpdateGameSorter();
             lstCategories.ListViewItemSorter = new CategoryListViewItemComparer();
             FillCategoryList();
         }
 
+        #region UI Event Handlers
+        #region Drag and drop
+        private void lstCategories_DragEnter( object sender, DragEventArgs e ) {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void lstCategories_DragDrop( object sender, DragEventArgs e ) {
+            if( e.Data.GetDataPresent( typeof( int[] ) ) ) {
+                Point clientPoint = lstCategories.PointToClient( new Point( e.X, e.Y ) );
+                ListViewItem dropItem = lstCategories.GetItemAt( clientPoint.X, clientPoint.Y );
+                if( dropItem != null ) {
+                    Category newCat = dropItem.Tag as Category;
+                    if( newCat != null ) {
+                        gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), newCat );
+                        FillGameList();
+                    } else if( dropItem.Tag is int && (int)dropItem.Tag == CAT_FAV_ID ) {
+                        gameData.SetGameFavorites( (int[])e.Data.GetData( typeof( int[] ) ), true );
+                        FillGameList();
+                    } else if( dropItem.Tag is int && (int)dropItem.Tag == CAT_UNC_ID ) {
+                        gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), null );
+                        FillGameList();
+                    }
+                }
+            }
+        }
+
+        private void lstGames_ItemDrag( object sender, ItemDragEventArgs e ) {
+            int[] selectedGames = new int[lstGames.SelectedItems.Count];
+            for( int i = 0; i < lstGames.SelectedItems.Count; i++ ) {
+                selectedGames[i] = ( (Game)lstGames.SelectedItems[i].Tag ).Id;
+            }
+            lstGames.DoDragDrop( selectedGames, DragDropEffects.Move );
+        }
+        #endregion
+        #region Main menu
+
+        private void menuFileLoad_Click( object sender, EventArgs e ) {
+            OpenFileDialog dlg = new OpenFileDialog();
+            DialogResult res = dlg.ShowDialog();
+            if( res == DialogResult.OK ) {
+                Exception result = gameData.LoadSteamFile( dlg.FileName );
+                if( result != null ) {
+                    MessageBox.Show( result.ToString() );
+                }
+                FillCategoryList();
+            }
+        }
+
+        private void menuFileSave_Click( object sender, EventArgs e ) {
+            SaveFileDialog dlg = new SaveFileDialog();
+            DialogResult res = dlg.ShowDialog();
+            if( res == DialogResult.OK ) {
+                Exception result = gameData.SaveSteamFile( dlg.FileName );
+                if( result != null ) {
+                    MessageBox.Show( result.ToString() );
+                }
+            }
+        }
+
+        private void menuFileExit_Click( object sender, EventArgs e ) {
+            this.Close();
+        }
+
+        private void menuToolsGetList_Click( object sender, EventArgs e ) {
+            GetStringDlg dlg = new GetStringDlg( "", "Load profile", "Enter profile name:", "Load Profile" );
+            if( dlg.ShowDialog() == DialogResult.OK ) {
+                Exception result = gameData.LoadProfile( dlg.Value );
+                if( result == null ) {
+                    FillGameList();
+                } else {
+                    MessageBox.Show( result.ToString() );
+                }
+            }
+        }
+        #endregion
+        #region Buttons
+        private void cmdCatAdd_Click( object sender, EventArgs e ) {
+            if( CreateCategory() != null ) {
+                FillCategoryList();
+            }
+        }
+
+        private void cmdCatRename_Click( object sender, EventArgs e ) {
+            Category selected = lstCategories.SelectedItems[0].Tag as Category;
+            if( selected != null ) {
+                GetStringDlg dlg = new GetStringDlg( selected.Name, string.Format( "Rename category: {0}", selected.Name ), "Enter new name:", "Rename" );
+                if( dlg.ShowDialog() == DialogResult.OK ) {
+                    gameData.RenameCategory( selected, dlg.Value );
+                    FillCategoryList();
+                    FillGameList();
+                }
+            }
+        }
+
+        private void cmdCatDelete_Click( object sender, EventArgs e ) {
+            Category selected = lstCategories.SelectedItems[0].Tag as Category;
+            if( selected != null ) {
+                DialogResult res = MessageBox.Show( string.Format( "Delete category '{0}'?", selected.Name ), "Confirm action", MessageBoxButtons.YesNo, MessageBoxIcon.Warning );
+                if( res == System.Windows.Forms.DialogResult.Yes ) {
+                    gameData.RemoveCategory( selected );
+                    FillCategoryList();
+                    FillGameList();
+                }
+            }
+        }
+
+        private void cmdGameSetCategory_Click( object sender, EventArgs e ) {
+            if( combCategory.SelectedItem == null ) return;
+            Category selectedCat = combCategory.SelectedItem as Category;
+            if( selectedCat != null ) {
+                AssignCategoryToSelectedGames( selectedCat );
+            } else {
+                string txt = combCategory.SelectedItem.ToString();
+                if( txt == COMBO_ADD ) {
+                    Category newCat = CreateCategory();
+                    if( newCat != null ) {
+                        AssignCategoryToSelectedGames( newCat );
+                        FillCategoryList();
+                    }
+                } else if( txt == COMBO_REMOVE ) {
+                    AssignCategoryToSelectedGames( null );
+                }
+            }
+            FillGameList();
+        }
+
+        private void cmdGameSetFavorite_Click( object sender, EventArgs e ) {
+            if( combFavorite.SelectedItem == "Yes" ) {
+                AssignFavoriteToSelectedGames( true );
+            } else if( combFavorite.SelectedItem == "No" ) {
+                AssignFavoriteToSelectedGames( false );
+            }
+            FillGameList();
+        }
+        #endregion
+
+        private void lstCategories_ItemSelectionChanged( object sender, ListViewItemSelectionChangedEventArgs e ) {
+            FillGameList();
+        }
+
+        private void lstGames_ColumnClick( object sender, ColumnClickEventArgs e ) {
+            if( e.Column == this.sortColumn ) {
+                this.sortDirection *= -1;
+            } else {
+                this.sortDirection = 1;
+                this.sortColumn = e.Column;
+            }
+            UpdateGameSorter();
+        }
+
+        #endregion
+
+        #region Utility
         private void FillGameList() {
             lstGames.BeginUpdate();
             lstGames.Items.Clear();
@@ -83,108 +240,47 @@ namespace SteamOrganizer {
             }
             lstCategories.Sort();
             lstCategories.EndUpdate();
-        }
 
-        #region UI Event Handlers
-        #region Drag and drop
-        private void lstCategories_DragEnter( object sender, DragEventArgs e ) {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private void lstCategories_DragDrop( object sender, DragEventArgs e ) {
-            Point clientPoint = lstCategories.PointToClient( new Point( e.X, e.Y ) );
-            ListViewItem dropItem = lstCategories.GetItemAt( clientPoint.X, clientPoint.Y );
-            if( dropItem != null && dropItem.Index > 1 ) {
-                Category newCat = dropItem.Tag as Category;
-                if( newCat != null && e.Data.GetDataPresent( typeof( int[] ) ) ) {
-                    gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), newCat );
-                }
+            combCategory.BeginUpdate();
+            combCategory.Items.Clear();
+            combCategory.Items.Add( COMBO_ADD );
+            combCategory.Items.Add( COMBO_REMOVE );
+            combCategory.Items.Add( "" );
+            foreach( Category c in gameData.Categories ) {
+                combCategory.Items.Add( c );
             }
-        }
-
-        private void lstGames_ItemDrag( object sender, ItemDragEventArgs e ) {
-            int[] selectedGames = new int[lstGames.SelectedItems.Count];
-            for( int i = 0; i < lstGames.SelectedItems.Count; i++ ) {
-                selectedGames[i] = ( (Game)lstGames.SelectedItems[i].Tag ).Id;
-            }
-            lstGames.DoDragDrop( selectedGames, DragDropEffects.Move );
-        }
-        #endregion
-        #region Main menu
-        private void menuToolsGetList_Click( object sender, EventArgs e ) {
-            gameData.LoadProfile( "rallion" );
-            FillGameList();
-        }
-        #endregion
-
-        private void cmdCatAdd_Click( object sender, EventArgs e ) {
-            gameData.AddCategory();
-            FillCategoryList();
-            FillGameList();
-        }
-        #endregion
-
-        private void lstCategories_ItemSelectionChanged( object sender, ListViewItemSelectionChangedEventArgs e ) {
-            FillGameList();
-        }
-
-        private void lstGames_ColumnClick( object sender, ColumnClickEventArgs e ) {
-            if( e.Column == this.sortColumn ) {
-                this.sortDirection *= -1;
-            } else {
-                this.sortDirection = 1;
-                this.sortColumn = e.Column;
-            }
-            UpdateGameSorter();
+            combCategory.EndUpdate();
         }
 
         private void UpdateGameSorter() {
             lstGames.ListViewItemSorter = new GameListViewItemComparer( sortColumn, sortDirection, sortColumn == 0 );
         }
 
-        private void lstCategories_BeforeLabelEdit( object sender, LabelEditEventArgs e ) {
-            ListViewItem item = lstCategories.Items[e.Item];
-            Category cat = item.Tag as Category;
-            if( cat == null ) {
-                e.CancelEdit = true;
+        private void AssignCategoryToSelectedGames( Category cat ) {
+            foreach( ListViewItem item in lstGames.SelectedItems ) {
+                ( item.Tag as Game ).Category = cat;
             }
         }
 
-        private void menuFileLoad_Click( object sender, EventArgs e ) {
-
-            Exception result = gameData.LoadSteamFile( "sharedconfig.vdf" );
-            if( result != null ) {
-                MessageBox.Show( result.ToString() );
-            }
-            FillCategoryList();
-        }
-
-        private void cmdCatRename_Click( object sender, EventArgs e ) {
-
-        }
-
-        private void lstCategories_AfterLabelEdit( object sender, LabelEditEventArgs e ) {
-            Category c = lstCategories.Items[e.Item].Tag as Category;
-            if( c == null ) {
-                e.CancelEdit = true;
-            } else if( gameData.RenameCategory( c, e.Label ) ) {
-                //FillCategoryList();
-                lstCategories.Sorting = SortOrder.Ascending;
-            } else {
-                e.CancelEdit = true;
+        private void AssignFavoriteToSelectedGames( bool fav ) {
+            foreach( ListViewItem item in lstGames.SelectedItems ) {
+                ( item.Tag as Game ).Favorite = fav;
             }
         }
 
-        private void menuFileSave_Click( object sender, EventArgs e ) {
-            Exception result = gameData.SaveSteamFile( "savedFile" );
-            if( result != null ) {
-                MessageBox.Show( result.ToString() );
+        public Category CreateCategory() {
+            GetStringDlg dlg = new GetStringDlg( string.Empty, "Create category", "Enter new category name:", "Create" );
+            if( dlg.ShowDialog() == DialogResult.OK ) {
+                Category newCat = gameData.AddCategory( dlg.Value );
+                if( newCat != null ) {
+                    return newCat;
+                } else {
+                    MessageBox.Show( String.Format( "Could not add category \"{0}\"", dlg.Value ), "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                }
             }
+            return null;
         }
-
-        private void menuFileExit_Click( object sender, EventArgs e ) {
-            this.Close();
-        }
+        #endregion
     }
 
     // Implements the manual sorting of items by columns.
