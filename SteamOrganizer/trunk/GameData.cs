@@ -124,88 +124,85 @@ namespace Depressurizer {
         }
         #endregion
 
-        public Exception LoadProfile( string profileName ) {
-            try {
-                string url = string.Format( @"http://steamcommunity.com/id/{0}/games/?tab=all", profileName );
-                WebRequest req = HttpWebRequest.Create( url );
-                WebResponse response = req.GetResponse();
-                Stream respStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader( respStream );
-                string line;
+        public int LoadProfile( string profileName ) {
+            string url = string.Format( @"http://steamcommunity.com/id/{0}/games/?tab=all", profileName );
+            WebRequest req = HttpWebRequest.Create( url );
+            WebResponse response = req.GetResponse();
+            StreamReader reader = new StreamReader( response.GetResponseStream() );
 
-                // Get to relevant javascript
-                do {
-                    line = reader.ReadLine();
-                    //TODO: return error here if necessary
-                    if( line == null ) return null;
-                } while( line != null && !line.Contains( "rgGames" ) );
+            string line;
 
+            // Get to relevant javascript
+            do {
                 line = reader.ReadLine();
-                Regex regex = new Regex( @"rgGames\['(\d+)'\]\s*=\s*'(.*)';" );
-                while( !line.StartsWith( "</script>" ) ) {
-                    Match m = regex.Match( line );
-                    if( m.Success ) {
-                        int id;
-                        if( int.TryParse( m.Groups[1].Value, out id ) ) {
-                            SetGameName( id, m.Groups[2].Value );
-                        }
+                if( line == null ) return 0;
+            } while( line != null && !line.Contains( "rgGames" ) );
+
+            int loadedGames = 0;
+            line = reader.ReadLine();
+            Regex regex = new Regex( @"rgGames\['(\d+)'\]\s*=\s*'(.*)';" );
+            while( !line.StartsWith( "</script>" ) ) {
+                Match m = regex.Match( line );
+                if( m.Success ) {
+                    int id;
+                    if( int.TryParse( m.Groups[1].Value, out id ) ) {
+                        // TODO: Strip escape characters out
+                        SetGameName( id, m.Groups[2].Value );
+                        loadedGames++;
                     }
-                    line = reader.ReadLine();
                 }
-                return null;
-            } catch( WebException e ) {
-                return e;
+                line = reader.ReadLine();
             }
+            return loadedGames;
+
 
         }
 
-        public Exception LoadSteamFile( string path ) {
-            try {
-                FileNode dataRoot;
-                using( StreamReader reader = new StreamReader( path, false ) ) {
-                    dataRoot = FileNode.Load( reader );
-                }
+        public int LoadSteamFile( string filePath ) {
+            int loadedGames = 0;
+            FileNode dataRoot;
 
-                Games.Clear();
-                Categories.Clear();
-                this.backingData = dataRoot;
+            using( StreamReader reader = new StreamReader( filePath, false ) ) {
+                dataRoot = FileNode.Load( reader );
+            }
 
-                FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true );
-                foreach( KeyValuePair<string, FileNode> gameNode in (Dictionary<string, FileNode>)appsNode.NodeData ) {
-                    int gameId;
-                    if( int.TryParse( gameNode.Key, out gameId ) ) {
-                        Category cat = null;
-                        bool fav = false;
-                        if( gameNode.Value.ContainsKey( "tags" ) ) {
-                            FileNode tagsNode = gameNode.Value["tags"];
-                            foreach( FileNode tag in ( (Dictionary<string, FileNode>)tagsNode.NodeData ).Values ) {
-                                if( tag.NodeType == ValueType.Value ) {
-                                    string tagName = (string)tag.NodeData;
-                                    if( tagName == "favorite" ) {
-                                        fav = true;
-                                    } else {
-                                        cat = GetCategory( tagName );
-                                    }
+            Games.Clear();
+            Categories.Clear();
+            this.backingData = dataRoot;
+
+            FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true );
+            foreach( KeyValuePair<string, FileNode> gameNode in (Dictionary<string, FileNode>)appsNode.NodeData ) {
+                int gameId;
+                if( int.TryParse( gameNode.Key, out gameId ) ) {
+                    Category cat = null;
+                    bool fav = false;
+                    if( gameNode.Value.ContainsKey( "tags" ) ) {
+                        FileNode tagsNode = gameNode.Value["tags"];
+                        foreach( FileNode tag in ( (Dictionary<string, FileNode>)tagsNode.NodeData ).Values ) {
+                            if( tag.NodeType == ValueType.Value ) {
+                                string tagName = (string)tag.NodeData;
+                                if( tagName == "favorite" ) {
+                                    fav = true;
+                                } else {
+                                    cat = GetCategory( tagName );
                                 }
                             }
                         }
-                        if( !Games.ContainsKey( gameId ) ) {
-                            Game newGame = new Game( gameId, string.Empty );
-                            Games.Add( gameId, newGame );
-                        }
-                        Games[gameId].Category = cat;
-                        Games[gameId].Favorite = fav;
                     }
+                    if( !Games.ContainsKey( gameId ) ) {
+                        Game newGame = new Game( gameId, string.Empty );
+                        Games.Add( gameId, newGame );
+                        loadedGames++;
+                    }
+                    Games[gameId].Category = cat;
+                    Games[gameId].Favorite = fav;
                 }
-                return null;
-            } catch( Exception e ) {
-                return e;
             }
+            return loadedGames;
+
         }
 
-        public Exception SaveSteamFile( string path ) {
-            //  try {
-
+        public void SaveSteamFile( string path ) {
             FileNode appListNode = backingData.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" } );
 
             foreach( Game game in Games.Values ) {
@@ -229,10 +226,6 @@ namespace Depressurizer {
             using( StreamWriter writer = new StreamWriter( path, false ) ) {
                 backingData.Save( writer );
             }
-            return null;
-            //    } catch( Exception e ) {
-            //        return e;
-            //    }
         }
     }
 }

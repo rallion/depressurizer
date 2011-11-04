@@ -24,13 +24,15 @@
         /// </summary>
         private void InitializeComponent() {
             this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuFileLoad = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuFileSave = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuFileExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuTools = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuToolsGetList = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_File = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_File_AutoLoad = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_File_AutoSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Sep1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menu_File_Load = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_File_ProfileLoad = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_File_Save = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Sep2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menu_File_Exit = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.grpCategories = new System.Windows.Forms.GroupBox();
             this.lstCategories = new System.Windows.Forms.ListView();
@@ -64,64 +66,76 @@
             // menuStrip
             // 
             this.menuStrip.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuFile,
-            this.menuTools} );
+            this.menu_File} );
             this.menuStrip.Location = new System.Drawing.Point( 0, 0 );
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size( 772, 24 );
             this.menuStrip.TabIndex = 4;
             // 
-            // menuFile
+            // menu_File
             // 
-            this.menuFile.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuFileLoad,
-            this.menuFileSave,
-            this.toolStripMenuItem1,
-            this.menuFileExit} );
-            this.menuFile.Name = "menuFile";
-            this.menuFile.Size = new System.Drawing.Size( 37, 20 );
-            this.menuFile.Text = "File";
+            this.menu_File.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
+            this.menu_File_AutoLoad,
+            this.menu_File_AutoSave,
+            this.menu_Sep1,
+            this.menu_File_Load,
+            this.menu_File_ProfileLoad,
+            this.menu_File_Save,
+            this.menu_Sep2,
+            this.menu_File_Exit} );
+            this.menu_File.Name = "menu_File";
+            this.menu_File.Size = new System.Drawing.Size( 37, 20 );
+            this.menu_File.Text = "File";
             // 
-            // menuFileLoad
+            // menu_File_AutoLoad
             // 
-            this.menuFileLoad.Name = "menuFileLoad";
-            this.menuFileLoad.Size = new System.Drawing.Size( 152, 22 );
-            this.menuFileLoad.Text = "Manual Load...";
-            this.menuFileLoad.Click += new System.EventHandler( this.menuFileLoad_Click );
+            this.menu_File_AutoLoad.Name = "menu_File_AutoLoad";
+            this.menu_File_AutoLoad.Size = new System.Drawing.Size( 189, 22 );
+            this.menu_File_AutoLoad.Text = "Auto Load...";
             // 
-            // menuFileSave
+            // menu_File_AutoSave
             // 
-            this.menuFileSave.Name = "menuFileSave";
-            this.menuFileSave.Size = new System.Drawing.Size( 152, 22 );
-            this.menuFileSave.Text = "Manual Save...";
-            this.menuFileSave.Click += new System.EventHandler( this.menuFileSave_Click );
+            this.menu_File_AutoSave.Name = "menu_File_AutoSave";
+            this.menu_File_AutoSave.Size = new System.Drawing.Size( 189, 22 );
+            this.menu_File_AutoSave.Text = "Auto Save";
             // 
-            // toolStripMenuItem1
+            // menu_Sep1
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size( 149, 6 );
+            this.menu_Sep1.Name = "menu_Sep1";
+            this.menu_Sep1.Size = new System.Drawing.Size( 186, 6 );
             // 
-            // menuFileExit
+            // menu_File_Load
             // 
-            this.menuFileExit.Name = "menuFileExit";
-            this.menuFileExit.Size = new System.Drawing.Size( 152, 22 );
-            this.menuFileExit.Text = "Exit";
-            this.menuFileExit.Click += new System.EventHandler( this.menuFileExit_Click );
+            this.menu_File_Load.Name = "menu_File_Load";
+            this.menu_File_Load.Size = new System.Drawing.Size( 189, 22 );
+            this.menu_File_Load.Text = "Manual Load...";
+            this.menu_File_Load.Click += new System.EventHandler( this.menu_File_Load_Click );
             // 
-            // menuTools
+            // menu_File_ProfileLoad
             // 
-            this.menuTools.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuToolsGetList} );
-            this.menuTools.Name = "menuTools";
-            this.menuTools.Size = new System.Drawing.Size( 48, 20 );
-            this.menuTools.Text = "Tools";
+            this.menu_File_ProfileLoad.Name = "menu_File_ProfileLoad";
+            this.menu_File_ProfileLoad.Size = new System.Drawing.Size( 189, 22 );
+            this.menu_File_ProfileLoad.Text = "Manual Profile Load...";
+            this.menu_File_ProfileLoad.Click += new System.EventHandler( this.menu_File_ProfileLoad_Click );
             // 
-            // menuToolsGetList
+            // menu_File_Save
             // 
-            this.menuToolsGetList.Name = "menuToolsGetList";
-            this.menuToolsGetList.Size = new System.Drawing.Size( 182, 22 );
-            this.menuToolsGetList.Text = "Load Steam Profile...";
-            this.menuToolsGetList.Click += new System.EventHandler( this.menuToolsGetList_Click );
+            this.menu_File_Save.Name = "menu_File_Save";
+            this.menu_File_Save.Size = new System.Drawing.Size( 189, 22 );
+            this.menu_File_Save.Text = "Manual Save...";
+            this.menu_File_Save.Click += new System.EventHandler( this.menu_File_Save_Click );
+            // 
+            // menu_Sep2
+            // 
+            this.menu_Sep2.Name = "menu_Sep2";
+            this.menu_Sep2.Size = new System.Drawing.Size( 186, 6 );
+            // 
+            // menu_File_Exit
+            // 
+            this.menu_File_Exit.Name = "menu_File_Exit";
+            this.menu_File_Exit.Size = new System.Drawing.Size( 189, 22 );
+            this.menu_File_Exit.Text = "Exit";
+            this.menu_File_Exit.Click += new System.EventHandler( this.menu_File_Exit_Click );
             // 
             // splitContainer
             // 
@@ -398,12 +412,10 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem menuFile;
-        private System.Windows.Forms.ToolStripMenuItem menuFileSave;
-        private System.Windows.Forms.ToolStripMenuItem menuFileLoad;
-        private System.Windows.Forms.ToolStripMenuItem menuFileExit;
-        private System.Windows.Forms.ToolStripMenuItem menuTools;
-        private System.Windows.Forms.ToolStripMenuItem menuToolsGetList;
+        private System.Windows.Forms.ToolStripMenuItem menu_File;
+        private System.Windows.Forms.ToolStripMenuItem menu_File_Save;
+        private System.Windows.Forms.ToolStripMenuItem menu_File_Load;
+        private System.Windows.Forms.ToolStripMenuItem menu_File_Exit;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.GroupBox grpCategories;
         private System.Windows.Forms.GroupBox grpGames;
@@ -417,7 +429,7 @@
         private System.Windows.Forms.Button cmdCatRename;
         private System.Windows.Forms.ListView lstCategories;
         private System.Windows.Forms.ColumnHeader colFavorite;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator menu_Sep2;
         private System.Windows.Forms.ComboBox combFavorite;
         private System.Windows.Forms.Button cmdGameAdd;
         private System.Windows.Forms.Button cmdGameRemove;
@@ -425,6 +437,10 @@
         private System.Windows.Forms.ComboBox combCategory;
         private System.Windows.Forms.Button cmdGameSetCategory;
         private System.Windows.Forms.Button cmdGameSetFavorite;
+        private System.Windows.Forms.ToolStripMenuItem menu_File_AutoLoad;
+        private System.Windows.Forms.ToolStripMenuItem menu_File_AutoSave;
+        private System.Windows.Forms.ToolStripSeparator menu_Sep1;
+        private System.Windows.Forms.ToolStripMenuItem menu_File_ProfileLoad;
     }
 }
 

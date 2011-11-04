@@ -35,6 +35,56 @@ namespace Depressurizer {
             FillCategoryList();
         }
 
+        public void ManualLoad() {
+            OpenFileDialog dlg = new OpenFileDialog();
+            DialogResult res = dlg.ShowDialog();
+            if( res == DialogResult.OK ) {
+                try {
+                    int loadedGames = gameData.LoadSteamFile( dlg.FileName );
+                    if( loadedGames == 0 ) {
+                        MessageBox.Show( "Warning: No game info found in the specified file." );
+                    } else {
+                        //TODO: Add number of loaded games to status bar.
+                        FillCategoryList();
+                    }
+                } catch( ParseException e ) {
+                    MessageBox.Show( e.Message, "File parsing error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                } catch( IOException e ) {
+                    MessageBox.Show( e.Message, "Error reading file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                }
+            }
+        }
+
+        public void ManualSave() {
+            SaveFileDialog dlg = new SaveFileDialog();
+            DialogResult res = dlg.ShowDialog();
+            if( res == DialogResult.OK ) {
+                try {
+                    gameData.SaveSteamFile( dlg.FileName );
+                    //TODO: display confirmation in status bar
+                } catch( IOException e ) {
+                    MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                }
+            }
+        }
+
+        public void ManualProfileLoad() {
+            GetStringDlg dlg = new GetStringDlg( "", "Load profile", "Enter profile name:", "Load Profile" );
+            if( dlg.ShowDialog() == DialogResult.OK ) {
+                try {
+                    int loadedGames = gameData.LoadProfile( dlg.Value );
+                    if( loadedGames == 0 ) {
+                        MessageBox.Show( "No game data found. Please make sure the profile is spelled correctly, and that the profile is public.", "No data found", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+                    } else {
+                        // TODO: Display status update in status bar
+                        FillGameList();
+                    }
+                } catch( System.Net.WebException e ) {
+                    MessageBox.Show( e.Message, "Error loading profile data", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                }
+            }
+        }
+
         #region UI Event Handlers
         #region Drag and drop
         private void lstCategories_DragEnter( object sender, DragEventArgs e ) {
@@ -70,44 +120,20 @@ namespace Depressurizer {
         }
         #endregion
         #region Main menu
-
-        private void menuFileLoad_Click( object sender, EventArgs e ) {
-            OpenFileDialog dlg = new OpenFileDialog();
-            DialogResult res = dlg.ShowDialog();
-            if( res == DialogResult.OK ) {
-                Exception result = gameData.LoadSteamFile( dlg.FileName );
-                if( result != null ) {
-                    MessageBox.Show( result.ToString() );
-                }
-                FillCategoryList();
-            }
+        private void menu_File_Load_Click( object sender, EventArgs e ) {
+            ManualLoad();
         }
 
-        private void menuFileSave_Click( object sender, EventArgs e ) {
-            SaveFileDialog dlg = new SaveFileDialog();
-            DialogResult res = dlg.ShowDialog();
-            if( res == DialogResult.OK ) {
-                Exception result = gameData.SaveSteamFile( dlg.FileName );
-                if( result != null ) {
-                    MessageBox.Show( result.ToString() );
-                }
-            }
+        private void menu_File_ProfileLoad_Click( object sender, EventArgs e ) {
+            ManualProfileLoad();
         }
 
-        private void menuFileExit_Click( object sender, EventArgs e ) {
+        private void menu_File_Save_Click( object sender, EventArgs e ) {
+            ManualSave();
+        }
+
+        private void menu_File_Exit_Click( object sender, EventArgs e ) {
             this.Close();
-        }
-
-        private void menuToolsGetList_Click( object sender, EventArgs e ) {
-            GetStringDlg dlg = new GetStringDlg( "", "Load profile", "Enter profile name:", "Load Profile" );
-            if( dlg.ShowDialog() == DialogResult.OK ) {
-                Exception result = gameData.LoadProfile( dlg.Value );
-                if( result == null ) {
-                    FillGameList();
-                } else {
-                    MessageBox.Show( result.ToString() );
-                }
-            }
         }
         #endregion
         #region Buttons

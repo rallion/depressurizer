@@ -57,6 +57,12 @@ namespace Depressurizer {
 
         #region Utility
 
+        /// <summary>
+        /// Reads a from the specified stream until it reaches a string terminator (double quote with no escaping slash).
+        /// The opening double quote should already be read, and the last one will be discarded.
+        /// </summary>
+        /// <param name="stream">The stream to read from. After the operation, the stream position will be just past the closing quote.</param>
+        /// <returns>The string encapsulated by the quotes.</returns>
         private static string GetStringToken( StreamReader stream ) {
             bool escaped = false;
             bool stringDone = false;
@@ -90,7 +96,12 @@ namespace Depressurizer {
                             break;
                     }
                 }
-            } while( !stringDone );
+            } while( !stringDone && !stream.EndOfStream );
+            if( !stringDone ) {
+                if( stream.EndOfStream ) {
+                    throw new ParseException( "Unexpected end-of-file reached: Unterminated string." );
+                }
+            }
             return sb.ToString();
         }
 
@@ -161,10 +172,12 @@ namespace Depressurizer {
                 // Get key
                 char nextChar = (char)stream.Read();
                 string key = null;
-                if( nextChar == '"' ) {
+                if( stream.EndOfStream || nextChar == '}' ) {
+                    break;
+                } else if( nextChar == '"' ) {
                     key = GetStringToken( stream );
                 } else {
-                    break;
+                    throw new ParseException( string.Format( "Unexpected character '{0}' found when expecting key.", nextChar ) );
                 }
                 SkipWhitespace( stream );
 
@@ -176,6 +189,8 @@ namespace Depressurizer {
                 } else if( nextChar == '{' ) {
                     FileNode value = Load( stream );
                     thisLevel[key] = value;
+                } else {
+                    throw new ParseException( string.Format( "Unexpected character '{0}' found when expecting value.", nextChar ) );
                 }
             }
             return thisLevel;
@@ -212,7 +227,7 @@ namespace Depressurizer {
         }
 
         public void CleanTree() {
-            Dictionary<string,FileNode> nodes = NodeArray;
+            Dictionary<string, FileNode> nodes = NodeArray;
             if( nodes != null ) {
                 string[] keys = nodes.Keys.ToArray<string>();
                 foreach( string key in keys ) {
@@ -223,5 +238,10 @@ namespace Depressurizer {
                 }
             }
         }
+    }
+
+    public class ParseException : ApplicationException {
+        public ParseException() : base() { }
+        public ParseException( string message ) : base() { }
     }
 }
