@@ -19,8 +19,8 @@ namespace Depressurizer {
         const int CAT_UNC_ID = 2;
         const string CAT_UNC_NAME = "<Uncategorized>";
 
-        const string COMBO_ADD = "Add new...";
-        const string COMBO_REMOVE = "Remove category";
+        const string COMBO_NEWCAT = "Add new...";
+        const string COMBO_NONE = "Remove category";
 
         GameData gameData;
         int sortColumn = 1;
@@ -144,53 +144,33 @@ namespace Depressurizer {
         }
 
         private void cmdCatRename_Click( object sender, EventArgs e ) {
-            Category selected = lstCategories.SelectedItems[0].Tag as Category;
-            if( selected != null ) {
-                GetStringDlg dlg = new GetStringDlg( selected.Name, string.Format( "Rename category: {0}", selected.Name ), "Enter new name:", "Rename" );
-                if( dlg.ShowDialog() == DialogResult.OK ) {
-                    gameData.RenameCategory( selected, dlg.Value );
-                    FillCategoryList();
-                    FillGameList();
-                }
+            if( lstCategories.SelectedItems.Count > 0 ) {
+                RenameCategory( lstCategories.SelectedItems[0].Tag as Category );
             }
         }
 
         private void cmdCatDelete_Click( object sender, EventArgs e ) {
-            Category selected = lstCategories.SelectedItems[0].Tag as Category;
-            if( selected != null ) {
-                DialogResult res = MessageBox.Show( string.Format( "Delete category '{0}'?", selected.Name ), "Confirm action", MessageBoxButtons.YesNo, MessageBoxIcon.Warning );
-                if( res == System.Windows.Forms.DialogResult.Yes ) {
-                    gameData.RemoveCategory( selected );
-                    FillCategoryList();
-                    FillGameList();
-                }
+            if( lstCategories.SelectedItems.Count > 0 ) {
+                DeleteCategory( lstCategories.SelectedItems[0].Tag as Category );
             }
         }
 
         private void cmdGameSetCategory_Click( object sender, EventArgs e ) {
-            if( combCategory.SelectedItem == null ) return;
-            Category selectedCat = combCategory.SelectedItem as Category;
-            if( selectedCat != null ) {
-                AssignCategoryToSelectedGames( selectedCat );
-            } else {
-                string txt = combCategory.SelectedItem.ToString();
-                if( txt == COMBO_ADD ) {
-                    Category newCat = CreateCategory();
-                    if( newCat != null ) {
-                        AssignCategoryToSelectedGames( newCat );
-                        FillCategoryList();
-                    }
-                } else if( txt == COMBO_REMOVE ) {
-                    AssignCategoryToSelectedGames( null );
-                }
+            Category c;
+            bool newCat;
+            if( GetSelectedCategory( out c, out newCat ) ) {
+                AssignCategoryToSelectedGames(c);
+            }
+            if( newCat ) {
+                FillCategoryList();
             }
             FillGameList();
         }
 
         private void cmdGameSetFavorite_Click( object sender, EventArgs e ) {
-            if( combFavorite.SelectedItem == "Yes" ) {
+            if( combFavorite.SelectedItem as string == "Yes" ) {
                 AssignFavoriteToSelectedGames( true );
-            } else if( combFavorite.SelectedItem == "No" ) {
+            } else if( combFavorite.SelectedItem as string == "No" ) {
                 AssignFavoriteToSelectedGames( false );
             }
             FillGameList();
@@ -212,6 +192,53 @@ namespace Depressurizer {
         }
 
         #endregion
+
+        public bool GetSelectedCategory( out Category result, out bool newCat ) {
+            result = null;
+            newCat = false;
+            if( combCategory.SelectedItem is Category ) {
+                result = combCategory.SelectedItem as Category;
+                return true;
+            } else if( combCategory.SelectedItem is string ) {
+                if( (string)combCategory.SelectedItem == COMBO_NEWCAT ) {
+                    result = CreateCategory();
+                    newCat = true;
+                    return result != null;
+                } else if( (string)combCategory.SelectedItem == COMBO_NONE ) {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+        public bool DeleteCategory( Category c ) {
+            if( c != null ) {
+                DialogResult res = MessageBox.Show( string.Format( "Delete category '{0}'?", c.Name ), "Confirm action", MessageBoxButtons.YesNo, MessageBoxIcon.Warning );
+                if( res == System.Windows.Forms.DialogResult.Yes ) {
+                    if( gameData.RemoveCategory( c ) ) {
+                        FillCategoryList();
+                        FillGameList();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool RenameCategory( Category c ) {
+            if( c != null ) {
+                GetStringDlg dlg = new GetStringDlg( c.Name, string.Format( "Rename category: {0}", c.Name ), "Enter new name:", "Rename" );
+                if( dlg.ShowDialog() == DialogResult.OK ) {
+                    if( gameData.RenameCategory( c, dlg.Value ) ) {
+                        FillCategoryList();
+                        FillGameList();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         #region Utility
         private void FillGameList() {
@@ -269,8 +296,8 @@ namespace Depressurizer {
 
             combCategory.BeginUpdate();
             combCategory.Items.Clear();
-            combCategory.Items.Add( COMBO_ADD );
-            combCategory.Items.Add( COMBO_REMOVE );
+            combCategory.Items.Add( COMBO_NEWCAT );
+            combCategory.Items.Add( COMBO_NONE );
             combCategory.Items.Add( "" );
             foreach( Category c in gameData.Categories ) {
                 combCategory.Items.Add( c );

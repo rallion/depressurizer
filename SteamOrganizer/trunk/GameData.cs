@@ -76,11 +76,14 @@ namespace Depressurizer {
             }
         }
 
-        public void RemoveCategory( Category c ) {
-            Categories.Remove( c );
-            foreach( Game g in Games.Values ) {
-                if( g.Category == c ) g.Category = null;
+        public bool RemoveCategory( Category c ) {
+            if( Categories.Remove( c ) ) {
+                foreach( Game g in Games.Values ) {
+                    if( g.Category == c ) g.Category = null;
+                }
+                return true;
             }
+            return false;
         }
 
         public bool RenameCategory( Category c, string newName ) {
