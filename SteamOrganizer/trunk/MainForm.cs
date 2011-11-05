@@ -159,7 +159,7 @@ namespace Depressurizer {
             Category c;
             bool newCat;
             if( GetSelectedCategory( out c, out newCat ) ) {
-                AssignCategoryToSelectedGames(c);
+                AssignCategoryToSelectedGames( c );
             }
             if( newCat ) {
                 FillCategoryList();
@@ -168,11 +168,7 @@ namespace Depressurizer {
         }
 
         private void cmdGameSetFavorite_Click( object sender, EventArgs e ) {
-            if( combFavorite.SelectedItem as string == "Yes" ) {
-                AssignFavoriteToSelectedGames( true );
-            } else if( combFavorite.SelectedItem as string == "No" ) {
-                AssignFavoriteToSelectedGames( false );
-            }
+            AssignFavoriteToSelectedGames( GetSelectedFavorite() );
             FillGameList();
         }
         #endregion
@@ -192,6 +188,10 @@ namespace Depressurizer {
         }
 
         #endregion
+
+        private bool GetSelectedFavorite() {
+            return combFavorite.SelectedItem as string == "Yes";
+        }
 
         public bool GetSelectedCategory( out Category result, out bool newCat ) {
             result = null;
