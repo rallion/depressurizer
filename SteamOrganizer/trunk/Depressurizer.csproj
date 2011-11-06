@@ -61,6 +61,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FatalError.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FatalError.designer.cs">
+      <DependentUpon>FatalError.cs</DependentUpon>
+    </Compile>
     <Compile Include="GetStringDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +83,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FatalError.resx">
+      <DependentUpon>FatalError.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GetStringDlg.resx">
       <DependentUpon>GetStringDlg.cs</DependentUpon>
     </EmbeddedResource>
