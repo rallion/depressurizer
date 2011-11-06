@@ -11,14 +11,24 @@ namespace Depressurizer {
         Value
     }
 
+    /// <summary>
+    /// Represents a single node in a Steam config file
+    /// </summary>
     public class FileNode {
         public ValueType NodeType;
+        // Can be a string or a FileNode, depending on value type.
         public Object NodeData;
 
+        /// <summary>
+        /// Gets or sets the subnode with the given key. Can only be used with an array node. If the node does not exist, creates it as an array type.
+        /// </summary>
+        /// <param name="key">Key to look for or set</param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException">Thrown if used on a value node.</exception>
         public FileNode this[string key] {
             get {
                 if( this.NodeType == ValueType.Value ) {
-                    throw new Exception( string.Format( "Node is a value, not an array. Cannot get key {0}", key ) );
+                    throw new ApplicationException( string.Format( "Node is a value, not an array. Cannot get key {0}", key ) );
                 }
                 Dictionary<string, FileNode> arrayData = (Dictionary<string, FileNode>)NodeData;
                 if( !arrayData.ContainsKey( key ) ) {
@@ -38,18 +48,28 @@ namespace Depressurizer {
                 }
             }
         }
+
+        /// <summary>
+        /// Quick shortcut for casting data to a a dictionary
+        /// </summary>
         public Dictionary<string, FileNode> NodeArray {
             get {
                 return NodeData as Dictionary<string, FileNode>;
             }
         }
 
+        /// <summary>
+        /// Creates a new array-type node
+        /// </summary>
         public FileNode() {
             NodeType = ValueType.Array;
             NodeData = new Dictionary<string, FileNode>();
-
         }
 
+        /// <summary>
+        /// Creates a new value-type node
+        /// </summary>
+        /// <param name="value">Value of the string</param>
         public FileNode( string value ) {
             NodeType = ValueType.Value;
             NodeData = value;
@@ -105,6 +125,10 @@ namespace Depressurizer {
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Advances a stream until the next character is not whitespace
+        /// </summary>
+        /// <param name="stream">The stream to advance</param>
         private static void SkipWhitespace( StreamReader stream ) {
             char nextChar = (char)stream.Peek();
             while( nextChar == ' ' || nextChar == '\r' || nextChar == '\n' || nextChar == '\t' ) {
@@ -113,18 +137,32 @@ namespace Depressurizer {
             }
         }
 
+        /// <summary>
+        /// Writes a string to a stream, adding start/end quotes and escaping any quotes within the string.
+        /// </summary>
+        /// <param name="stream">Stream to write to</param>
+        /// <param name="s">String to write</param>
         private void WriteFormattedString( StreamWriter stream, string s ) {
             stream.Write( "\"" );
             stream.Write( s.Replace( "\"", "\\\"" ) );
             stream.Write( "\"" );
         }
 
+        /// <summary>
+        /// Writes the given number of tab characters to a stream
+        /// </summary>
+        /// <param name="stream">Stream to write to</param>
+        /// <param name="indent">Number of tabs</param>
         private void WriteWhitespace( StreamWriter stream, int indent ) {
             for( int i = 0; i < indent; i++ ) {
                 stream.Write( '\t' );
             }
         }
 
+        /// <summary>
+        /// Checks whether or not this node has any children
+        /// </summary>
+        /// <returns>True if an array with no children, false otherwise</returns>
         private bool IsEmpty() {
             if( NodeArray != null ) {
                 return NodeArray.Count == 0;
@@ -133,7 +171,16 @@ namespace Depressurizer {
             }
         }
         #endregion
+
         #region Accessors
+
+        /// <summary>
+        /// Gets the node at the given address. May be used to build structure.
+        /// </summary>
+        /// <param name="args">An ordered list of keys, like a path</param>
+        /// <param name="create">If true, will create any nodes it does not find along the path.</param>
+        /// <param name="index">Start index of the arg array</param>
+        /// <returns>The FileNode at the given location, or null if the location was not found / created</returns>
         public FileNode GetNodeAt( string[] args, bool create = true, int index = 0 ) {
             if( index >= args.Length ) {
                 return this;
@@ -151,6 +198,11 @@ namespace Depressurizer {
             return null;
         }
 
+        /// <summary>
+        /// Checks whether the given key exists within an array-type node
+        /// </summary>
+        /// <param name="key">The key to look for</param>
+        /// <returns>True if the key was found, false otherwise</returns>
         public bool ContainsKey( string key ) {
             if( NodeType != ValueType.Array ) {
                 return false;
@@ -160,10 +212,40 @@ namespace Depressurizer {
 
         #endregion
 
+        #region Modifiers
+        /// <summary>
+        /// Removes the subnode with the given key. Can only be called on array nodes.
+        /// </summary>
+        /// <param name="key">Key of the subnode to remove</param>
+        /// <returns>True if node was removed, false if not found</returns>
         public bool RemoveSubnode( string key ) {
             return NodeArray.Remove( key );
         }
 
+        /// <summary>
+        /// Removes any array nodes without any value-type children
+        /// </summary>
+        public void CleanTree() {
+            Dictionary<string, FileNode> nodes = NodeArray;
+            if( nodes != null ) {
+                string[] keys = nodes.Keys.ToArray<string>();
+                foreach( string key in keys ) {
+                    nodes[key].CleanTree();
+                    if( nodes[key].IsEmpty() ) {
+                        NodeArray.Remove( key );
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Saving and loading
+        /// <summary>
+        /// Loads a FileNode from stream.
+        /// </summary>
+        /// <param name="stream">Stream to load from</param>
+        /// <returns>FileNode representing the contents of the stream.</returns>
         public static FileNode Load( StreamReader stream ) {
             FileNode thisLevel = new FileNode();
             while( !stream.EndOfStream ) {
@@ -196,6 +278,11 @@ namespace Depressurizer {
             return thisLevel;
         }
 
+        /// <summary>
+        /// Writes this FileNode to a stream
+        /// </summary>
+        /// <param name="stream">Stream to write to</param>
+        /// <param name="indent">Indentation level of each line.</param>
         public void Save( StreamWriter stream, int indent = 0 ) {
             if( NodeType == ValueType.Array ) {
                 Dictionary<string, FileNode> data = NodeArray;
@@ -225,19 +312,7 @@ namespace Depressurizer {
 
             }
         }
-
-        public void CleanTree() {
-            Dictionary<string, FileNode> nodes = NodeArray;
-            if( nodes != null ) {
-                string[] keys = nodes.Keys.ToArray<string>();
-                foreach( string key in keys ) {
-                    nodes[key].CleanTree();
-                    if( nodes[key].IsEmpty() ) {
-                        NodeArray.Remove( key );
-                    }
-                }
-            }
-        }
+        #endregion
     }
 
     public class ParseException : ApplicationException {

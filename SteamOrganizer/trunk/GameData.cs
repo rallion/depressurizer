@@ -7,6 +7,9 @@ using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Depressurizer {
+    /// <summary>
+    /// Represents a single game
+    /// </summary>
     public class Game {
         public string Name;
         public int Id;
@@ -21,6 +24,9 @@ namespace Depressurizer {
         }
     }
 
+    /// <summary>
+    /// Represents a single game category
+    /// </summary>
     public class Category : IComparable {
         public string Name;
 
@@ -37,11 +43,15 @@ namespace Depressurizer {
         }
     }
 
+    /// <summary>
+    /// Represents a complete collection of games and categories.
+    /// </summary>
     public class GameData {
         #region Fields
         public Dictionary<int, Game> Games;
         public List<Category> Categories;
 
+        // Complete steam setting file data that was loaded
         private FileNode backingData;
         #endregion
 
@@ -51,12 +61,11 @@ namespace Depressurizer {
         }
 
         #region Modifiers
-        public void AddGame( int id, string name ) {
-            if( !Games.ContainsKey( id ) ) {
-                Games.Add( id, new Game( id, name ) );
-            }
-        }
-
+        /// <summary>
+        /// Sets the name of the given game ID, and adds the game to the list if it doesn't already exist.
+        /// </summary>
+        /// <param name="id">ID of the game to set</param>
+        /// <param name="name">Name to assign to the game</param>
         private void SetGameName( int id, string name ) {
             if( !Games.ContainsKey( id ) ) {
                 Games.Add( id, new Game( id, name ) );
@@ -65,6 +74,11 @@ namespace Depressurizer {
             }
         }
 
+        /// <summary>
+        /// Adds a new category to the list.
+        /// </summary>
+        /// <param name="name">Name of the category to add</param>
+        /// <returns>The added category. Returns null if the category already exists.</returns>
         public Category AddCategory( string name ) {
             if( CategoryExists( name ) ) {
                 return null;
@@ -76,6 +90,11 @@ namespace Depressurizer {
             }
         }
 
+        /// <summary>
+        /// Removes the given category.
+        /// </summary>
+        /// <param name="c">Category to remove.</param>
+        /// <returns>True if removal was successful, false if it was not in the list anyway</returns>
         public bool RemoveCategory( Category c ) {
             if( Categories.Remove( c ) ) {
                 foreach( Game g in Games.Values ) {
@@ -86,6 +105,12 @@ namespace Depressurizer {
             return false;
         }
 
+        /// <summary>
+        /// Renames the given category.
+        /// </summary>
+        /// <param name="c">Category to rename.</param>
+        /// <param name="newName">Name to assign to the new category.</param>
+        /// <returns>True if rename was successful, false otherwise (if name was in use already)</returns>
         public bool RenameCategory( Category c, string newName ) {
             if( !CategoryExists( newName ) ) {
                 c.Name = newName;
@@ -94,12 +119,22 @@ namespace Depressurizer {
             return false;
         }
 
+        /// <summary>
+        /// Sets the categories for the given list of game IDs to the same thing
+        /// </summary>
+        /// <param name="gameIDs">Array of game IDs.</param>
+        /// <param name="newCat">Category to assign</param>
         public void SetGameCategories( int[] gameIDs, Category newCat ) {
             for( int i = 0; i < gameIDs.Length; i++ ) {
                 Games[gameIDs[i]].Category = newCat;
             }
         }
 
+        /// <summary>
+        /// Sets the fav state for the given list of game IDs to the same thing
+        /// </summary>
+        /// <param name="gameIDs">Array of game IDs.</param>
+        /// <param name="newCat">Fav state to assign</param>
         public void SetGameFavorites( int[] gameIDs, bool fav ) {
             for( int i = 0; i < gameIDs.Length; i++ ) {
                 Games[gameIDs[i]].Favorite = fav;
@@ -108,6 +143,11 @@ namespace Depressurizer {
         #endregion
 
         #region Accessors
+        /// <summary>
+        /// Checks to see if a category with the given name exists
+        /// </summary>
+        /// <param name="name">Name of the category to look for</param>
+        /// <returns>True if the name is found, false otherwise</returns>
         public bool CategoryExists( string name ) {
             foreach( Category c in Categories ) {
                 if( c.Name == name ) {
@@ -117,6 +157,11 @@ namespace Depressurizer {
             return false;
         }
 
+        /// <summary>
+        /// Gets the category with the given name. If the category does not exist, creates it.
+        /// </summary>
+        /// <param name="name">Name to get the category for</param>
+        /// <returns>A category with the given name.</returns>
         public Category GetCategory( string name ) {
             foreach( Category c in Categories ) {
                 if( c.Name == name ) return c;
@@ -127,6 +172,11 @@ namespace Depressurizer {
         }
         #endregion
 
+        /// <summary>
+        /// Loads game info from the given Steam profile
+        /// </summary>
+        /// <param name="profileName">Name of the Steam profile to get</param>
+        /// <returns>The number of games found in the profile</returns>
         public int LoadProfile( string profileName ) {
             string url = string.Format( @"http://steamcommunity.com/id/{0}/games/?tab=all", profileName );
             WebRequest req = HttpWebRequest.Create( url );
@@ -161,6 +211,11 @@ namespace Depressurizer {
 
         }
 
+        /// <summary>
+        /// Loads category info from the given steam config file.
+        /// </summary>
+        /// <param name="filePath">The path of the file to open</param>
+        /// <returns>The number of game entries found</returns>
         public int LoadSteamFile( string filePath ) {
             int loadedGames = 0;
             FileNode dataRoot;
@@ -205,6 +260,10 @@ namespace Depressurizer {
 
         }
 
+        /// <summary>
+        /// Writes category information out to a steam config file. Also saves any other settings that had been loaded, to avoid setting loss.
+        /// </summary>
+        /// <param name="path">Full path of the steam config file to save</param>
         public void SaveSteamFile( string path ) {
             FileNode appListNode = backingData.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" } );
 
