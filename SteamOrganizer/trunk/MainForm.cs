@@ -101,7 +101,7 @@ namespace Depressurizer {
                 Point clientPoint = lstCategories.PointToClient( new Point( e.X, e.Y ) );
                 object dropItem = lstCategories.Items[lstCategories.IndexFromPoint( clientPoint )];
                 if( dropItem is Category ) {
-                    gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), (Category)dropItem);
+                    gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), (Category)dropItem );
                     FillGameList();
                 } else if( dropItem is string ) {
                     if( (string)dropItem == CAT_FAV_NAME ) {
@@ -219,6 +219,8 @@ namespace Depressurizer {
                         FillCategoryList();
                         FillGameList();
                         return true;
+                    } else {
+                        MessageBox.Show( string.Format( "Could not delete category '{0}'.", c.Name ), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                     }
                 }
             }
@@ -229,18 +231,19 @@ namespace Depressurizer {
             if( c != null ) {
                 GetStringDlg dlg = new GetStringDlg( c.Name, string.Format( "Rename category: {0}", c.Name ), "Enter new name:", "Rename" );
                 if( dlg.ShowDialog() == DialogResult.OK ) {
-                    if( gameData.RenameCategory( c, dlg.Value ) ) {
+                    if( ValidateCategoryName( dlg.Value ) && gameData.RenameCategory( c, dlg.Value ) ) {
                         FillCategoryList();
                         //OPTIMIZE: This game list refresh could be made more efficient
                         FillGameList();
                         return true;
+                    } else {
+                        MessageBox.Show( string.Format( "Name '{0}' is already in use.", dlg.Value ), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                     }
                 }
             }
             return false;
         }
 
-        /*
         private bool ShouldDisplayGame( Game g ) {
             if( lstCategories.SelectedItem == null ) {
                 return false;
@@ -260,7 +263,7 @@ namespace Depressurizer {
             }
             return false;
         }
-        */
+
         #region Utility
         private void FillGameList() {
             lstGames.BeginUpdate();
@@ -342,22 +345,36 @@ namespace Depressurizer {
 
         public Category CreateCategory() {
             GetStringDlg dlg = new GetStringDlg( string.Empty, "Create category", "Enter new category name:", "Create" );
-            if( dlg.ShowDialog() == DialogResult.OK ) {
+            if( dlg.ShowDialog() == DialogResult.OK && ValidateCategoryName( dlg.Value ) ) {
                 Category newCat = gameData.AddCategory( dlg.Value );
                 if( newCat != null ) {
                     FillCategoryList();
                     combCategory.SelectedItem = newCat;
                     return newCat;
                 } else {
-                    MessageBox.Show( String.Format( "Could not add category \"{0}\"", dlg.Value ), "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                    MessageBox.Show( String.Format( "Could not add category '{0}'", dlg.Value ), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 }
             }
             return null;
         }
         #endregion
+
+        private static bool ValidateCategoryName( string name ) {
+            if( name == null || name == string.Empty ) {
+                MessageBox.Show( "Category names cannot be empty.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                return false;
+            } else if( name == CAT_ALL_NAME || name == CAT_FAV_NAME || name == CAT_UNC_NAME ) {
+                MessageBox.Show( string.Format( "Category name '{0}' is reserved.", name ), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
-    // Implements the manual sorting of items by columns.
+    /// <summary>
+    /// Implements the manual sorting of items by columns.
+    /// </summary>
     class GameListViewItemComparer : IComparer {
         private int col;
         private int direction;
