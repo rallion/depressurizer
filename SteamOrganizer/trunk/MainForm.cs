@@ -12,11 +12,8 @@ using System.IO;
 namespace Depressurizer {
     public partial class FormMain : Form {
 
-        const int CAT_ALL_ID = 0;
         const string CAT_ALL_NAME = "<All>";
-        const int CAT_FAV_ID = 1;
         const string CAT_FAV_NAME = "<Favorite>";
-        const int CAT_UNC_ID = 2;
         const string CAT_UNC_NAME = "<Uncategorized>";
 
         const string COMBO_NEWCAT = "Add new...";
@@ -31,7 +28,6 @@ namespace Depressurizer {
             InitializeComponent();
             combFavorite.SelectedIndex = 0;
             UpdateGameSorter();
-            lstCategories.ListViewItemSorter = new CategoryListViewItemComparer();
             FillCategoryList();
         }
 
@@ -87,6 +83,7 @@ namespace Depressurizer {
 
         #region UI Event Handlers
         #region Drag and drop
+
         private void lstCategories_DragEnter( object sender, DragEventArgs e ) {
             e.Effect = DragDropEffects.Move;
         }
@@ -94,16 +91,15 @@ namespace Depressurizer {
         private void lstCategories_DragDrop( object sender, DragEventArgs e ) {
             if( e.Data.GetDataPresent( typeof( int[] ) ) ) {
                 Point clientPoint = lstCategories.PointToClient( new Point( e.X, e.Y ) );
-                ListViewItem dropItem = lstCategories.GetItemAt( clientPoint.X, clientPoint.Y );
-                if( dropItem != null ) {
-                    Category newCat = dropItem.Tag as Category;
-                    if( newCat != null ) {
-                        gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), newCat );
-                        FillGameList();
-                    } else if( dropItem.Tag is int && (int)dropItem.Tag == CAT_FAV_ID ) {
+                object dropItem = lstCategories.Items[lstCategories.IndexFromPoint( clientPoint )];
+                if( dropItem is Category ) {
+                    gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), (Category)dropItem);
+                    FillGameList();
+                } else if( dropItem is string ) {
+                    if( (string)dropItem == CAT_FAV_NAME ) {
                         gameData.SetGameFavorites( (int[])e.Data.GetData( typeof( int[] ) ), true );
                         FillGameList();
-                    } else if( dropItem.Tag is int && (int)dropItem.Tag == CAT_UNC_ID ) {
+                    } else if( (string)dropItem == CAT_UNC_NAME ) {
                         gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), null );
                         FillGameList();
                     }
@@ -145,20 +141,20 @@ namespace Depressurizer {
 
         private void cmdCatRename_Click( object sender, EventArgs e ) {
             if( lstCategories.SelectedItems.Count > 0 ) {
-                RenameCategory( lstCategories.SelectedItems[0].Tag as Category );
+                RenameCategory( lstCategories.SelectedItem as Category );
             }
         }
 
         private void cmdCatDelete_Click( object sender, EventArgs e ) {
             if( lstCategories.SelectedItems.Count > 0 ) {
-                DeleteCategory( lstCategories.SelectedItems[0].Tag as Category );
+                DeleteCategory( lstCategories.SelectedItem as Category );
             }
         }
 
         private void cmdGameSetCategory_Click( object sender, EventArgs e ) {
             Category c;
             bool newCat;
-            if( GetSelectedCategory( out c, out newCat ) ) {
+            if( GetSelectedCategoryFromCombo( out c, out newCat ) ) {
                 AssignCategoryToSelectedGames( c );
             }
             if( newCat ) {
@@ -173,7 +169,7 @@ namespace Depressurizer {
         }
         #endregion
 
-        private void lstCategories_ItemSelectionChanged( object sender, ListViewItemSelectionChangedEventArgs e ) {
+        private void lstCategories_SelectedIndexChanged( object sender, EventArgs e ) {
             FillGameList();
         }
 
@@ -193,7 +189,7 @@ namespace Depressurizer {
             return combFavorite.SelectedItem as string == "Yes";
         }
 
-        public bool GetSelectedCategory( out Category result, out bool newCat ) {
+        public bool GetSelectedCategoryFromCombo( out Category result, out bool newCat ) {
             result = null;
             newCat = false;
             if( combCategory.SelectedItem is Category ) {
@@ -240,22 +236,42 @@ namespace Depressurizer {
             return false;
         }
 
+        private bool ShouldDisplayGame( Game g ) {
+            if( lstCategories.SelectedItem == null ) {
+                return false;
+            }
+            if( lstCategories.SelectedItem is string ) {
+                if( (string)lstCategories.SelectedItem == CAT_ALL_NAME ) {
+                    return true;
+                }
+                if( (string)lstCategories.SelectedItem == CAT_FAV_NAME ) {
+                    return g.Favorite;
+                }
+                if( (string)lstCategories.SelectedItem == CAT_UNC_NAME ) {
+                    return g.Category == null;
+                }
+            } else if( lstCategories.SelectedItem is Category ) {
+                return g.Category == (Category)lstCategories.SelectedItem;
+            }
+            return false;
+        }
+
         #region Utility
         private void FillGameList() {
             lstGames.BeginUpdate();
             lstGames.Items.Clear();
             if( lstCategories.SelectedItems.Count > 0 ) {
-                object catObj = lstCategories.SelectedItems[0].Tag;
+                object catObj = lstCategories.SelectedItem;
                 bool showAll = false;
                 bool showFav = false;
-                if( catObj is int ) {
-                    if( (int)catObj == CAT_ALL_ID ) {
+                if( catObj is string ) {
+                    if( (string)catObj == CAT_ALL_NAME ) {
                         showAll = true;
-                    } else if( (int)catObj == CAT_FAV_ID ) {
+                    } else if( (string)catObj == CAT_FAV_NAME ) {
                         showFav = true;
                     }
                 }
-                Category cat = lstCategories.SelectedItems[0].Tag as Category;
+                Category cat = lstCategories.SelectedItem as Category;
 
                 foreach( Game g in gameData.Games.Values ) {
                     if( showAll || ( showFav && g.Favorite ) || ( !showFav && g.Category == cat ) ) {
@@ -275,23 +291,15 @@ namespace Depressurizer {
         }
 
         private void FillCategoryList() {
+            gameData.Categories.Sort();
+            object[] catList = gameData.Categories.ToArray();
+
             lstCategories.BeginUpdate();
             lstCategories.Items.Clear();
-            ListViewItem item = new ListViewItem( CAT_ALL_NAME );
-            item.Tag = CAT_ALL_ID;
-            lstCategories.Items.Add( item );
-            item = new ListViewItem( CAT_FAV_NAME );
-            item.Tag = CAT_FAV_ID;
-            lstCategories.Items.Add( item );
-            item = new ListViewItem( CAT_UNC_NAME );
-            item.Tag = CAT_UNC_ID;
-            lstCategories.Items.Add( item );
-            foreach( Category c in gameData.Categories ) {
-                item = new ListViewItem( c.Name );
-                item.Tag = c;
-                lstCategories.Items.Add( item );
-            }
-            lstCategories.Sort();
+            lstCategories.Items.Add( CAT_ALL_NAME );
+            lstCategories.Items.Add( CAT_FAV_NAME );
+            lstCategories.Items.Add( CAT_UNC_NAME );
+            lstCategories.Items.AddRange( catList );
             lstCategories.EndUpdate();
 
             combCategory.BeginUpdate();
@@ -299,9 +307,7 @@ namespace Depressurizer {
             combCategory.Items.Add( COMBO_NEWCAT );
             combCategory.Items.Add( COMBO_NONE );
             combCategory.Items.Add( "" );
-            foreach( Category c in gameData.Categories ) {
-                combCategory.Items.Add( c );
-            }
+            combCategory.Items.AddRange( catList );
             combCategory.EndUpdate();
         }
 
@@ -356,31 +362,6 @@ namespace Depressurizer {
                 return (int)x - (int)y;
             } else {
                 return direction * String.Compare( ( (ListViewItem)x ).SubItems[col].Text, ( (ListViewItem)y ).SubItems[col].Text );
-            }
-        }
-    }
-
-    class CategoryListViewItemComparer : IComparer {
-        public CategoryListViewItemComparer() { }
-
-        public int Compare( object x, object y ) {
-            ListViewItem a = (ListViewItem)x;
-            ListViewItem b = (ListViewItem)y;
-            Category aC = a.Tag as Category;
-            Category bC = b.Tag as Category;
-
-            if( aC != null ) {
-                if( bC != null ) {
-                    return String.Compare( aC.Name, bC.Name );
-                } else {
-                    return 1;
-                }
-            } else {
-                if( bC != null ) {
-                    return -1;
-                } else {
-                    return (int)a.Tag - (int)b.Tag;
-                }
             }
         }
     }
