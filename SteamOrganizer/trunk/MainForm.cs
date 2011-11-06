@@ -23,6 +23,8 @@ namespace Depressurizer {
         int sortColumn = 1;
         int sortDirection = 1;
 
+        object lastSelectedCat = null;
+
         public FormMain() {
             gameData = new GameData();
             InitializeComponent();
@@ -140,9 +142,7 @@ namespace Depressurizer {
         #endregion
         #region Buttons
         private void cmdCatAdd_Click( object sender, EventArgs e ) {
-            if( CreateCategory() != null ) {
-                FillCategoryList();
-            }
+            CreateCategory();
         }
 
         private void cmdCatRename_Click( object sender, EventArgs e ) {
@@ -159,14 +159,10 @@ namespace Depressurizer {
 
         private void cmdGameSetCategory_Click( object sender, EventArgs e ) {
             Category c;
-            bool newCat;
-            if( GetSelectedCategoryFromCombo( out c, out newCat ) ) {
+            if( GetSelectedCategoryFromCombo( out c ) ) {
                 AssignCategoryToSelectedGames( c );
+                FillGameList();
             }
-            if( newCat ) {
-                FillCategoryList();
-            }
-            FillGameList();
         }
 
         private void cmdGameSetFavorite_Click( object sender, EventArgs e ) {
@@ -176,7 +172,10 @@ namespace Depressurizer {
         #endregion
 
         private void lstCategories_SelectedIndexChanged( object sender, EventArgs e ) {
-            FillGameList();
+            if( lstCategories.SelectedItem != lastSelectedCat ) {
+                FillGameList();
+                lastSelectedCat = lstCategories.SelectedItem;
+            }
         }
 
         private void lstGames_ColumnClick( object sender, ColumnClickEventArgs e ) {
@@ -195,16 +194,14 @@ namespace Depressurizer {
             return combFavorite.SelectedItem as string == "Yes";
         }
 
-        public bool GetSelectedCategoryFromCombo( out Category result, out bool newCat ) {
+        public bool GetSelectedCategoryFromCombo( out Category result ) {
             result = null;
-            newCat = false;
             if( combCategory.SelectedItem is Category ) {
                 result = combCategory.SelectedItem as Category;
                 return true;
             } else if( combCategory.SelectedItem is string ) {
                 if( (string)combCategory.SelectedItem == COMBO_NEWCAT ) {
                     result = CreateCategory();
-                    newCat = true;
                     return result != null;
                 } else if( (string)combCategory.SelectedItem == COMBO_NONE ) {
                     return true;
@@ -234,6 +231,7 @@ namespace Depressurizer {
                 if( dlg.ShowDialog() == DialogResult.OK ) {
                     if( gameData.RenameCategory( c, dlg.Value ) ) {
                         FillCategoryList();
+                        //OPTIMIZE: This game list refresh could be made more efficient
                         FillGameList();
                         return true;
                     }
@@ -242,6 +240,7 @@ namespace Depressurizer {
             return false;
         }
 
+        /*
         private bool ShouldDisplayGame( Game g ) {
             if( lstCategories.SelectedItem == null ) {
                 return false;
@@ -261,7 +260,7 @@ namespace Depressurizer {
             }
             return false;
         }
-
+        */
         #region Utility
         private void FillGameList() {
             lstGames.BeginUpdate();
@@ -301,19 +300,27 @@ namespace Depressurizer {
             object[] catList = gameData.Categories.ToArray();
 
             lstCategories.BeginUpdate();
+            object selected = lstCategories.SelectedItem;
             lstCategories.Items.Clear();
             lstCategories.Items.Add( CAT_ALL_NAME );
             lstCategories.Items.Add( CAT_FAV_NAME );
             lstCategories.Items.Add( CAT_UNC_NAME );
             lstCategories.Items.AddRange( catList );
+            if( selected == null || !lstCategories.Items.Contains( selected ) ) {
+                lstCategories.SelectedIndex = 0;
+            } else {
+                lstCategories.SelectedItem = selected;
+            }
             lstCategories.EndUpdate();
 
             combCategory.BeginUpdate();
+            selected = combCategory.SelectedItem;
             combCategory.Items.Clear();
             combCategory.Items.Add( COMBO_NEWCAT );
             combCategory.Items.Add( COMBO_NONE );
             combCategory.Items.Add( "" );
             combCategory.Items.AddRange( catList );
+            combCategory.SelectedItem = selected;
             combCategory.EndUpdate();
         }
 
@@ -338,6 +345,8 @@ namespace Depressurizer {
             if( dlg.ShowDialog() == DialogResult.OK ) {
                 Category newCat = gameData.AddCategory( dlg.Value );
                 if( newCat != null ) {
+                    FillCategoryList();
+                    combCategory.SelectedItem = newCat;
                     return newCat;
                 } else {
                     MessageBox.Show( String.Format( "Could not add category \"{0}\"", dlg.Value ), "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
