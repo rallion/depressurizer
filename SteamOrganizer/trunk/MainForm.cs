@@ -35,6 +35,7 @@ namespace Depressurizer {
             OpenFileDialog dlg = new OpenFileDialog();
             DialogResult res = dlg.ShowDialog();
             if( res == DialogResult.OK ) {
+                Cursor = Cursors.WaitCursor;
                 try {
                     int loadedGames = gameData.LoadSteamFile( dlg.FileName );
                     if( loadedGames == 0 ) {
@@ -48,6 +49,7 @@ namespace Depressurizer {
                 } catch( IOException e ) {
                     MessageBox.Show( e.Message, "Error reading file", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
+                Cursor = Cursors.Default;
             }
         }
 
@@ -55,18 +57,21 @@ namespace Depressurizer {
             SaveFileDialog dlg = new SaveFileDialog();
             DialogResult res = dlg.ShowDialog();
             if( res == DialogResult.OK ) {
+                Cursor = Cursors.WaitCursor;
                 try {
                     gameData.SaveSteamFile( dlg.FileName );
                     //TODO: display confirmation in status bar
                 } catch( IOException e ) {
                     MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
+                Cursor = Cursors.Default;
             }
         }
 
         public void ManualProfileLoad() {
             GetStringDlg dlg = new GetStringDlg( "", "Load profile", "Enter profile name:", "Load Profile" );
             if( dlg.ShowDialog() == DialogResult.OK ) {
+                Cursor = Cursors.WaitCursor;
                 try {
                     int loadedGames = gameData.LoadProfile( dlg.Value );
                     if( loadedGames == 0 ) {
@@ -78,6 +83,7 @@ namespace Depressurizer {
                 } catch( System.Net.WebException e ) {
                     MessageBox.Show( e.Message, "Error loading profile data", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
+                Cursor = Cursors.Default;
             }
         }
 
