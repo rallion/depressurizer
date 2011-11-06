@@ -36,7 +36,7 @@
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.grpCategories = new System.Windows.Forms.GroupBox();
             this.lstCategories = new System.Windows.Forms.ListBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableCatButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCatAdd = new System.Windows.Forms.Button();
             this.cmdCatDelete = new System.Windows.Forms.Button();
             this.cmdCatRename = new System.Windows.Forms.Button();
@@ -53,15 +53,18 @@
             this.colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colCategory = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colFavorite = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.statusMsg = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusSelection = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             this.grpCategories.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tableCatButtons.SuspendLayout();
             this.grpGames.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -160,7 +163,7 @@
             // grpCategories
             // 
             this.grpCategories.Controls.Add(this.lstCategories);
-            this.grpCategories.Controls.Add(this.tableLayoutPanel1);
+            this.grpCategories.Controls.Add(this.tableCatButtons);
             this.grpCategories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpCategories.Location = new System.Drawing.Point(0, 0);
             this.grpCategories.Name = "grpCategories";
@@ -185,23 +188,23 @@
             this.lstCategories.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstCategories_DragDrop);
             this.lstCategories.DragEnter += new System.Windows.Forms.DragEventHandler(this.lstCategories_DragEnter);
             // 
-            // tableLayoutPanel1
+            // tableCatButtons
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tableCatButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.Controls.Add(this.cmdCatAdd, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cmdCatDelete, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cmdCatRename, 1, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 354);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(265, 29);
-            this.tableLayoutPanel1.TabIndex = 1;
+            this.tableCatButtons.ColumnCount = 3;
+            this.tableCatButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableCatButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableCatButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableCatButtons.Controls.Add(this.cmdCatAdd, 0, 0);
+            this.tableCatButtons.Controls.Add(this.cmdCatDelete, 2, 0);
+            this.tableCatButtons.Controls.Add(this.cmdCatRename, 1, 0);
+            this.tableCatButtons.Location = new System.Drawing.Point(3, 354);
+            this.tableCatButtons.Name = "tableCatButtons";
+            this.tableCatButtons.RowCount = 1;
+            this.tableCatButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableCatButtons.Size = new System.Drawing.Size(265, 29);
+            this.tableCatButtons.TabIndex = 1;
             // 
             // cmdCatAdd
             // 
@@ -361,6 +364,7 @@
             this.lstGames.View = System.Windows.Forms.View.Details;
             this.lstGames.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstGames_ColumnClick);
             this.lstGames.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.lstGames_ItemDrag);
+            this.lstGames.SelectedIndexChanged += new System.EventHandler(this.lstGames_SelectedIndexChanged);
             // 
             // colGameID
             // 
@@ -381,20 +385,38 @@
             this.colFavorite.Text = "Favorite";
             this.colFavorite.Width = 52;
             // 
-            // statusStrip1
+            // statusStrip
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 408);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(772, 22);
-            this.statusStrip1.TabIndex = 6;
-            this.statusStrip1.Text = "statusStrip1";
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusMsg,
+            this.statusSelection});
+            this.statusStrip.Location = new System.Drawing.Point(0, 408);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(772, 22);
+            this.statusStrip.TabIndex = 6;
+            this.statusStrip.Text = "statusStrip1";
+            // 
+            // statusMsg
+            // 
+            this.statusMsg.Name = "statusMsg";
+            this.statusMsg.Size = new System.Drawing.Size(526, 17);
+            this.statusMsg.Spring = true;
+            this.statusMsg.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // statusSelection
+            // 
+            this.statusSelection.AutoSize = false;
+            this.statusSelection.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.statusSelection.Name = "statusSelection";
+            this.statusSelection.Size = new System.Drawing.Size(200, 17);
+            this.statusSelection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(772, 430);
-            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
@@ -409,8 +431,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.grpCategories.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableCatButtons.ResumeLayout(false);
             this.grpGames.ResumeLayout(false);
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -430,7 +454,7 @@
         private System.Windows.Forms.ColumnHeader colTitle;
         private System.Windows.Forms.ColumnHeader colCategory;
         private System.Windows.Forms.ColumnHeader colGameID;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableCatButtons;
         private System.Windows.Forms.Button cmdCatAdd;
         private System.Windows.Forms.Button cmdCatDelete;
         private System.Windows.Forms.Button cmdCatRename;
@@ -448,7 +472,9 @@
         private System.Windows.Forms.ToolStripSeparator menu_Sep1;
         private System.Windows.Forms.ToolStripMenuItem menu_File_ProfileLoad;
         private System.Windows.Forms.ListBox lstCategories;
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel statusMsg;
+        private System.Windows.Forms.ToolStripStatusLabel statusSelection;
     }
 }
 

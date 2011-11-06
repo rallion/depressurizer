@@ -54,7 +54,7 @@ namespace Depressurizer {
                     if( loadedGames == 0 ) {
                         MessageBox.Show( "Warning: No game info found in the specified file." );
                     } else {
-                        //TODO: Add number of loaded games to status bar.
+                        statusMsg.Text = string.Format( "Loaded local info for {0} games.", loadedGames );
                         lastSelectedCat = null; // Make sure the game list refreshes
                         FillCategoryList();
                     }
@@ -77,7 +77,7 @@ namespace Depressurizer {
                 Cursor = Cursors.WaitCursor;
                 try {
                     gameData.SaveSteamFile( dlg.FileName );
-                    //TODO: display confirmation in status bar
+                    statusMsg.Text = "File saved.";
                 } catch( IOException e ) {
                     MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
@@ -97,7 +97,7 @@ namespace Depressurizer {
                     if( loadedGames == 0 ) {
                         MessageBox.Show( "No game data found. Please make sure the profile is spelled correctly, and that the profile is public.", "No data found", MessageBoxButtons.OK, MessageBoxIcon.Warning );
                     } else {
-                        // TODO: Display status update in status bar
+                        statusMsg.Text = string.Format( "Loaded profile info for {0} games.", loadedGames );
                         FillGameList();
                     }
                 } catch( System.Net.WebException e ) {
@@ -450,6 +450,10 @@ namespace Depressurizer {
         }
 
         #endregion
+
+        private void lstGames_SelectedIndexChanged( object sender, EventArgs e ) {
+            statusSelection.Text = string.Format( "{0} selected / {1} displayed", lstGames.SelectedItems.Count, lstGames.Items.Count );
+        }
     }
 
     /// <summary>

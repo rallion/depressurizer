@@ -200,7 +200,7 @@ namespace Depressurizer {
                     int id;
                     if( int.TryParse( m.Groups[1].Value, out id ) ) {
                         // TODO: Strip escape characters out
-                        SetGameName( id, m.Groups[2].Value );
+                        SetGameName( id, m.Groups[2].Value.Replace("\\'", "'") );
                         loadedGames++;
                     }
                 }
