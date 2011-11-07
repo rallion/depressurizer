@@ -243,8 +243,7 @@ namespace Depressurizer {
                 if( dlg.ShowDialog() == DialogResult.OK ) {
                     if( ValidateCategoryName( dlg.Value ) && gameData.RenameCategory( c, dlg.Value ) ) {
                         FillCategoryList();
-                        //OPTIMIZE: This game list refresh could be made more efficient
-                        FillGameList();
+                        UpdateGameList();
                         return true;
                     } else {
                         MessageBox.Show( string.Format( "Name '{0}' is already in use.", dlg.Value ), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
@@ -259,9 +258,13 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="cat">Category to assign</param>
         void AssignCategoryToSelectedGames( Category cat ) {
-            foreach( ListViewItem item in lstGames.SelectedItems ) {
-                ( item.Tag as Game ).Category = cat;
+            if( lstGames.SelectedItems.Count > 0 ) {
+                foreach( ListViewItem item in lstGames.SelectedItems ) {
+                    ( item.Tag as Game ).Category = cat;
+                }
+                UpdateGameList();
             }
+
         }
 
         /// <summary>
@@ -269,8 +272,11 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="fav">True to turn fav on, false to turn it off.</param>
         void AssignFavoriteToSelectedGames( bool fav ) {
-            foreach( ListViewItem item in lstGames.SelectedItems ) {
-                ( item.Tag as Game ).Favorite = fav;
+            if( lstGames.SelectedItems.Count > 0 ) {
+                foreach( ListViewItem item in lstGames.SelectedItems ) {
+                    ( item.Tag as Game ).Favorite = fav;
+                }
+                UpdateGameList();
             }
         }
 
@@ -363,14 +369,14 @@ namespace Depressurizer {
                 object dropItem = lstCategories.Items[lstCategories.IndexFromPoint( clientPoint )];
                 if( dropItem is Category ) {
                     gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), (Category)dropItem );
-                    FillGameList();
+                    UpdateGameList();
                 } else if( dropItem is string ) {
                     if( (string)dropItem == CAT_FAV_NAME ) {
                         gameData.SetGameFavorites( (int[])e.Data.GetData( typeof( int[] ) ), true );
-                        FillGameList();
+                        UpdateGameList();
                     } else if( (string)dropItem == CAT_UNC_NAME ) {
                         gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), null );
-                        FillGameList();
+                        UpdateGameList();
                     }
                 }
             }
@@ -422,13 +428,11 @@ namespace Depressurizer {
             Category c;
             if( GetSelectedCategoryFromCombo( out c ) ) {
                 AssignCategoryToSelectedGames( c );
-                FillGameList();
             }
         }
 
         private void cmdGameSetFavorite_Click( object sender, EventArgs e ) {
             AssignFavoriteToSelectedGames( GetSelectedFavorite() );
-            FillGameList();
         }
         #endregion
 
@@ -453,6 +457,23 @@ namespace Depressurizer {
 
         private void lstGames_SelectedIndexChanged( object sender, EventArgs e ) {
             statusSelection.Text = string.Format( "{0} selected / {1} displayed", lstGames.SelectedItems.Count, lstGames.Items.Count );
+        }
+
+        void UpdateGameList() {
+            int i = 0;
+            lstGames.BeginUpdate();
+            while( i < lstGames.Items.Count ) {
+                ListViewItem current = lstGames.Items[i];
+                Game g = (Game)current.Tag;
+                if( ShouldDisplayGame( g ) ) {
+                    current.SubItems[2].Text = g.Category == null ? CAT_UNC_NAME : g.Category.Name;
+                    current.SubItems[3].Text = g.Favorite ? "Y" : "N";
+                    i++;
+                } else {
+                    lstGames.Items.RemoveAt(i);
+                }
+            }
+            lstGames.EndUpdate();
         }
     }
 
