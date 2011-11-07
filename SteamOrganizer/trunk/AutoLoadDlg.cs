@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Win32;
+using System.IO;
 
 namespace Depressurizer {
     public partial class AutoLoadDlg : Form {
@@ -17,6 +19,58 @@ namespace Depressurizer {
             toolTip.SetToolTip( lnkHelpPath, PATH_HELP );
             toolTip.SetToolTip( lnkHelpId, ID_HELP );
             toolTip.SetToolTip( lnkHelpProfile, PROF_HELP );
+        }
+
+        private void AutoLoadDlg_Load( object sender, EventArgs e ) {
+            txtSteamPath.Text = GetSteamPath();
+
+            RefreshIdList();
+
+            txtProfileName.Focus();
+        }
+
+        private void RefreshIdList() {
+            combUserId.BeginUpdate();
+            combUserId.Items.Clear();
+            combUserId.ResetText();
+            combUserId.Items.AddRange( GetSteamIds() );
+            if( combUserId.Items.Count > 0 ) {
+                combUserId.SelectedIndex = 0;
+            }
+            combUserId.EndUpdate();
+        }
+
+        private string GetSteamPath() {
+            string s = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "steamPath", "" ) as string;
+            if( s == null ) s = "";
+            s = s.Replace('/','\\');
+            return s;
+        }
+
+        private void cmdBrowse_Click( object sender, EventArgs e ) {
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                txtSteamPath.Text = dlg.SelectedPath;
+                RefreshIdList();
+            }
+        }
+
+        private string[] GetSteamIds() {
+            DirectoryInfo dir = new DirectoryInfo( txtSteamPath.Text + "\\userdata");
+            if( dir.Exists ) {
+                DirectoryInfo[] userDirs = dir.GetDirectories();
+                string[] result = new string[userDirs.Length];
+                for( int i = 0; i < userDirs.Length; i++ ) {
+                    result[i] = userDirs[i].Name;
+                }
+                return result;
+            }
+            return new string[0];
+        }
+
+        private void cmdRefreshIdList_Click( object sender, EventArgs e ) {
+            RefreshIdList();
         }
     }
 }

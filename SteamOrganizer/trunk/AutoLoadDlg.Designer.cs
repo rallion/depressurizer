@@ -24,7 +24,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.cmdCance = new System.Windows.Forms.Button();
+            this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdLoad = new System.Windows.Forms.Button();
             this.lblSteamPath = new System.Windows.Forms.Label();
             this.txtSteamPath = new System.Windows.Forms.TextBox();
@@ -40,23 +40,25 @@
             this.lnkHelpProfile = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
-            // cmdCance
+            // cmdCancel
             // 
-            this.cmdCance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdCance.Location = new System.Drawing.Point(359, 100);
-            this.cmdCance.Name = "cmdCance";
-            this.cmdCance.Size = new System.Drawing.Size(75, 23);
-            this.cmdCance.TabIndex = 1;
-            this.cmdCance.Text = "Cancel";
-            this.cmdCance.UseVisualStyleBackColor = true;
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Location = new System.Drawing.Point(359, 100);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.TabIndex = 11;
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
             // 
             // cmdLoad
             // 
             this.cmdLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdLoad.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.cmdLoad.Location = new System.Drawing.Point(440, 100);
             this.cmdLoad.Name = "cmdLoad";
             this.cmdLoad.Size = new System.Drawing.Size(75, 23);
-            this.cmdLoad.TabIndex = 3;
+            this.cmdLoad.TabIndex = 12;
             this.cmdLoad.Text = "Load";
             this.cmdLoad.UseVisualStyleBackColor = true;
             // 
@@ -76,7 +78,7 @@
             this.txtSteamPath.Location = new System.Drawing.Point(12, 23);
             this.txtSteamPath.Name = "txtSteamPath";
             this.txtSteamPath.Size = new System.Drawing.Size(422, 20);
-            this.txtSteamPath.TabIndex = 1;
+            this.txtSteamPath.TabIndex = 2;
             // 
             // cmdBrowse
             // 
@@ -84,9 +86,10 @@
             this.cmdBrowse.Location = new System.Drawing.Point(440, 21);
             this.cmdBrowse.Name = "cmdBrowse";
             this.cmdBrowse.Size = new System.Drawing.Size(75, 23);
-            this.cmdBrowse.TabIndex = 2;
+            this.cmdBrowse.TabIndex = 3;
             this.cmdBrowse.Text = "Browse...";
             this.cmdBrowse.UseVisualStyleBackColor = true;
+            this.cmdBrowse.Click += new System.EventHandler(this.cmdBrowse_Click);
             // 
             // lblUserId
             // 
@@ -94,7 +97,7 @@
             this.lblUserId.Location = new System.Drawing.Point(12, 55);
             this.lblUserId.Name = "lblUserId";
             this.lblUserId.Size = new System.Drawing.Size(79, 13);
-            this.lblUserId.TabIndex = 0;
+            this.lblUserId.TabIndex = 4;
             this.lblUserId.Text = "Select User ID:";
             // 
             // combUserId
@@ -103,16 +106,17 @@
             this.combUserId.Location = new System.Drawing.Point(12, 71);
             this.combUserId.Name = "combUserId";
             this.combUserId.Size = new System.Drawing.Size(186, 21);
-            this.combUserId.TabIndex = 1;
+            this.combUserId.TabIndex = 6;
             // 
             // cmdRefreshIdList
             // 
             this.cmdRefreshIdList.Location = new System.Drawing.Point(204, 69);
             this.cmdRefreshIdList.Name = "cmdRefreshIdList";
             this.cmdRefreshIdList.Size = new System.Drawing.Size(75, 23);
-            this.cmdRefreshIdList.TabIndex = 4;
+            this.cmdRefreshIdList.TabIndex = 7;
             this.cmdRefreshIdList.Text = "Refresh";
             this.cmdRefreshIdList.UseVisualStyleBackColor = true;
+            this.cmdRefreshIdList.Click += new System.EventHandler(this.cmdRefreshIdList_Click);
             // 
             // lblProfileName
             // 
@@ -120,7 +124,7 @@
             this.lblProfileName.Location = new System.Drawing.Point(297, 55);
             this.lblProfileName.Name = "lblProfileName";
             this.lblProfileName.Size = new System.Drawing.Size(95, 13);
-            this.lblProfileName.TabIndex = 5;
+            this.lblProfileName.TabIndex = 8;
             this.lblProfileName.Text = "Enter profile name:";
             // 
             // txtProfileName
@@ -128,7 +132,7 @@
             this.txtProfileName.Location = new System.Drawing.Point(297, 71);
             this.txtProfileName.Name = "txtProfileName";
             this.txtProfileName.Size = new System.Drawing.Size(219, 20);
-            this.txtProfileName.TabIndex = 6;
+            this.txtProfileName.TabIndex = 10;
             // 
             // lnkHelpId
             // 
@@ -137,7 +141,7 @@
             this.lnkHelpId.Location = new System.Drawing.Point(171, 55);
             this.lnkHelpId.Name = "lnkHelpId";
             this.lnkHelpId.Size = new System.Drawing.Size(27, 13);
-            this.lnkHelpId.TabIndex = 7;
+            this.lnkHelpId.TabIndex = 5;
             this.lnkHelpId.TabStop = true;
             this.lnkHelpId.Text = "help";
             // 
@@ -159,7 +163,7 @@
             this.lnkHelpPath.Location = new System.Drawing.Point(407, 7);
             this.lnkHelpPath.Name = "lnkHelpPath";
             this.lnkHelpPath.Size = new System.Drawing.Size(27, 13);
-            this.lnkHelpPath.TabIndex = 8;
+            this.lnkHelpPath.TabIndex = 1;
             this.lnkHelpPath.TabStop = true;
             this.lnkHelpPath.Text = "help";
             // 
@@ -175,10 +179,11 @@
             // 
             // AutoLoadDlg
             // 
+            this.AcceptButton = this.cmdLoad;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(527, 135);
-            this.ControlBox = false;
             this.Controls.Add(this.lnkHelpProfile);
             this.Controls.Add(this.lnkHelpPath);
             this.Controls.Add(this.lnkHelpId);
@@ -191,11 +196,16 @@
             this.Controls.Add(this.txtSteamPath);
             this.Controls.Add(this.lblSteamPath);
             this.Controls.Add(this.cmdLoad);
-            this.Controls.Add(this.cmdCance);
+            this.Controls.Add(this.cmdCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "AutoLoadDlg";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Auto Load";
+            this.Load += new System.EventHandler(this.AutoLoadDlg_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -203,7 +213,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button cmdCance;
+        private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdLoad;
         private System.Windows.Forms.Label lblSteamPath;
         private System.Windows.Forms.TextBox txtSteamPath;

@@ -74,7 +74,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(772, 24);
-            this.menuStrip.TabIndex = 4;
+            this.menuStrip.TabIndex = 1;
             // 
             // menu_File
             // 
@@ -159,7 +159,7 @@
             this.splitContainer.Panel2MinSize = 500;
             this.splitContainer.Size = new System.Drawing.Size(772, 406);
             this.splitContainer.SplitterDistance = 268;
-            this.splitContainer.TabIndex = 5;
+            this.splitContainer.TabIndex = 0;
             // 
             // grpCategories
             // 
@@ -184,7 +184,7 @@
             this.lstCategories.Location = new System.Drawing.Point(6, 20);
             this.lstCategories.Name = "lstCategories";
             this.lstCategories.Size = new System.Drawing.Size(259, 332);
-            this.lstCategories.TabIndex = 2;
+            this.lstCategories.TabIndex = 0;
             this.lstCategories.SelectedIndexChanged += new System.EventHandler(this.lstCategories_SelectedIndexChanged);
             this.lstCategories.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstCategories_DragDrop);
             this.lstCategories.DragEnter += new System.Windows.Forms.DragEventHandler(this.lstCategories_DragEnter);
@@ -228,7 +228,7 @@
             this.cmdCatDelete.Location = new System.Drawing.Point(179, 3);
             this.cmdCatDelete.Name = "cmdCatDelete";
             this.cmdCatDelete.Size = new System.Drawing.Size(83, 23);
-            this.cmdCatDelete.TabIndex = 1;
+            this.cmdCatDelete.TabIndex = 2;
             this.cmdCatDelete.Text = "Delete";
             this.cmdCatDelete.UseVisualStyleBackColor = true;
             this.cmdCatDelete.Click += new System.EventHandler(this.cmdCatDelete_Click);
@@ -241,7 +241,7 @@
             this.cmdCatRename.Location = new System.Drawing.Point(91, 3);
             this.cmdCatRename.Name = "cmdCatRename";
             this.cmdCatRename.Size = new System.Drawing.Size(82, 23);
-            this.cmdCatRename.TabIndex = 2;
+            this.cmdCatRename.TabIndex = 1;
             this.cmdCatRename.Text = "Rename";
             this.cmdCatRename.UseVisualStyleBackColor = true;
             this.cmdCatRename.Click += new System.EventHandler(this.cmdCatRename_Click);
@@ -260,7 +260,7 @@
             this.grpGames.Location = new System.Drawing.Point(0, 0);
             this.grpGames.Name = "grpGames";
             this.grpGames.Size = new System.Drawing.Size(500, 406);
-            this.grpGames.TabIndex = 0;
+            this.grpGames.TabIndex = 1;
             this.grpGames.TabStop = false;
             this.grpGames.Text = "Games";
             // 
@@ -275,7 +275,7 @@
             this.combFavorite.Location = new System.Drawing.Point(328, 357);
             this.combFavorite.Name = "combFavorite";
             this.combFavorite.Size = new System.Drawing.Size(68, 21);
-            this.combFavorite.TabIndex = 8;
+            this.combFavorite.TabIndex = 3;
             // 
             // cmdGameAdd
             // 
@@ -284,7 +284,7 @@
             this.cmdGameAdd.Location = new System.Drawing.Point(2, 357);
             this.cmdGameAdd.Name = "cmdGameAdd";
             this.cmdGameAdd.Size = new System.Drawing.Size(75, 23);
-            this.cmdGameAdd.TabIndex = 7;
+            this.cmdGameAdd.TabIndex = 6;
             this.cmdGameAdd.Text = "Add";
             this.cmdGameAdd.UseVisualStyleBackColor = true;
             // 
@@ -295,7 +295,7 @@
             this.cmdGameRemove.Location = new System.Drawing.Point(81, 357);
             this.cmdGameRemove.Name = "cmdGameRemove";
             this.cmdGameRemove.Size = new System.Drawing.Size(75, 23);
-            this.cmdGameRemove.TabIndex = 6;
+            this.cmdGameRemove.TabIndex = 7;
             this.cmdGameRemove.Text = "Remove Game";
             this.cmdGameRemove.UseVisualStyleBackColor = true;
             // 
@@ -318,7 +318,7 @@
             this.combCategory.Location = new System.Drawing.Point(243, 333);
             this.combCategory.Name = "combCategory";
             this.combCategory.Size = new System.Drawing.Size(153, 21);
-            this.combCategory.TabIndex = 4;
+            this.combCategory.TabIndex = 1;
             // 
             // cmdGameSetCategory
             // 
@@ -326,7 +326,7 @@
             this.cmdGameSetCategory.Location = new System.Drawing.Point(400, 331);
             this.cmdGameSetCategory.Name = "cmdGameSetCategory";
             this.cmdGameSetCategory.Size = new System.Drawing.Size(93, 23);
-            this.cmdGameSetCategory.TabIndex = 3;
+            this.cmdGameSetCategory.TabIndex = 2;
             this.cmdGameSetCategory.Text = "Set Category";
             this.cmdGameSetCategory.UseVisualStyleBackColor = true;
             this.cmdGameSetCategory.Click += new System.EventHandler(this.cmdGameSetCategory_Click);
@@ -337,7 +337,7 @@
             this.cmdGameSetFavorite.Location = new System.Drawing.Point(400, 357);
             this.cmdGameSetFavorite.Name = "cmdGameSetFavorite";
             this.cmdGameSetFavorite.Size = new System.Drawing.Size(93, 23);
-            this.cmdGameSetFavorite.TabIndex = 1;
+            this.cmdGameSetFavorite.TabIndex = 4;
             this.cmdGameSetFavorite.Text = "Set Favorite";
             this.cmdGameSetFavorite.UseVisualStyleBackColor = true;
             this.cmdGameSetFavorite.Click += new System.EventHandler(this.cmdGameSetFavorite_Click);
@@ -394,7 +394,7 @@
             this.statusStrip.Location = new System.Drawing.Point(0, 408);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(772, 22);
-            this.statusStrip.TabIndex = 6;
+            this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "statusStrip1";
             // 
             // statusMsg
