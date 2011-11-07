@@ -262,7 +262,7 @@ namespace Depressurizer {
                 foreach( ListViewItem item in lstGames.SelectedItems ) {
                     ( item.Tag as Game ).Category = cat;
                 }
-                UpdateGameList();
+                UpdateGameListSelected();
             }
 
         }
@@ -276,7 +276,7 @@ namespace Depressurizer {
                 foreach( ListViewItem item in lstGames.SelectedItems ) {
                     ( item.Tag as Game ).Favorite = fav;
                 }
-                UpdateGameList();
+                UpdateGameListSelected();
             }
         }
 
@@ -459,19 +459,35 @@ namespace Depressurizer {
             statusSelection.Text = string.Format( "{0} selected / {1} displayed", lstGames.SelectedItems.Count, lstGames.Items.Count );
         }
 
+        bool UpdateGame( int index ) {
+            ListViewItem item = lstGames.Items[index];
+            Game g = (Game)item.Tag;
+            if( ShouldDisplayGame( g ) ) {
+                item.SubItems[2].Text = g.Category == null ? CAT_UNC_NAME : g.Category.Name;
+                item.SubItems[3].Text = g.Favorite ? "Y" : "N";
+                return true;
+            } else {
+                lstGames.Items.RemoveAt( index );
+                return false;
+            }
+        }
+
         void UpdateGameList() {
             int i = 0;
             lstGames.BeginUpdate();
             while( i < lstGames.Items.Count ) {
-                ListViewItem current = lstGames.Items[i];
-                Game g = (Game)current.Tag;
-                if( ShouldDisplayGame( g ) ) {
-                    current.SubItems[2].Text = g.Category == null ? CAT_UNC_NAME : g.Category.Name;
-                    current.SubItems[3].Text = g.Favorite ? "Y" : "N";
+                if( UpdateGame( i ) ) {
                     i++;
-                } else {
-                    lstGames.Items.RemoveAt(i);
                 }
+                
+            }
+            lstGames.EndUpdate();
+        }
+
+        void UpdateGameListSelected() {
+            lstGames.BeginUpdate();
+            foreach( int index in lstGames.SelectedIndices ) {
+                UpdateGame( index );
             }
             lstGames.EndUpdate();
         }
