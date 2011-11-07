@@ -264,7 +264,6 @@ namespace Depressurizer {
                 }
                 UpdateGameListSelected();
             }
-
         }
 
         /// <summary>
@@ -490,6 +489,11 @@ namespace Depressurizer {
                 UpdateGame( index );
             }
             lstGames.EndUpdate();
+        }
+
+        private void menu_File_AutoLoad_Click( object sender, EventArgs e ) {
+            AutoLoadDlg dlg = new AutoLoadDlg();
+            dlg.ShowDialog();
         }
     }
 

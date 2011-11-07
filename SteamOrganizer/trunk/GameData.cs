@@ -39,7 +39,7 @@ namespace Depressurizer {
         }
 
         public int CompareTo( object o ) {
-            return Name.CompareTo( Name as string );
+            return Name.CompareTo( (o as Category).Name );
         }
     }
 
@@ -85,7 +85,6 @@ namespace Depressurizer {
             } else {
                 Category newCat = new Category( name );
                 Categories.Add( newCat );
-                Categories.Sort();
                 return newCat;
             }
         }
@@ -114,6 +113,7 @@ namespace Depressurizer {
         public bool RenameCategory( Category c, string newName ) {
             if( !CategoryExists( newName ) ) {
                 c.Name = newName;
+                Categories.Sort();
                 return true;
             }
             return false;

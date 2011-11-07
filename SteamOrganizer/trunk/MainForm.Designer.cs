@@ -96,6 +96,7 @@
             this.menu_File_AutoLoad.Name = "menu_File_AutoLoad";
             this.menu_File_AutoLoad.Size = new System.Drawing.Size(189, 22);
             this.menu_File_AutoLoad.Text = "Auto Load...";
+            this.menu_File_AutoLoad.Click += new System.EventHandler(this.menu_File_AutoLoad_Click);
             // 
             // menu_File_AutoSave
             // 
@@ -399,7 +400,7 @@
             // statusMsg
             // 
             this.statusMsg.Name = "statusMsg";
-            this.statusMsg.Size = new System.Drawing.Size(526, 17);
+            this.statusMsg.Size = new System.Drawing.Size(557, 17);
             this.statusMsg.Spring = true;
             this.statusMsg.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
