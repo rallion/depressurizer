@@ -188,6 +188,39 @@ namespace Depressurizer {
             //TODO: no reason to create a NEW one each time, just make it modifiable.
             lstGames.ListViewItemSorter = new GameListViewItemComparer( sortColumn, sortDirection, sortColumn == 0 );
         }
+
+        bool UpdateGame( int index ) {
+            ListViewItem item = lstGames.Items[index];
+            Game g = (Game)item.Tag;
+            if( ShouldDisplayGame( g ) ) {
+                item.SubItems[2].Text = g.Category == null ? CAT_UNC_NAME : g.Category.Name;
+                item.SubItems[3].Text = g.Favorite ? "Y" : "N";
+                return true;
+            } else {
+                lstGames.Items.RemoveAt( index );
+                return false;
+            }
+        }
+
+        void UpdateGameList() {
+            int i = 0;
+            lstGames.BeginUpdate();
+            while( i < lstGames.Items.Count ) {
+                if( UpdateGame( i ) ) {
+                    i++;
+                }
+
+            }
+            lstGames.EndUpdate();
+        }
+
+        void UpdateGameListSelected() {
+            lstGames.BeginUpdate();
+            foreach( int index in lstGames.SelectedIndices ) {
+                UpdateGame( index );
+            }
+            lstGames.EndUpdate();
+        }
         #endregion
 
         #region Data modifiers
@@ -390,6 +423,15 @@ namespace Depressurizer {
         }
         #endregion
         #region Main menu
+        private void menu_File_AutoLoad_Click( object sender, EventArgs e ) {
+            AutoLoadDlg dlg = new AutoLoadDlg( gameData );
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                FillCategoryList();
+                FillGameList();
+            }
+        }
+
         private void menu_File_Load_Click( object sender, EventArgs e ) {
             ManualLoad();
         }
@@ -452,49 +494,11 @@ namespace Depressurizer {
             UpdateGameSorter();
         }
 
-        #endregion
-
         private void lstGames_SelectedIndexChanged( object sender, EventArgs e ) {
             statusSelection.Text = string.Format( "{0} selected / {1} displayed", lstGames.SelectedItems.Count, lstGames.Items.Count );
         }
 
-        bool UpdateGame( int index ) {
-            ListViewItem item = lstGames.Items[index];
-            Game g = (Game)item.Tag;
-            if( ShouldDisplayGame( g ) ) {
-                item.SubItems[2].Text = g.Category == null ? CAT_UNC_NAME : g.Category.Name;
-                item.SubItems[3].Text = g.Favorite ? "Y" : "N";
-                return true;
-            } else {
-                lstGames.Items.RemoveAt( index );
-                return false;
-            }
-        }
-
-        void UpdateGameList() {
-            int i = 0;
-            lstGames.BeginUpdate();
-            while( i < lstGames.Items.Count ) {
-                if( UpdateGame( i ) ) {
-                    i++;
-                }
-                
-            }
-            lstGames.EndUpdate();
-        }
-
-        void UpdateGameListSelected() {
-            lstGames.BeginUpdate();
-            foreach( int index in lstGames.SelectedIndices ) {
-                UpdateGame( index );
-            }
-            lstGames.EndUpdate();
-        }
-
-        private void menu_File_AutoLoad_Click( object sender, EventArgs e ) {
-            AutoLoadDlg dlg = new AutoLoadDlg();
-            dlg.ShowDialog();
-        }
+        #endregion        
     }
 
     /// <summary>

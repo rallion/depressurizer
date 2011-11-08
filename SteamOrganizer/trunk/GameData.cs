@@ -61,6 +61,11 @@ namespace Depressurizer {
         }
 
         #region Modifiers
+        public void Clear() {
+            Games.Clear();
+            Categories.Clear();
+        }
+
         /// <summary>
         /// Sets the name of the given game ID, and adds the game to the list if it doesn't already exist.
         /// </summary>
