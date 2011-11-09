@@ -31,6 +31,8 @@ namespace Depressurizer {
 
         // Stores last selected category to minimize game list refreshes
         object lastSelectedCat = null;
+
+        bool unsavedChanges = false;
         #endregion
         public FormMain() {
             gameData = new GameData();
@@ -54,6 +56,8 @@ namespace Depressurizer {
                     if( loadedGames == 0 ) {
                         MessageBox.Show( "Warning: No game info found in the specified file." );
                     } else {
+                        unsavedChanges = false;
+                        menu_File_AutoSave.Enabled = false;
                         statusMsg.Text = string.Format( "Loaded local info for {0} games.", loadedGames );
                         lastSelectedCat = null; // Make sure the game list refreshes
                         FillCategoryList();
@@ -83,6 +87,28 @@ namespace Depressurizer {
                 }
                 Cursor = Cursors.Default;
             }
+        }
+
+        private void AutoLoad() {
+            AutoLoadDlg dlg = new AutoLoadDlg( gameData );
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                menu_File_AutoSave.Enabled = true;
+                unsavedChanges = false;
+                FillCategoryList();
+                FillGameList();
+            }
+        }
+
+        void AutoSave() {
+            Cursor = Cursors.WaitCursor;
+            try {
+                gameData.AutoSave();
+                statusMsg.Text = "File autosaved.";
+            } catch( IOException e ) {
+                MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            }
+            Cursor = Cursors.Default;
         }
 
         /// <summary>
@@ -136,6 +162,7 @@ namespace Depressurizer {
                 lstGames.Sort();
             }
             lstGames.EndUpdate();
+            UpdateSelectedStatusText();
         }
 
         /// <summary>
@@ -206,12 +233,10 @@ namespace Depressurizer {
             int i = 0;
             lstGames.BeginUpdate();
             while( i < lstGames.Items.Count ) {
-                if( UpdateGame( i ) ) {
-                    i++;
-                }
-
+                if( UpdateGame( i ) ) i++;
             }
             lstGames.EndUpdate();
+            UpdateGameListSelected();
         }
 
         void UpdateGameListSelected() {
@@ -220,6 +245,7 @@ namespace Depressurizer {
                 UpdateGame( index );
             }
             lstGames.EndUpdate();
+            UpdateGameListSelected();
         }
         #endregion
 
@@ -236,6 +262,7 @@ namespace Depressurizer {
                 if( newCat != null ) {
                     FillCategoryList();
                     combCategory.SelectedItem = newCat;
+                    unsavedChanges = true;
                     return newCat;
                 } else {
                     MessageBox.Show( String.Format( "Could not add category '{0}'", dlg.Value ), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
@@ -256,6 +283,7 @@ namespace Depressurizer {
                     if( gameData.RemoveCategory( c ) ) {
                         FillCategoryList();
                         FillGameList();
+                        unsavedChanges = true;
                         return true;
                     } else {
                         MessageBox.Show( string.Format( "Could not delete category '{0}'.", c.Name ), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
@@ -277,6 +305,7 @@ namespace Depressurizer {
                     if( ValidateCategoryName( dlg.Value ) && gameData.RenameCategory( c, dlg.Value ) ) {
                         FillCategoryList();
                         UpdateGameList();
+                        unsavedChanges = true;
                         return true;
                     } else {
                         MessageBox.Show( string.Format( "Name '{0}' is already in use.", dlg.Value ), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
@@ -296,6 +325,7 @@ namespace Depressurizer {
                     ( item.Tag as Game ).Category = cat;
                 }
                 UpdateGameListSelected();
+                unsavedChanges = true;
             }
         }
 
@@ -309,6 +339,7 @@ namespace Depressurizer {
                     ( item.Tag as Game ).Favorite = fav;
                 }
                 UpdateGameListSelected();
+                unsavedChanges = true;
             }
         }
 
@@ -402,13 +433,16 @@ namespace Depressurizer {
                 if( dropItem is Category ) {
                     gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), (Category)dropItem );
                     UpdateGameList();
+                    unsavedChanges = true;
                 } else if( dropItem is string ) {
                     if( (string)dropItem == CAT_FAV_NAME ) {
                         gameData.SetGameFavorites( (int[])e.Data.GetData( typeof( int[] ) ), true );
                         UpdateGameList();
+                        unsavedChanges = true;
                     } else if( (string)dropItem == CAT_UNC_NAME ) {
                         gameData.SetGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), null );
                         UpdateGameList();
+                        unsavedChanges = true;
                     }
                 }
             }
@@ -424,12 +458,21 @@ namespace Depressurizer {
         #endregion
         #region Main menu
         private void menu_File_AutoLoad_Click( object sender, EventArgs e ) {
-            AutoLoadDlg dlg = new AutoLoadDlg( gameData );
-            DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
-                FillCategoryList();
-                FillGameList();
+            AutoLoad();
+        }
+
+        private void menu_File_AutoSave_Click( object sender, EventArgs e ) {
+            if( gameData.AutoLoaded ) {
+                AutoSave();
+            } else {
+                MessageBox.Show( "Cannot Auto Save unless current data was Auro Loaded in.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
             }
+        }
+
+        private void clearToolStripMenuItem_Click( object sender, EventArgs e ) {
+            unsavedChanges = false;
+            menu_File_AutoSave.Enabled = false;
+            gameData.Clear();
         }
 
         private void menu_File_Load_Click( object sender, EventArgs e ) {
@@ -495,10 +538,14 @@ namespace Depressurizer {
         }
 
         private void lstGames_SelectedIndexChanged( object sender, EventArgs e ) {
-            statusSelection.Text = string.Format( "{0} selected / {1} displayed", lstGames.SelectedItems.Count, lstGames.Items.Count );
+            UpdateSelectedStatusText();
         }
 
-        #endregion        
+        #endregion
+
+        private void UpdateSelectedStatusText() {
+            statusSelection.Text = string.Format( "{0} selected / {1} displayed", lstGames.SelectedItems.Count, lstGames.Items.Count );
+        }
     }
 
     /// <summary>

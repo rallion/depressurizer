@@ -53,15 +53,27 @@ namespace Depressurizer {
 
         // Complete steam setting file data that was loaded
         private FileNode backingData;
+
+        public bool AutoLoaded { get; private set; }
+        private string steamId;
+        private string steamPath;
         #endregion
+
+        public void SetAutoload( string steamPath, string steamId ) {
+            AutoLoaded = true;
+            this.steamId = steamId;
+            this.steamPath = steamPath;
+        }
 
         public GameData() {
             Games = new Dictionary<int, Game>();
             Categories = new List<Category>();
+            AutoLoaded = false;
         }
 
         #region Modifiers
         public void Clear() {
+            AutoLoaded = false;
             Games.Clear();
             Categories.Clear();
         }
@@ -293,6 +305,11 @@ namespace Depressurizer {
             using( StreamWriter writer = new StreamWriter( path, false ) ) {
                 backingData.Save( writer );
             }
+        }
+
+        public void AutoSave() {
+            if( !AutoLoaded ) return;
+            SaveSteamFile( string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", steamPath, steamId ) );
         }
     }
 }

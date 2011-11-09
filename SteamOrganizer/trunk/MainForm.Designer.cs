@@ -56,6 +56,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusMsg = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusSelection = new System.Windows.Forms.ToolStripStatusLabel();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -82,6 +83,7 @@
             this.menu_File_AutoLoad,
             this.menu_File_AutoSave,
             this.menu_Sep1,
+            this.clearToolStripMenuItem,
             this.menu_File_Load,
             this.menu_File_ProfileLoad,
             this.menu_File_Save,
@@ -95,14 +97,16 @@
             // 
             this.menu_File_AutoLoad.Name = "menu_File_AutoLoad";
             this.menu_File_AutoLoad.Size = new System.Drawing.Size(189, 22);
-            this.menu_File_AutoLoad.Text = "Auto Load...";
+            this.menu_File_AutoLoad.Text = "Load...";
             this.menu_File_AutoLoad.Click += new System.EventHandler(this.menu_File_AutoLoad_Click);
             // 
             // menu_File_AutoSave
             // 
+            this.menu_File_AutoSave.Enabled = false;
             this.menu_File_AutoSave.Name = "menu_File_AutoSave";
             this.menu_File_AutoSave.Size = new System.Drawing.Size(189, 22);
-            this.menu_File_AutoSave.Text = "Auto Save";
+            this.menu_File_AutoSave.Text = "Save";
+            this.menu_File_AutoSave.Click += new System.EventHandler(this.menu_File_AutoSave_Click);
             // 
             // menu_Sep1
             // 
@@ -113,7 +117,7 @@
             // 
             this.menu_File_Load.Name = "menu_File_Load";
             this.menu_File_Load.Size = new System.Drawing.Size(189, 22);
-            this.menu_File_Load.Text = "Manual Load...";
+            this.menu_File_Load.Text = "Manual File Load...";
             this.menu_File_Load.Click += new System.EventHandler(this.menu_File_Load_Click);
             // 
             // menu_File_ProfileLoad
@@ -412,6 +416,13 @@
             this.statusSelection.Size = new System.Drawing.Size(200, 17);
             this.statusSelection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.clearToolStripMenuItem.Text = "Clear";
+            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -476,6 +487,7 @@
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusMsg;
         private System.Windows.Forms.ToolStripStatusLabel statusSelection;
+        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
     }
 }
 

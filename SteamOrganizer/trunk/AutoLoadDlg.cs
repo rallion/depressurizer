@@ -25,6 +25,8 @@ namespace Depressurizer {
             toolTip.SetToolTip( lnkHelpPath, PATH_HELP );
             toolTip.SetToolTip( lnkHelpId, ID_HELP );
             toolTip.SetToolTip( lnkHelpProfile, PROF_HELP );
+
+            txtProfileName.Focus();
         }
 
         private void AutoLoadDlg_Load( object sender, EventArgs e ) {
@@ -94,7 +96,7 @@ namespace Depressurizer {
         }
 
         private bool LoadData() {
-string steamPath = GetFixedSteamPath();
+            string steamPath = GetFixedSteamPath();
             if( !Directory.Exists( steamPath ) ) {
                 MessageBox.Show( "Steam directory does not exist. Aborting.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 return false;
@@ -117,6 +119,7 @@ string steamPath = GetFixedSteamPath();
             }
 
             gameData.Clear();
+            gameData.SetAutoload( steamPath, combUserId.Text );
             modified = true;
 
             if( loadFile ) {
