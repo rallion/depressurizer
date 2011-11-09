@@ -25,8 +25,6 @@ namespace Depressurizer {
             toolTip.SetToolTip( lnkHelpPath, PATH_HELP );
             toolTip.SetToolTip( lnkHelpId, ID_HELP );
             toolTip.SetToolTip( lnkHelpProfile, PROF_HELP );
-
-            txtProfileName.Focus();
         }
 
         private void AutoLoadDlg_Load( object sender, EventArgs e ) {
@@ -36,7 +34,8 @@ namespace Depressurizer {
 
             RefreshIdList();
 
-            txtProfileName.Focus();
+            //txtProfileName.Focus();
+            txtProfileName.Select();
         }
 
         private void RefreshIdList() {
