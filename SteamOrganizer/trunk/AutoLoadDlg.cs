@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using System.IO;
 
 namespace Depressurizer {
     public partial class AutoLoadDlg : Form {
+        #region Help constants
         const string PATH_HELP = "This is the path to your Steam installation.\nThe Program will try to set this automatically.\nIf it does not, type in the correct path, or click the Browse button.";
         const string ID_HELP = "This is your numeric Steam user ID.\nThe program will try to automatically fill the box with found options.\nIf you change the Steam path, click Refresh to reload the list.";
         const string PROF_HELP = "This is your Steam profile ID.\nIn order for the program to get your information,\nyou must be connected to the internet, and your profile must not be private.";
+        #endregion
 
+        #region Fields
         bool modified = false;
         GameData gameData;
+        #endregion
 
         public AutoLoadDlg( GameData d ) {
             gameData = d;
@@ -27,6 +25,7 @@ namespace Depressurizer {
             toolTip.SetToolTip( lnkHelpProfile, PROF_HELP );
         }
 
+        #region Event handlers
         private void AutoLoadDlg_Load( object sender, EventArgs e ) {
 
             //this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -37,6 +36,32 @@ namespace Depressurizer {
             //txtProfileName.Focus();
             txtProfileName.Select();
         }
+
+        private void cmdBrowse_Click( object sender, EventArgs e ) {
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                txtSteamPath.Text = dlg.SelectedPath;
+                RefreshIdList();
+            }
+        }
+
+        private void cmdRefreshIdList_Click( object sender, EventArgs e ) {
+            RefreshIdList();
+        }
+
+        private void cmdCancel_Click( object sender, EventArgs e ) {
+            DialogResult = modified ? DialogResult.OK : DialogResult.Cancel;
+        }
+
+        private void cmdLoad_Click( object sender, EventArgs e ) {
+            Cursor = Cursors.WaitCursor;
+            if( LoadData() ) {
+                DialogResult = modified ? DialogResult.OK : DialogResult.Cancel;
+            }
+            Cursor = Cursors.Default;
+        }
+        #endregion
 
         private void RefreshIdList() {
             combUserId.BeginUpdate();
@@ -50,48 +75,34 @@ namespace Depressurizer {
         }
 
         private string GetSteamPath() {
-            string s = Registry.GetValue( @"HKEY_CURRENT_USER\Software\Valve\Steam", "steamPath", "" ) as string;
-            if( s == null ) s = "";
-            s = s.Replace( '/', '\\' );
-            return s;
-        }
-
-        private void cmdBrowse_Click( object sender, EventArgs e ) {
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
-            DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
-                txtSteamPath.Text = dlg.SelectedPath;
-                RefreshIdList();
+            try {
+                string s = Registry.GetValue( @"HKEY_CURRENT_USER\Software\Valve\Steam", "steamPath", null ) as string;
+                if( s == null ) s = string.Empty;
+                return s.Replace( '/', '\\' );;
+            } catch {
+                return string.Empty;
             }
         }
 
         private string[] GetSteamIds() {
-            DirectoryInfo dir = new DirectoryInfo( GetFixedSteamPath() + "\\userdata" );
-            if( dir.Exists ) {
-                DirectoryInfo[] userDirs = dir.GetDirectories();
-                string[] result = new string[userDirs.Length];
-                for( int i = 0; i < userDirs.Length; i++ ) {
-                    result[i] = userDirs[i].Name;
+            try {
+                DirectoryInfo dir = new DirectoryInfo( GetFixedSteamPath() + "\\userdata" );
+                if( dir.Exists ) {
+                    DirectoryInfo[] userDirs = dir.GetDirectories();
+                    string[] result = new string[userDirs.Length];
+                    for( int i = 0; i < userDirs.Length; i++ ) {
+                        result[i] = userDirs[i].Name;
+                    }
+                    return result;
                 }
-                return result;
+                return new string[0];
+            } catch {
+                return new string[0];
             }
-            return new string[0];
         }
 
         private string GetFixedSteamPath() {
             return txtSteamPath.Text.Trim().TrimEnd( new char[] { '\\' } );
-        }
-
-        private void cmdRefreshIdList_Click( object sender, EventArgs e ) {
-            RefreshIdList();
-        }
-
-        private void cmdLoad_Click( object sender, EventArgs e ) {
-            Cursor = Cursors.WaitCursor;
-            if( LoadData() ) {
-                DialogResult = modified ? DialogResult.OK : DialogResult.Cancel;
-            }
-            Cursor = Cursors.Default;
         }
 
         private bool LoadData() {
@@ -145,10 +156,6 @@ namespace Depressurizer {
             }
 
             return true;
-        }
-
-        private void cmdCancel_Click( object sender, EventArgs e ) {
-            DialogResult = modified ? DialogResult.OK : DialogResult.Cancel;
         }
     }
 }

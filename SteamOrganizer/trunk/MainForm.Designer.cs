@@ -300,6 +300,7 @@
             this.cmdGameAdd.TabIndex = 6;
             this.cmdGameAdd.Text = "Add";
             this.cmdGameAdd.UseVisualStyleBackColor = true;
+            this.cmdGameAdd.Visible = false;
             // 
             // cmdGameRemove
             // 
@@ -311,6 +312,7 @@
             this.cmdGameRemove.TabIndex = 7;
             this.cmdGameRemove.Text = "Remove Game";
             this.cmdGameRemove.UseVisualStyleBackColor = true;
+            this.cmdGameRemove.Visible = false;
             // 
             // cmdGameEdit
             // 
@@ -322,6 +324,7 @@
             this.cmdGameEdit.TabIndex = 5;
             this.cmdGameEdit.Text = "Edit Game";
             this.cmdGameEdit.UseVisualStyleBackColor = true;
+            this.cmdGameEdit.Visible = false;
             // 
             // combCategory
             // 
