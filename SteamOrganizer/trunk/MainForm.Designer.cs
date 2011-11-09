@@ -28,6 +28,7 @@
             this.menu_File_AutoLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_AutoSave = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_Sep1 = new System.Windows.Forms.ToolStripSeparator();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_Load = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_ProfileLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_Save = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +57,6 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusMsg = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusSelection = new System.Windows.Forms.ToolStripStatusLabel();
-            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -96,6 +96,7 @@
             // menu_File_AutoLoad
             // 
             this.menu_File_AutoLoad.Name = "menu_File_AutoLoad";
+            this.menu_File_AutoLoad.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
             this.menu_File_AutoLoad.Size = new System.Drawing.Size(189, 22);
             this.menu_File_AutoLoad.Text = "Load...";
             this.menu_File_AutoLoad.Click += new System.EventHandler(this.menu_File_AutoLoad_Click);
@@ -104,6 +105,7 @@
             // 
             this.menu_File_AutoSave.Enabled = false;
             this.menu_File_AutoSave.Name = "menu_File_AutoSave";
+            this.menu_File_AutoSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.menu_File_AutoSave.Size = new System.Drawing.Size(189, 22);
             this.menu_File_AutoSave.Text = "Save";
             this.menu_File_AutoSave.Click += new System.EventHandler(this.menu_File_AutoSave_Click);
@@ -112,6 +114,13 @@
             // 
             this.menu_Sep1.Name = "menu_Sep1";
             this.menu_Sep1.Size = new System.Drawing.Size(186, 6);
+            // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.clearToolStripMenuItem.Text = "Clear";
+            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
             // menu_File_Load
             // 
@@ -416,13 +425,6 @@
             this.statusSelection.Size = new System.Drawing.Size(200, 17);
             this.statusSelection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // clearToolStripMenuItem
-            // 
-            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
-            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -436,6 +438,7 @@
             this.Name = "FormMain";
             this.ShowIcon = false;
             this.Text = "Depressurizer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.splitContainer.Panel1.ResumeLayout(false);

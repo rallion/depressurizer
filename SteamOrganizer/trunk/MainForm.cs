@@ -47,6 +47,9 @@ namespace Depressurizer {
         /// Loads a Steam configuration file. Asks the user to select a file, handles the load, and refreshes the UI.
         /// </summary>
         void ManualLoad() {
+            if( !CheckForUnsaved() ) {
+                return;
+            }
             OpenFileDialog dlg = new OpenFileDialog();
             DialogResult res = dlg.ShowDialog();
             if( res == DialogResult.OK ) {
@@ -74,7 +77,8 @@ namespace Depressurizer {
         /// <summary>
         /// Saves a Steam configuration file. Asks the user to select the file to save as.
         /// </summary>
-        void ManualSave() {
+        /// <returns>True if save was completed, false otherwise</returns>
+        bool ManualSave() {
             SaveFileDialog dlg = new SaveFileDialog();
             DialogResult res = dlg.ShowDialog();
             if( res == DialogResult.OK ) {
@@ -82,14 +86,19 @@ namespace Depressurizer {
                 try {
                     gameData.SaveSteamFile( dlg.FileName );
                     statusMsg.Text = "File saved.";
+                    return true;
                 } catch( IOException e ) {
                     MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
                 Cursor = Cursors.Default;
             }
+            return false;
         }
 
         private void AutoLoad() {
+            if( !CheckForUnsaved() ) {
+                return;
+            }
             AutoLoadDlg dlg = new AutoLoadDlg( gameData );
             DialogResult res = dlg.ShowDialog();
             if( res == System.Windows.Forms.DialogResult.OK ) {
@@ -97,6 +106,7 @@ namespace Depressurizer {
                 unsavedChanges = false;
                 FillCategoryList();
                 FillGameList();
+                statusMsg.Text = "Steam config loaded.";
             }
         }
 
@@ -236,16 +246,21 @@ namespace Depressurizer {
                 if( UpdateGame( i ) ) i++;
             }
             lstGames.EndUpdate();
-            UpdateGameListSelected();
+            UpdateSelectedStatusText();
         }
 
         void UpdateGameListSelected() {
+            int i = 0;
             lstGames.BeginUpdate();
-            foreach( int index in lstGames.SelectedIndices ) {
-                UpdateGame( index );
+            while( i < lstGames.SelectedIndices.Count ) {
+                if( UpdateGame( lstGames.SelectedIndices[i] ) ) i++;
             }
             lstGames.EndUpdate();
-            UpdateGameListSelected();
+            UpdateSelectedStatusText();
+        }
+
+        private void UpdateSelectedStatusText() {
+            statusSelection.Text = string.Format( "{0} selected / {1} displayed", lstGames.SelectedItems.Count, lstGames.Items.Count );
         }
         #endregion
 
@@ -343,6 +358,16 @@ namespace Depressurizer {
             }
         }
 
+        void ClearData() {
+            if( !CheckForUnsaved() ) {
+                return;
+            }
+            unsavedChanges = false;
+            menu_File_AutoSave.Enabled = false;
+            gameData.Clear();
+            FillCategoryList();
+            FillGameList();
+        }
         #endregion
 
         #region Utility
@@ -417,6 +442,25 @@ namespace Depressurizer {
             }
             return false;
         }
+
+        private bool CheckForUnsaved() {
+            if( !unsavedChanges ) {
+                return true;
+            }
+            DialogResult res = MessageBox.Show( "Unsaved changes will be lost. Save first?", "Unsaved changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning );
+            if( res == System.Windows.Forms.DialogResult.No ) {
+                return true;
+            }
+            if( res == System.Windows.Forms.DialogResult.Cancel ) {
+                return false;
+            }
+            if( gameData.AutoLoaded ) {
+                gameData.AutoSave();
+                return true;
+            } else {
+                return ManualSave();
+            }
+        }
         #endregion
 
         #region UI Event Handlers
@@ -470,9 +514,7 @@ namespace Depressurizer {
         }
 
         private void clearToolStripMenuItem_Click( object sender, EventArgs e ) {
-            unsavedChanges = false;
-            menu_File_AutoSave.Enabled = false;
-            gameData.Clear();
+            ClearData();
         }
 
         private void menu_File_Load_Click( object sender, EventArgs e ) {
@@ -543,8 +585,8 @@ namespace Depressurizer {
 
         #endregion
 
-        private void UpdateSelectedStatusText() {
-            statusSelection.Text = string.Format( "{0} selected / {1} displayed", lstGames.SelectedItems.Count, lstGames.Items.Count );
+        private void FormMain_FormClosing( object sender, FormClosingEventArgs e ) {
+            e.Cancel = !CheckForUnsaved();
         }
     }
 
