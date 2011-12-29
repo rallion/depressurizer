@@ -37,7 +37,7 @@ namespace Depressurizer {
         }
 
         public int CompareTo( object o ) {
-            return Name.CompareTo( (o as Category).Name );
+            return Name.CompareTo( ( o as Category ).Name );
         }
     }
 
@@ -215,7 +215,7 @@ namespace Depressurizer {
                     int id;
                     if( int.TryParse( m.Groups[1].Value, out id ) ) {
                         // TODO: Strip escape characters out
-                        SetGameName( id, m.Groups[2].Value.Replace("\\'", "'") );
+                        SetGameName( id, m.Groups[2].Value.Replace( "\\'", "'" ) );
                         loadedGames++;
                     }
                 }
@@ -244,33 +244,41 @@ namespace Depressurizer {
             this.backingData = dataRoot;
 
             FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true );
-            foreach( KeyValuePair<string, FileNode> gameNode in (Dictionary<string, FileNode>)appsNode.NodeData ) {
-                int gameId;
-                if( int.TryParse( gameNode.Key, out gameId ) ) {
-                    Category cat = null;
-                    bool fav = false;
-                    if( gameNode.Value.ContainsKey( "tags" ) ) {
-                        FileNode tagsNode = gameNode.Value["tags"];
-                        foreach( FileNode tag in ( (Dictionary<string, FileNode>)tagsNode.NodeData ).Values ) {
-                            if( tag.NodeType == ValueType.Value ) {
-                                string tagName = (string)tag.NodeData;
-                                if( tagName == "favorite" ) {
-                                    fav = true;
-                                } else {
-                                    cat = GetCategory( tagName );
+
+            Dictionary<string, FileNode> gameNodeArray = appsNode.NodeArray;
+            if( gameNodeArray != null ) {
+                foreach( KeyValuePair<string, FileNode> gameNodePair in gameNodeArray ) {
+                    int gameId;
+                    if( int.TryParse( gameNodePair.Key, out gameId ) ) {
+                        Category cat = null;
+                        bool fav = false;
+                        if( gameNodePair.Value != null && gameNodePair.Value.ContainsKey( "tags" ) ) {
+                            FileNode tagsNode = gameNodePair.Value["tags"];
+                            Dictionary<string, FileNode> tagArray = tagsNode.NodeArray;
+                            if( tagArray != null ) {
+                                foreach( FileNode tag in tagArray.Values ) {
+                                    string tagName = tag.NodeString;
+                                    if( tagName != null ) {
+                                        if( tagName == "favorite" ) {
+                                            fav = true;
+                                        } else {
+                                            cat = GetCategory( tagName );
+                                        }
+                                    }
                                 }
                             }
                         }
+                        if( !Games.ContainsKey( gameId ) ) {
+                            Game newGame = new Game( gameId, string.Empty );
+                            Games.Add( gameId, newGame );
+                            loadedGames++;
+                        }
+                        Games[gameId].Category = cat;
+                        Games[gameId].Favorite = fav;
                     }
-                    if( !Games.ContainsKey( gameId ) ) {
-                        Game newGame = new Game( gameId, string.Empty );
-                        Games.Add( gameId, newGame );
-                        loadedGames++;
-                    }
-                    Games[gameId].Category = cat;
-                    Games[gameId].Favorite = fav;
                 }
             }
+
             return loadedGames;
 
         }

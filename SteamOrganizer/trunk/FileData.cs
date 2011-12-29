@@ -54,7 +54,13 @@ namespace Depressurizer {
         /// </summary>
         public Dictionary<string, FileNode> NodeArray {
             get {
-                return NodeData as Dictionary<string, FileNode>;
+                return ( NodeType == ValueType.Array ) ? ( NodeData as Dictionary<string, FileNode> ) : null;
+            }
+        }
+
+        public string NodeString {
+            get {
+                return ( NodeType == ValueType.Value ) ? ( NodeData as string ) : null;
             }
         }
 
