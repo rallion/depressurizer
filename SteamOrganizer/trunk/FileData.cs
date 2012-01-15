@@ -252,8 +252,11 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="stream">Stream to load from</param>
         /// <returns>FileNode representing the contents of the stream.</returns>
-        public static FileNode Load( StreamReader stream ) {
-            FileNode thisLevel = new FileNode();
+        public static FileNode Load( StreamReader stream, bool useFirstAsRoot = false ) {
+            FileNode thisLevel = useFirstAsRoot ? null : new FileNode();
+
+            SkipWhitespace( stream );
+
             while( !stream.EndOfStream ) {
 
                 SkipWhitespace( stream );
@@ -271,15 +274,20 @@ namespace Depressurizer {
 
                 // Get value
                 nextChar = (char)stream.Read();
+                FileNode newNode;
                 if( nextChar == '"' ) {
-                    string value = GetStringToken( stream );
-                    thisLevel[key] = new FileNode( value );
+                    newNode = new FileNode( GetStringToken( stream ) );
                 } else if( nextChar == '{' ) {
-                    FileNode value = Load( stream );
-                    thisLevel[key] = value;
+                    newNode = Load( stream );
                 } else {
                     throw new ParseException( string.Format( "Unexpected character '{0}' found when expecting value.", nextChar ) );
                 }
+
+                if( useFirstAsRoot ) {
+                    return newNode;
+                }
+
+                thisLevel[key] = newNode;
             }
             return thisLevel;
         }

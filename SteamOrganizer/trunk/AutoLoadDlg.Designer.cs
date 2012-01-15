@@ -43,7 +43,8 @@
             // cmdCancel
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdCancel.Location = new System.Drawing.Point(359, 100);
+            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Location = new System.Drawing.Point(359, 99);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 11;
@@ -54,7 +55,7 @@
             // cmdLoad
             // 
             this.cmdLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdLoad.Location = new System.Drawing.Point(440, 100);
+            this.cmdLoad.Location = new System.Drawing.Point(440, 99);
             this.cmdLoad.Name = "cmdLoad";
             this.cmdLoad.Size = new System.Drawing.Size(75, 23);
             this.cmdLoad.TabIndex = 12;
@@ -151,7 +152,7 @@
             this.toolTip.AutoPopDelay = 30000;
             this.toolTip.InitialDelay = 0;
             this.toolTip.IsBalloon = true;
-            this.toolTip.ReshowDelay = 50;
+            this.toolTip.ReshowDelay = 0;
             this.toolTip.ShowAlways = true;
             this.toolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.toolTip.ToolTipTitle = "Help";
@@ -183,7 +184,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(527, 135);
+            this.ClientSize = new System.Drawing.Size(527, 134);
             this.Controls.Add(this.lnkHelpProfile);
             this.Controls.Add(this.lnkHelpPath);
             this.Controls.Add(this.lnkHelpId);

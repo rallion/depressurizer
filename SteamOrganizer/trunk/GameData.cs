@@ -55,6 +55,8 @@ namespace Depressurizer {
         public bool AutoLoaded { get; private set; }
         private string steamId;
         private string steamPath;
+
+        bool roamingNode = false;
         #endregion
 
         public void SetAutoload( string steamPath, string steamId ) {
@@ -72,6 +74,7 @@ namespace Depressurizer {
         #region Modifiers
         public void Clear() {
             AutoLoaded = false;
+            roamingNode = false;
             Games.Clear();
             Categories.Clear();
         }
@@ -193,7 +196,7 @@ namespace Depressurizer {
         /// <param name="profileName">Name of the Steam profile to get</param>
         /// <returns>The number of games found in the profile</returns>
         public int LoadProfile( string profileName ) {
-            string url = string.Format( @"http://steamcommunity.com/id/{0}/games/?tab=all", profileName );
+            string url = string.Format( @"http://steamcommunity.com/id/{0}/games?tab=all&sort=name", profileName );
             WebRequest req = HttpWebRequest.Create( url );
             WebResponse response = req.GetResponse();
             StreamReader reader = new StreamReader( response.GetResponseStream() );
@@ -214,7 +217,6 @@ namespace Depressurizer {
                 if( m.Success ) {
                     int id;
                     if( int.TryParse( m.Groups[1].Value, out id ) ) {
-                        // TODO: Strip escape characters out
                         SetGameName( id, m.Groups[2].Value.Replace( "\\'", "'" ) );
                         loadedGames++;
                     }
@@ -232,7 +234,7 @@ namespace Depressurizer {
         /// <param name="filePath">The path of the file to open</param>
         /// <returns>The number of game entries found</returns>
         public int LoadSteamFile( string filePath ) {
-            int loadedGames = 0;
+            
             FileNode dataRoot;
 
             using( StreamReader reader = new StreamReader( filePath, false ) ) {
@@ -243,7 +245,22 @@ namespace Depressurizer {
             Categories.Clear();
             this.backingData = dataRoot;
 
-            FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true );
+            int loadedGames = 0;
+
+            if( dataRoot.ContainsKey( "UserLocalConfigStore" ) ) {
+                FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true );
+                loadedGames += LoadGames( appsNode );
+            }
+            if( dataRoot.ContainsKey( "UserRoamingConfigStore" ) ) {
+                roamingNode = true;
+                FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserRoamingConfigStore", "Software", "Valve", "Steam", "apps" }, true );
+                loadedGames += LoadGames( appsNode );
+            }
+            return loadedGames;
+        }
+
+        private int LoadGames( FileNode appsNode ) {
+            int loadedGames = 0;
 
             Dictionary<string, FileNode> gameNodeArray = appsNode.NodeArray;
             if( gameNodeArray != null ) {
@@ -280,7 +297,6 @@ namespace Depressurizer {
             }
 
             return loadedGames;
-
         }
 
         /// <summary>
@@ -288,7 +304,9 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="path">Full path of the steam config file to save</param>
         public void SaveSteamFile( string path ) {
-            FileNode appListNode = backingData.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" } );
+            FileNode appListNode = roamingNode ?
+                ( backingData.GetNodeAt( new string[] { "UserRoamingConfigStore", "Software", "Valve", "Steam", "apps" }, true ) ) :
+                ( backingData.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true ) );
 
             foreach( Game game in Games.Values ) {
                 FileNode gameNode = appListNode[game.Id.ToString()];
