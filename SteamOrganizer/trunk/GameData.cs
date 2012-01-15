@@ -234,29 +234,19 @@ namespace Depressurizer {
         /// <param name="filePath">The path of the file to open</param>
         /// <returns>The number of game entries found</returns>
         public int LoadSteamFile( string filePath ) {
-            
+
             FileNode dataRoot;
 
             using( StreamReader reader = new StreamReader( filePath, false ) ) {
-                dataRoot = FileNode.Load( reader );
+                dataRoot = FileNode.Load( reader, true );
             }
 
             Games.Clear();
             Categories.Clear();
             this.backingData = dataRoot;
 
-            int loadedGames = 0;
-
-            if( dataRoot.ContainsKey( "UserLocalConfigStore" ) ) {
-                FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true );
-                loadedGames += LoadGames( appsNode );
-            }
-            if( dataRoot.ContainsKey( "UserRoamingConfigStore" ) ) {
-                roamingNode = true;
-                FileNode appsNode = dataRoot.GetNodeAt( new string[] { "UserRoamingConfigStore", "Software", "Valve", "Steam", "apps" }, true );
-                loadedGames += LoadGames( appsNode );
-            }
-            return loadedGames;
+            FileNode appsNode = dataRoot.GetNodeAt( new string[] { "Software", "Valve", "Steam", "apps" }, true );
+            return LoadGames( appsNode );
         }
 
         private int LoadGames( FileNode appsNode ) {
@@ -304,9 +294,7 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="path">Full path of the steam config file to save</param>
         public void SaveSteamFile( string path ) {
-            FileNode appListNode = roamingNode ?
-                ( backingData.GetNodeAt( new string[] { "UserRoamingConfigStore", "Software", "Valve", "Steam", "apps" }, true ) ) :
-                ( backingData.GetNodeAt( new string[] { "UserLocalConfigStore", "Software", "Valve", "Steam", "apps" }, true ) );
+            FileNode appListNode = backingData.GetNodeAt( new string[] { "Software", "Valve", "Steam", "apps" }, true );
 
             foreach( Game game in Games.Values ) {
                 FileNode gameNode = appListNode[game.Id.ToString()];
@@ -326,8 +314,11 @@ namespace Depressurizer {
 
             appListNode.CleanTree();
 
+            FileNode fullFile = new FileNode();
+            fullFile["UserLocalConfigStore"] = backingData;
+
             using( StreamWriter writer = new StreamWriter( path, false ) ) {
-                backingData.Save( writer );
+                fullFile.Save( writer );
             }
         }
 
