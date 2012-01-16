@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace Depressurizer {
     /// <summary>
@@ -56,7 +57,6 @@ namespace Depressurizer {
         private string steamId;
         private string steamPath;
 
-        bool roamingNode = false;
         #endregion
 
         public void SetAutoload( string steamPath, string steamId ) {
@@ -74,7 +74,6 @@ namespace Depressurizer {
         #region Modifiers
         public void Clear() {
             AutoLoaded = false;
-            roamingNode = false;
             Games.Clear();
             Categories.Clear();
         }
@@ -196,36 +195,30 @@ namespace Depressurizer {
         /// <param name="profileName">Name of the Steam profile to get</param>
         /// <returns>The number of games found in the profile</returns>
         public int LoadProfile( string profileName ) {
-            string url = string.Format( @"http://steamcommunity.com/id/{0}/games?tab=all&sort=name", profileName );
+            
+            string url = string.Format( Properties.Resources.ProfileURL, profileName );
+            //string url = string.Format( @"http://steamcommunity.com/id/{0}/games?tab=all&xml=1", profileName );
             WebRequest req = HttpWebRequest.Create( url );
             WebResponse response = req.GetResponse();
-            StreamReader reader = new StreamReader( response.GetResponseStream() );
 
-            string line;
-
-            // Get to relevant javascript
-            do {
-                line = reader.ReadLine();
-                if( line == null ) return 0;
-            } while( line != null && !line.Contains( "rgGames" ) );
+            XmlDocument doc = new XmlDocument();
+            doc.Load( response.GetResponseStream() );
+            response.Close();
 
             int loadedGames = 0;
-            line = reader.ReadLine();
-            Regex regex = new Regex( @"rgGames\['(\d+)'\]\s*=\s*'(.*)';" );
-            while( !line.StartsWith( "</script>" ) ) {
-                Match m = regex.Match( line );
-                if( m.Success ) {
-                    int id;
-                    if( int.TryParse( m.Groups[1].Value, out id ) ) {
-                        SetGameName( id, m.Groups[2].Value.Replace( "\\'", "'" ) );
+            XmlNodeList gameNodes = doc.SelectNodes( "//gamesList/games/game" );
+            foreach( XmlNode gameNode in gameNodes ) {
+                int appId;
+                XmlNode appIdNode = gameNode["appID"];
+                if( appIdNode != null && int.TryParse( appIdNode.InnerText, out appId ) ) {
+                    XmlNode nameNode = gameNode["name"];
+                    if( nameNode != null ) {
+                        SetGameName( appId, nameNode.InnerText );
                         loadedGames++;
                     }
                 }
-                line = reader.ReadLine();
             }
             return loadedGames;
-
-
         }
 
         /// <summary>

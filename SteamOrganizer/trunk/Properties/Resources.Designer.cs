@@ -59,5 +59,14 @@ namespace Depressurizer.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://steamcommunity.com/id/{0}/games?tab=all&amp;xml=1.
+        /// </summary>
+        internal static string ProfileURL {
+            get {
+                return ResourceManager.GetString("ProfileURL", resourceCulture);
+            }
+        }
     }
 }
