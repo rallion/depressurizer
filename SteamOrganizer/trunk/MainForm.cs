@@ -79,13 +79,16 @@ namespace Depressurizer {
             if( res == DialogResult.OK ) {
                 Cursor = Cursors.WaitCursor;
                 try {
-                    gameData.SaveSteamFile( dlg.FileName );
+                    gameData.SaveSteamFile( new FileInfo( dlg.FileName ) );
                     statusMsg.Text = "File saved.";
                     return true;
                 } catch( IOException e ) {
                     MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                } catch( UnauthorizedAccessException e ) {
+                    MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                } finally {
+                    Cursor = Cursors.Default;
                 }
-                Cursor = Cursors.Default;
             }
             return false;
         }
@@ -112,8 +115,11 @@ namespace Depressurizer {
                 statusMsg.Text = "File autosaved.";
             } catch( IOException e ) {
                 MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            } catch( UnauthorizedAccessException e ) {
+                MessageBox.Show( e.Message + "\nYou may use the Manual Save option to save the file to a different location.", "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            } finally {
+                Cursor = Cursors.Default;
             }
-            Cursor = Cursors.Default;
         }
 
         /// <summary>
@@ -581,7 +587,9 @@ namespace Depressurizer {
         #endregion
 
         private void FormMain_FormClosing( object sender, FormClosingEventArgs e ) {
-            e.Cancel = !CheckForUnsaved();
+            if( e.CloseReason == CloseReason.UserClosing ) {
+                e.Cancel = !CheckForUnsaved();
+            }
         }
     }
 

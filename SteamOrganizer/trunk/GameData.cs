@@ -195,7 +195,7 @@ namespace Depressurizer {
         /// <param name="profileName">Name of the Steam profile to get</param>
         /// <returns>The number of games found in the profile</returns>
         public int LoadProfile( string profileName ) {
-            
+
             string url = string.Format( Properties.Resources.ProfileURL, profileName );
             //string url = string.Format( @"http://steamcommunity.com/id/{0}/games?tab=all&xml=1", profileName );
             WebRequest req = HttpWebRequest.Create( url );
@@ -286,7 +286,7 @@ namespace Depressurizer {
         /// Writes category information out to a steam config file. Also saves any other settings that had been loaded, to avoid setting loss.
         /// </summary>
         /// <param name="path">Full path of the steam config file to save</param>
-        public void SaveSteamFile( string path ) {
+        public void SaveSteamFile( FileInfo file ) {
             FileNode appListNode = backingData.GetNodeAt( new string[] { "Software", "Valve", "Steam", "apps" }, true );
 
             foreach( Game game in Games.Values ) {
@@ -310,14 +310,16 @@ namespace Depressurizer {
             FileNode fullFile = new FileNode();
             fullFile["UserLocalConfigStore"] = backingData;
 
-            using( StreamWriter writer = new StreamWriter( path, false ) ) {
+            FileStream fStream = file.Open( FileMode.Create, FileAccess.Write, FileShare.None );
+            using( StreamWriter writer = new StreamWriter( fStream ) ) {
                 fullFile.Save( writer );
             }
+            fStream.Close();
         }
 
         public void AutoSave() {
             if( !AutoLoaded ) return;
-            SaveSteamFile( string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", steamPath, steamId ) );
+            SaveSteamFile( new FileInfo( string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", steamPath, steamId ) ) );
         }
     }
 }
