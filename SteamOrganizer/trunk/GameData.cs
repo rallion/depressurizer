@@ -194,11 +194,12 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="profileName">Name of the Steam profile to get</param>
         /// <returns>The number of games found in the profile</returns>
-        public int LoadProfile( string profileName ) {
+        public int LoadGameList( string profileName ) {
 
             string url = string.Format( Properties.Resources.ProfileURL, profileName );
             //string url = string.Format( @"http://steamcommunity.com/id/{0}/games?tab=all&xml=1", profileName );
             WebRequest req = HttpWebRequest.Create( url );
+                    
             WebResponse response = req.GetResponse();
 
             XmlDocument doc = new XmlDocument();
@@ -206,7 +207,7 @@ namespace Depressurizer {
             response.Close();
 
             int loadedGames = 0;
-            XmlNodeList gameNodes = doc.SelectNodes( "//gamesList/games/game" );
+            XmlNodeList gameNodes = doc.SelectNodes( "/gamesList/games/game" );
             foreach( XmlNode gameNode in gameNodes ) {
                 int appId;
                 XmlNode appIdNode = gameNode["appID"];

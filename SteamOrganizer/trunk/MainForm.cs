@@ -17,6 +17,8 @@ namespace Depressurizer {
         const string COMBO_NONE = "Remove category";
         #endregion
         #region Fields
+        // Stores currently loaded profile
+        ProfileData currentProfile;
         // Stores all actual game data
         GameData gameData;
 
@@ -130,7 +132,7 @@ namespace Depressurizer {
             if( dlg.ShowDialog() == DialogResult.OK ) {
                 Cursor = Cursors.WaitCursor;
                 try {
-                    int loadedGames = gameData.LoadProfile( dlg.Value );
+                    int loadedGames = gameData.LoadGameList( dlg.Value );
                     if( loadedGames == 0 ) {
                         MessageBox.Show( "No game data found. Please make sure the profile is spelled correctly, and that the profile is public.", "No data found", MessageBoxButtons.OK, MessageBoxIcon.Warning );
                     } else {
@@ -591,6 +593,38 @@ namespace Depressurizer {
                 e.Cancel = !CheckForUnsaved();
             }
         }
+
+        private void menu_File_NewProfile_Click( object sender, EventArgs e ) {
+            currentProfile = new ProfileData();
+            currentProfile.Name = "Test";
+            currentProfile.AccountID = "testAID";
+            currentProfile.CommunityName = "rallion";
+        }
+
+        private void menu_File_LoadProfile_Click( object sender, EventArgs e ) {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.DefaultExt = "profile";
+            dlg.AddExtension = true;
+            dlg.CheckFileExists = true;
+            dlg.Filter = "Profiles (*.prof)|*.profile";
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                currentProfile = ProfileData.LoadProfile( dlg.FileName );
+            }
+        }
+
+        private void menu_File_SaveProfile_Click( object sender, EventArgs e ) {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.DefaultExt = "profile";
+            dlg.AddExtension = true;
+            dlg.CheckPathExists = true;
+            dlg.Filter = "Profiles (*.prof)|*.profile";
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                currentProfile.SaveProfile( dlg.FileName );
+            }
+        }
+
     }
 
     /// <summary>

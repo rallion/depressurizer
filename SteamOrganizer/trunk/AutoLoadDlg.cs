@@ -147,7 +147,7 @@ namespace Depressurizer {
             }
 
             try {
-                int loadedGames = gameData.LoadProfile( txtProfileName.Text );
+                int loadedGames = gameData.LoadGameList( txtProfileName.Text );
                 if( loadedGames == 0 ) {
                     MessageBox.Show( "Warning: No game data found. Please make sure the profile name is spelled correctly, and that the profile is public.", "No data found", MessageBoxButtons.OK, MessageBoxIcon.Warning );
                 }
