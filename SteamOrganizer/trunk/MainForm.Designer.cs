@@ -28,20 +28,19 @@
             this.menu_File_NewProfile = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_LoadProfile = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_SaveProfile = new System.Windows.Forms.ToolStripMenuItem();
-            this.menu_Sep2 = new System.Windows.Forms.ToolStripSeparator();
             this.menu_File_AutoLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_AutoSave = new System.Windows.Forms.ToolStripMenuItem();
-            this.menu_Sep1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menu_Sep2 = new System.Windows.Forms.ToolStripSeparator();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_Load = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_ProfileLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_Save = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menu_Sep3 = new System.Windows.Forms.ToolStripSeparator();
             this.menu_File_Exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.profileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.updateGameListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.updateCategoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editProfileInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Profile = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Profile_UpdateList = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Profile_UpdateCats = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Profile_Edit = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.grpCategories = new System.Windows.Forms.GroupBox();
             this.lstCategories = new System.Windows.Forms.ListBox();
@@ -65,6 +64,9 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusMsg = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusSelection = new System.Windows.Forms.ToolStripStatusLabel();
+            this.menu_Sep1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menu_Config = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Config_Settings = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -80,7 +82,8 @@
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_File,
-            this.profileToolStripMenuItem});
+            this.menu_Profile,
+            this.menu_Config});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(772, 24);
@@ -92,15 +95,15 @@
             this.menu_File_NewProfile,
             this.menu_File_LoadProfile,
             this.menu_File_SaveProfile,
-            this.menu_Sep2,
+            this.menu_Sep1,
             this.menu_File_AutoLoad,
             this.menu_File_AutoSave,
-            this.menu_Sep1,
+            this.menu_Sep2,
             this.clearToolStripMenuItem,
             this.menu_File_Load,
             this.menu_File_ProfileLoad,
             this.menu_File_Save,
-            this.toolStripSeparator1,
+            this.menu_Sep3,
             this.menu_File_Exit});
             this.menu_File.Name = "menu_File";
             this.menu_File.Size = new System.Drawing.Size(37, 20);
@@ -127,11 +130,6 @@
             this.menu_File_SaveProfile.Text = "Save Profile";
             this.menu_File_SaveProfile.Click += new System.EventHandler(this.menu_File_SaveProfile_Click);
             // 
-            // menu_Sep2
-            // 
-            this.menu_Sep2.Name = "menu_Sep2";
-            this.menu_Sep2.Size = new System.Drawing.Size(186, 6);
-            // 
             // menu_File_AutoLoad
             // 
             this.menu_File_AutoLoad.Name = "menu_File_AutoLoad";
@@ -149,10 +147,10 @@
             this.menu_File_AutoSave.Text = "Save";
             this.menu_File_AutoSave.Click += new System.EventHandler(this.menu_File_AutoSave_Click);
             // 
-            // menu_Sep1
+            // menu_Sep2
             // 
-            this.menu_Sep1.Name = "menu_Sep1";
-            this.menu_Sep1.Size = new System.Drawing.Size(186, 6);
+            this.menu_Sep2.Name = "menu_Sep2";
+            this.menu_Sep2.Size = new System.Drawing.Size(186, 6);
             // 
             // clearToolStripMenuItem
             // 
@@ -182,10 +180,10 @@
             this.menu_File_Save.Text = "Manual Save...";
             this.menu_File_Save.Click += new System.EventHandler(this.menu_File_Save_Click);
             // 
-            // toolStripSeparator1
+            // menu_Sep3
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(186, 6);
+            this.menu_Sep3.Name = "menu_Sep3";
+            this.menu_Sep3.Size = new System.Drawing.Size(186, 6);
             // 
             // menu_File_Exit
             // 
@@ -194,33 +192,33 @@
             this.menu_File_Exit.Text = "Exit";
             this.menu_File_Exit.Click += new System.EventHandler(this.menu_File_Exit_Click);
             // 
-            // profileToolStripMenuItem
+            // menu_Profile
             // 
-            this.profileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.updateGameListToolStripMenuItem,
-            this.updateCategoriesToolStripMenuItem,
-            this.editProfileInfoToolStripMenuItem});
-            this.profileToolStripMenuItem.Name = "profileToolStripMenuItem";
-            this.profileToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
-            this.profileToolStripMenuItem.Text = "Profile";
+            this.menu_Profile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu_Profile_UpdateList,
+            this.menu_Profile_UpdateCats,
+            this.menu_Profile_Edit});
+            this.menu_Profile.Name = "menu_Profile";
+            this.menu_Profile.Size = new System.Drawing.Size(53, 20);
+            this.menu_Profile.Text = "Profile";
             // 
-            // updateGameListToolStripMenuItem
+            // menu_Profile_UpdateList
             // 
-            this.updateGameListToolStripMenuItem.Name = "updateGameListToolStripMenuItem";
-            this.updateGameListToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.updateGameListToolStripMenuItem.Text = "Update Game List";
+            this.menu_Profile_UpdateList.Name = "menu_Profile_UpdateList";
+            this.menu_Profile_UpdateList.Size = new System.Drawing.Size(171, 22);
+            this.menu_Profile_UpdateList.Text = "Update Game List";
             // 
-            // updateCategoriesToolStripMenuItem
+            // menu_Profile_UpdateCats
             // 
-            this.updateCategoriesToolStripMenuItem.Name = "updateCategoriesToolStripMenuItem";
-            this.updateCategoriesToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.updateCategoriesToolStripMenuItem.Text = "Update Categories";
+            this.menu_Profile_UpdateCats.Name = "menu_Profile_UpdateCats";
+            this.menu_Profile_UpdateCats.Size = new System.Drawing.Size(171, 22);
+            this.menu_Profile_UpdateCats.Text = "Update Categories";
             // 
-            // editProfileInfoToolStripMenuItem
+            // menu_Profile_Edit
             // 
-            this.editProfileInfoToolStripMenuItem.Name = "editProfileInfoToolStripMenuItem";
-            this.editProfileInfoToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.editProfileInfoToolStripMenuItem.Text = "Edit Profile Info";
+            this.menu_Profile_Edit.Name = "menu_Profile_Edit";
+            this.menu_Profile_Edit.Size = new System.Drawing.Size(171, 22);
+            this.menu_Profile_Edit.Text = "Edit Profile Info";
             // 
             // splitContainer
             // 
@@ -495,6 +493,25 @@
             this.statusSelection.Size = new System.Drawing.Size(200, 17);
             this.statusSelection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // menu_Sep1
+            // 
+            this.menu_Sep1.Name = "menu_Sep1";
+            this.menu_Sep1.Size = new System.Drawing.Size(186, 6);
+            // 
+            // menu_Config
+            // 
+            this.menu_Config.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu_Config_Settings});
+            this.menu_Config.Name = "menu_Config";
+            this.menu_Config.Size = new System.Drawing.Size(93, 20);
+            this.menu_Config.Text = "Configuration";
+            // 
+            // menu_Config_Settings
+            // 
+            this.menu_Config_Settings.Name = "menu_Config_Settings";
+            this.menu_Config_Settings.Size = new System.Drawing.Size(152, 22);
+            this.menu_Config_Settings.Text = "Settings...";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -544,7 +561,6 @@
         private System.Windows.Forms.Button cmdCatDelete;
         private System.Windows.Forms.Button cmdCatRename;
         private System.Windows.Forms.ColumnHeader colFavorite;
-        private System.Windows.Forms.ToolStripSeparator menu_Sep2;
         private System.Windows.Forms.ComboBox combFavorite;
         private System.Windows.Forms.Button cmdGameAdd;
         private System.Windows.Forms.Button cmdGameRemove;
@@ -554,7 +570,7 @@
         private System.Windows.Forms.Button cmdGameSetFavorite;
         private System.Windows.Forms.ToolStripMenuItem menu_File_AutoLoad;
         private System.Windows.Forms.ToolStripMenuItem menu_File_AutoSave;
-        private System.Windows.Forms.ToolStripSeparator menu_Sep1;
+        private System.Windows.Forms.ToolStripSeparator menu_Sep2;
         private System.Windows.Forms.ToolStripMenuItem menu_File_ProfileLoad;
         private System.Windows.Forms.ListBox lstCategories;
         private System.Windows.Forms.StatusStrip statusStrip;
@@ -564,11 +580,14 @@
         private System.Windows.Forms.ToolStripMenuItem menu_File_NewProfile;
         private System.Windows.Forms.ToolStripMenuItem menu_File_LoadProfile;
         private System.Windows.Forms.ToolStripMenuItem menu_File_SaveProfile;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem profileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem updateGameListToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem updateCategoriesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editProfileInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator menu_Sep3;
+        private System.Windows.Forms.ToolStripMenuItem menu_Profile;
+        private System.Windows.Forms.ToolStripMenuItem menu_Profile_UpdateList;
+        private System.Windows.Forms.ToolStripMenuItem menu_Profile_UpdateCats;
+        private System.Windows.Forms.ToolStripMenuItem menu_Profile_Edit;
+        private System.Windows.Forms.ToolStripSeparator menu_Sep1;
+        private System.Windows.Forms.ToolStripMenuItem menu_Config;
+        private System.Windows.Forms.ToolStripMenuItem menu_Config_Settings;
     }
 }
 

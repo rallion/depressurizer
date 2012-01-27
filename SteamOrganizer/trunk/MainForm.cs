@@ -225,7 +225,6 @@ namespace Depressurizer {
         /// Updates the game list sorter based on the current values of the sort settings fields.
         /// </summary>
         private void UpdateGameSorter() {
-            //TODO: no reason to create a NEW one each time, just make it modifiable.
             lstGames.ListViewItemSorter = new GameListViewItemComparer( sortColumn, sortDirection, sortColumn == 0 );
         }
 
