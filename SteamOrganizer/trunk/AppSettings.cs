@@ -9,6 +9,8 @@ using System.Reflection;
 namespace Depressurizer {
     class AppSettings {
 
+        protected readonly object threadLock = new object();
+
         protected bool outOfDate = false;
 
         public string FilePath;
@@ -25,12 +27,14 @@ namespace Depressurizer {
                 PropertyInfo[] properties = t.GetProperties();
                 XmlDocument doc = new XmlDocument();
                 XmlElement config = doc.CreateElement( "config" );
-                foreach( PropertyInfo pi in properties ) {
-                    object val = pi.GetValue( this, null );
-                    if( val != null ) {
-                        XmlElement element = doc.CreateElement( pi.Name );
-                        element.InnerText = val.ToString();
-                        config.AppendChild( element );
+                lock( threadLock ) {
+                    foreach( PropertyInfo pi in properties ) {
+                        object val = pi.GetValue( this, null );
+                        if( val != null ) {
+                            XmlElement element = doc.CreateElement( pi.Name );
+                            element.InnerText = val.ToString();
+                            config.AppendChild( element );
+                        }
                     }
                 }
                 doc.AppendChild( config );
@@ -44,18 +48,20 @@ namespace Depressurizer {
             XmlDocument doc = new XmlDocument();
             doc.Load( FilePath );
             XmlNode configNode = doc.SelectSingleNode( "/config" );
-            foreach( XmlNode node in configNode.ChildNodes ) {
-                string name = node.Name;
-                string value = node.InnerText;
-                PropertyInfo pi = type.GetProperty( name );
-                if( pi != null ) {
-                    this.SetProperty( pi, value );
+            lock( threadLock ) {
+                foreach( XmlNode node in configNode.ChildNodes ) {
+                    string name = node.Name;
+                    string value = node.InnerText;
+                    PropertyInfo pi = type.GetProperty( name );
+                    if( pi != null ) {
+                        this.SetProperty( pi, value );
+                    }
                 }
             }
             outOfDate = false;
         }
 
-        protected void SetProperty( PropertyInfo propertyInfo, string value ) {
+        private void SetProperty( PropertyInfo propertyInfo, string value ) {
             try {
                 if( propertyInfo.PropertyType == typeof( string ) ) {
                     propertyInfo.SetValue( this, value, null );

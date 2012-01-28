@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="DepSettings.cs" />
     <Compile Include="FatalError.cs">
       <SubType>Form</SubType>
     </Compile>
