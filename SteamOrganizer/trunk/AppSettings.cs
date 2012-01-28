@@ -9,8 +9,6 @@ using System.Reflection;
 namespace Depressurizer {
     class AppSettings {
 
-        protected object threadLock = new object();
-
         protected bool outOfDate = false;
 
         public string FilePath;
@@ -25,37 +23,36 @@ namespace Depressurizer {
                 Type t = this.GetType();
 
                 PropertyInfo[] properties = t.GetProperties();
-                lock( threadLock ) {
-                    XmlDocument doc = new XmlDocument();
-                    XmlElement config = doc.CreateElement( "config" );
-                    foreach( PropertyInfo pi in properties ) {
+                XmlDocument doc = new XmlDocument();
+                XmlElement config = doc.CreateElement( "config" );
+                foreach( PropertyInfo pi in properties ) {
+                    object val = pi.GetValue( this, null );
+                    if( val != null ) {
                         XmlElement element = doc.CreateElement( pi.Name );
-                        element.InnerText = pi.GetValue( this, null ).ToString();
+                        element.InnerText = val.ToString();
                         config.AppendChild( element );
                     }
-                    doc.AppendChild( config );
-                    doc.Save( FilePath );
-                    outOfDate = false;
                 }
+                doc.AppendChild( config );
+                doc.Save( FilePath );
+                outOfDate = false;
             }
         }
 
         public void Load() {
-            lock( threadLock ) {
-                Type type = this.GetType();
-                XmlDocument doc = new XmlDocument();
-                doc.Load( FilePath );
-                XmlNode configNode = doc.SelectSingleNode( "/config" );
-                foreach( XmlNode node in configNode.ChildNodes ) {
-                    string name = node.Name;
-                    string value = node.InnerText;
-                    PropertyInfo pi = type.GetProperty( name );
-                    if( pi != null ) {
-                        this.SetProperty( pi, value );
-                    }
+            Type type = this.GetType();
+            XmlDocument doc = new XmlDocument();
+            doc.Load( FilePath );
+            XmlNode configNode = doc.SelectSingleNode( "/config" );
+            foreach( XmlNode node in configNode.ChildNodes ) {
+                string name = node.Name;
+                string value = node.InnerText;
+                PropertyInfo pi = type.GetProperty( name );
+                if( pi != null ) {
+                    this.SetProperty( pi, value );
                 }
-                outOfDate = false;
             }
+            outOfDate = false;
         }
 
         protected void SetProperty( PropertyInfo propertyInfo, string value ) {
