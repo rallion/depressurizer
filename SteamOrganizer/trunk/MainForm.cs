@@ -596,10 +596,8 @@ namespace Depressurizer {
         }
 
         private void menu_File_NewProfile_Click( object sender, EventArgs e ) {
-            currentProfile = new ProfileData();
-            currentProfile.Name = "Test";
-            currentProfile.AccountID = "testAID";
-            currentProfile.CommunityName = "rallion";
+            ProfileDlg dlg = new ProfileDlg();
+            dlg.Show();
         }
 
         private void menu_File_LoadProfile_Click( object sender, EventArgs e ) {
@@ -619,7 +617,7 @@ namespace Depressurizer {
             dlg.DefaultExt = "profile";
             dlg.AddExtension = true;
             dlg.CheckPathExists = true;
-            dlg.Filter = "Profiles (*.prof)|*.profile";
+            dlg.Filter = "Profiles (*.profile)|*.profile";
             DialogResult res = dlg.ShowDialog();
             if( res == System.Windows.Forms.DialogResult.OK ) {
                 currentProfile.SaveProfile( dlg.FileName );
