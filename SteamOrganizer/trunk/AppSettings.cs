@@ -16,7 +16,6 @@ namespace Depressurizer {
         public string FilePath;
 
         protected AppSettings() {
-            //FilePath = System.Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ) + @"\Depressurizer\Settings.xml";
             FilePath = "Settings.xml";
         }
 
@@ -45,20 +44,22 @@ namespace Depressurizer {
 
         public void Load() {
             Type type = this.GetType();
-            XmlDocument doc = new XmlDocument();
-            doc.Load( FilePath );
-            XmlNode configNode = doc.SelectSingleNode( "/config" );
-            lock( threadLock ) {
-                foreach( XmlNode node in configNode.ChildNodes ) {
-                    string name = node.Name;
-                    string value = node.InnerText;
-                    PropertyInfo pi = type.GetProperty( name );
-                    if( pi != null ) {
-                        this.SetProperty( pi, value );
+            if( File.Exists( FilePath ) ) {
+                XmlDocument doc = new XmlDocument();
+                doc.Load( FilePath );
+                XmlNode configNode = doc.SelectSingleNode( "/config" );
+                lock( threadLock ) {
+                    foreach( XmlNode node in configNode.ChildNodes ) {
+                        string name = node.Name;
+                        string value = node.InnerText;
+                        PropertyInfo pi = type.GetProperty( name );
+                        if( pi != null ) {
+                            this.SetProperty( pi, value );
+                        }
                     }
                 }
+                outOfDate = false;
             }
-            outOfDate = false;
         }
 
         private void SetProperty( PropertyInfo propertyInfo, string value ) {

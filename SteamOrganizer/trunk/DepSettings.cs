@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Win32;
 
 namespace Depressurizer {
     class DepSettings : AppSettings {
@@ -127,8 +128,8 @@ namespace Depressurizer {
             }
         }
 
-        private DepSettings() : base() { }
-
-
+        private DepSettings() : base() {
+            //FilePath = System.Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ) + @"\Depressurizer\Settings.xml";
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿namespace Depressurizer {
-    partial class OptionsForm {
+    partial class OptionsDlg {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -182,6 +182,7 @@
             this.cmdAccept.TabIndex = 6;
             this.cmdAccept.Text = "OK";
             this.cmdAccept.UseVisualStyleBackColor = true;
+            this.cmdAccept.Click += new System.EventHandler(this.cmdAccept_Click);
             // 
             // cmdCancel
             // 
@@ -192,6 +193,7 @@
             this.cmdCancel.TabIndex = 7;
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
             // grpLoading
             // 
@@ -233,6 +235,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "OptionsForm";
             this.Text = "Settings";
+            this.Load += new System.EventHandler(this.OptionsForm_Load);
             this.grpSteamDir.ResumeLayout(false);
             this.grpSteamDir.PerformLayout();
             this.grpStartup.ResumeLayout(false);

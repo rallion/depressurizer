@@ -511,6 +511,7 @@
             this.menu_Config_Settings.Name = "menu_Config_Settings";
             this.menu_Config_Settings.Size = new System.Drawing.Size(152, 22);
             this.menu_Config_Settings.Text = "Settings...";
+            this.menu_Config_Settings.Click += new System.EventHandler(this.menu_Config_Settings_Click);
             // 
             // FormMain
             // 

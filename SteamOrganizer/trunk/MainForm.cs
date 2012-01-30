@@ -624,6 +624,11 @@ namespace Depressurizer {
             }
         }
 
+        private void menu_Config_Settings_Click( object sender, EventArgs e ) {
+            OptionsDlg dlg = new OptionsDlg();
+            dlg.ShowDialog();
+        }
+
     }
 
     /// <summary>

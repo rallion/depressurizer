@@ -13,6 +13,9 @@ namespace Depressurizer {
         static void Main() {
             FatalError.InitializeHandler();
 
+            DepSettings settings = DepSettings.Instance();
+            settings.Load();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             Application.Run( new FormMain() );
