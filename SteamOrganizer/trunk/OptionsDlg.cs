@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace Depressurizer {
     public partial class OptionsDlg : Form {
         public OptionsDlg() {
@@ -21,11 +22,7 @@ namespace Depressurizer {
             DepSettings settings = DepSettings.Instance();
             txtSteamPath.Text = settings.SteamPath;
             txtDefaultProfile.Text = settings.ProfileToLoad;
-            if( settings.LoadProfileOnStartup ) {
-                radStartupLoad.Checked = true;
-            } else {
-                radStartupNoLoad.Checked = true;
-            }
+            chkLoadProfileOnStart.Checked = settings.LoadProfileOnStartup;
             chkAutoSaveToSteam.Checked = settings.AutoSaveToSteam;
             chkPLoadSteamCats.Checked = settings.LoadSteamCatsOnProfileLoad;
             chkPLoadUpdateGameList.Checked = settings.DownloadGamelistOnProfileLoad;
@@ -36,7 +33,7 @@ namespace Depressurizer {
             DepSettings settings = DepSettings.Instance();
 
             settings.SteamPath = txtSteamPath.Text;
-            settings.LoadProfileOnStartup = radStartupLoad.Checked;
+            settings.LoadProfileOnStartup = chkLoadProfileOnStart.Checked;
             settings.ProfileToLoad = txtDefaultProfile.Text;
             settings.DownloadGamelistOnProfileLoad = chkPLoadUpdateGameList.Checked;
             settings.LoadSteamCatsOnProfileLoad = chkPLoadSteamCats.Checked;
@@ -53,6 +50,22 @@ namespace Depressurizer {
         private void cmdAccept_Click( object sender, EventArgs e ) {
             SaveFieldsToSettings();
             this.Close();
+        }
+
+        private void cmdSteamPathBrowse_Click( object sender, EventArgs e ) {
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                txtSteamPath.Text = dlg.SelectedPath;
+            }
+        }
+
+        private void cmdDefaultProfileBrowse_Click( object sender, EventArgs e ) {
+            OpenFileDialog dlg = new OpenFileDialog();
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                txtDefaultProfile.Text = dlg.FileName;
+            }
         }
     }
 }
