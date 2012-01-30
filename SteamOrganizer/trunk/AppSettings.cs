@@ -37,7 +37,11 @@ namespace Depressurizer {
                     }
                 }
                 doc.AppendChild( config );
-                doc.Save( FilePath );
+                try {
+                    doc.Save( FilePath );
+                } catch( IOException e ) {
+                    // LOG: error
+                }
                 outOfDate = false;
             }
         }
@@ -46,17 +50,23 @@ namespace Depressurizer {
             Type type = this.GetType();
             if( File.Exists( FilePath ) ) {
                 XmlDocument doc = new XmlDocument();
-                doc.Load( FilePath );
-                XmlNode configNode = doc.SelectSingleNode( "/config" );
-                lock( threadLock ) {
-                    foreach( XmlNode node in configNode.ChildNodes ) {
-                        string name = node.Name;
-                        string value = node.InnerText;
-                        PropertyInfo pi = type.GetProperty( name );
-                        if( pi != null ) {
-                            this.SetProperty( pi, value );
+                try {
+                    doc.Load( FilePath );
+                    XmlNode configNode = doc.SelectSingleNode( "/config" );
+                    lock( threadLock ) {
+                        foreach( XmlNode node in configNode.ChildNodes ) {
+                            string name = node.Name;
+                            string value = node.InnerText;
+                            PropertyInfo pi = type.GetProperty( name );
+                            if( pi != null ) {
+                                this.SetProperty( pi, value );
+                            }
                         }
                     }
+                } catch( XmlException e ) {
+                    // LOG: Error.
+                } catch( IOException e ) {
+                    // LOG: Error.
                 }
                 outOfDate = false;
             }
