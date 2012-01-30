@@ -30,6 +30,8 @@ namespace Depressurizer {
         object lastSelectedCat = null;
 
         bool unsavedChanges = false;
+
+        DepSettings settings = DepSettings.Instance();
         #endregion
         public FormMain() {
             gameData = new GameData();
@@ -627,6 +629,15 @@ namespace Depressurizer {
         private void menu_Config_Settings_Click( object sender, EventArgs e ) {
             OptionsDlg dlg = new OptionsDlg();
             dlg.ShowDialog();
+        }
+
+        private void FormMain_Load( object sender, EventArgs e ) {
+            if( settings.SteamPath == null ) {
+                SteamPathDlg dlg = new SteamPathDlg();
+                dlg.ShowDialog();
+                settings.SteamPath = dlg.Path;
+                settings.Save();
+            }
         }
 
     }

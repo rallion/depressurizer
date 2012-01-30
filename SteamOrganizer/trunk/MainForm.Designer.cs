@@ -28,6 +28,7 @@
             this.menu_File_NewProfile = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_LoadProfile = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_SaveProfile = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Sep1 = new System.Windows.Forms.ToolStripSeparator();
             this.menu_File_AutoLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_File_AutoSave = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_Sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -41,6 +42,8 @@
             this.menu_Profile_UpdateList = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_Profile_UpdateCats = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_Profile_Edit = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Config = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Config_Settings = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.grpCategories = new System.Windows.Forms.GroupBox();
             this.lstCategories = new System.Windows.Forms.ListBox();
@@ -64,9 +67,6 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusMsg = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusSelection = new System.Windows.Forms.ToolStripStatusLabel();
-            this.menu_Sep1 = new System.Windows.Forms.ToolStripSeparator();
-            this.menu_Config = new System.Windows.Forms.ToolStripMenuItem();
-            this.menu_Config_Settings = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -129,6 +129,11 @@
             this.menu_File_SaveProfile.Size = new System.Drawing.Size(189, 22);
             this.menu_File_SaveProfile.Text = "Save Profile";
             this.menu_File_SaveProfile.Click += new System.EventHandler(this.menu_File_SaveProfile_Click);
+            // 
+            // menu_Sep1
+            // 
+            this.menu_Sep1.Name = "menu_Sep1";
+            this.menu_Sep1.Size = new System.Drawing.Size(186, 6);
             // 
             // menu_File_AutoLoad
             // 
@@ -219,6 +224,21 @@
             this.menu_Profile_Edit.Name = "menu_Profile_Edit";
             this.menu_Profile_Edit.Size = new System.Drawing.Size(171, 22);
             this.menu_Profile_Edit.Text = "Edit Profile Info";
+            // 
+            // menu_Config
+            // 
+            this.menu_Config.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu_Config_Settings});
+            this.menu_Config.Name = "menu_Config";
+            this.menu_Config.Size = new System.Drawing.Size(93, 20);
+            this.menu_Config.Text = "Configuration";
+            // 
+            // menu_Config_Settings
+            // 
+            this.menu_Config_Settings.Name = "menu_Config_Settings";
+            this.menu_Config_Settings.Size = new System.Drawing.Size(125, 22);
+            this.menu_Config_Settings.Text = "Settings...";
+            this.menu_Config_Settings.Click += new System.EventHandler(this.menu_Config_Settings_Click);
             // 
             // splitContainer
             // 
@@ -493,26 +513,6 @@
             this.statusSelection.Size = new System.Drawing.Size(200, 17);
             this.statusSelection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // menu_Sep1
-            // 
-            this.menu_Sep1.Name = "menu_Sep1";
-            this.menu_Sep1.Size = new System.Drawing.Size(186, 6);
-            // 
-            // menu_Config
-            // 
-            this.menu_Config.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menu_Config_Settings});
-            this.menu_Config.Name = "menu_Config";
-            this.menu_Config.Size = new System.Drawing.Size(93, 20);
-            this.menu_Config.Text = "Configuration";
-            // 
-            // menu_Config_Settings
-            // 
-            this.menu_Config_Settings.Name = "menu_Config_Settings";
-            this.menu_Config_Settings.Size = new System.Drawing.Size(152, 22);
-            this.menu_Config_Settings.Text = "Settings...";
-            this.menu_Config_Settings.Click += new System.EventHandler(this.menu_Config_Settings_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -527,6 +527,7 @@
             this.ShowIcon = false;
             this.Text = "Depressurizer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.splitContainer.Panel1.ResumeLayout(false);

@@ -106,11 +106,11 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptionsForm.cs">
+    <Compile Include="OptionsDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OptionsForm.Designer.cs">
-      <DependentUpon>OptionsForm.cs</DependentUpon>
+    <Compile Include="OptionsDlg.Designer.cs">
+      <DependentUpon>OptionsDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="ProfileData.cs" />
     <Compile Include="Program.cs" />
@@ -119,6 +119,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SteamPathDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SteamPathDlg.Designer.cs">
+      <DependentUpon>SteamPathDlg.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="FatalError.resx">
       <DependentUpon>FatalError.cs</DependentUpon>
@@ -132,12 +138,15 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OptionsForm.resx">
-      <DependentUpon>OptionsForm.cs</DependentUpon>
+    <EmbeddedResource Include="OptionsDlg.resx">
+      <DependentUpon>OptionsDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SteamPathDlg.resx">
+      <DependentUpon>SteamPathDlg.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
