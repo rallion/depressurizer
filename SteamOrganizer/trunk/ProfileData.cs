@@ -13,7 +13,15 @@ namespace Depressurizer {
 
         public string CommunityName = null;
 
-        public string Name = "Default";
+        public bool AutoDownload = true;
+
+        public bool AutoImport = false;
+
+        public bool AutoExport = true;
+
+        public bool DiscardExtraOnImport = false;
+
+        public bool DiscardExtraOnExport = true;
 
         public SortedSet<int> ExclusionList = new SortedSet<int>();
 
@@ -26,9 +34,14 @@ namespace Depressurizer {
             XmlNode profileNode = doc.SelectSingleNode( "/profile" );
 
             if( profileNode != null ) {
-                profile.Name = XmlHelper.GetStringFromXmlElement( profileNode, "name", "Default" );
                 profile.CommunityName = XmlHelper.GetStringFromXmlElement( profileNode, "community_name", null );
                 profile.AccountID = XmlHelper.GetStringFromXmlElement( profileNode, "account_id", null );
+
+                profile.AutoDownload = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_download", profile.AutoDownload );
+                profile.AutoImport = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_import", profile.AutoImport );
+                profile.AutoExport = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_export", profile.AutoExport );
+                profile.DiscardExtraOnImport = XmlHelper.GetBooleanFromXmlElement( profileNode, "discard_extra_on_import", profile.DiscardExtraOnImport );
+                profile.DiscardExtraOnExport = XmlHelper.GetBooleanFromXmlElement( profileNode, "discard_extra_on_export", profile.DiscardExtraOnExport );
 
                 XmlNode gameListNode = profileNode.SelectSingleNode( "games" );
                 if( gameListNode != null ) {
@@ -71,15 +84,64 @@ namespace Depressurizer {
         }
 
         public void SaveProfile( string path ) {
+            XmlWriter writer = XmlWriter.Create( path );
+            writer.WriteStartElement( "profile" );
+
+            if( AccountID != null ) {
+                writer.WriteElementString( "account_id", AccountID );
+            }
+
+            if( CommunityName != null ) {
+                writer.WriteElementString( "community_name", CommunityName );
+            }
+
+            writer.WriteElementString( "auto_download", AutoDownload.ToString() );
+            writer.WriteElementString( "auto_import", AutoImport.ToString() );
+            writer.WriteElementString( "auto_export", AutoExport.ToString() );
+            writer.WriteElementString( "discard_extra_on_import", DiscardExtraOnImport.ToString() );
+            writer.WriteElementString( "discard_extra_on_export", DiscardExtraOnExport.ToString() );
+
+            writer.WriteStartElement( "games" );
+
+            foreach( Game g in GameData.Games.Values ) {
+                writer.WriteStartElement( "game" );
+
+                writer.WriteElementString( "id", g.Id.ToString() );
+
+                if( g.Name != null ) {
+                    writer.WriteElementString( "name", g.Name );
+                }
+
+                if( g.Category != null ) {
+                    writer.WriteElementString( "category", g.Category.Name );
+                }
+
+                if( g.Favorite ) {
+                    writer.WriteElementString( "favorite", true.ToString() );
+                }
+
+                writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+
+            writer.WriteStartElement( "exclusions" );
+
+            foreach( int i in ExclusionList ) {
+                writer.WriteElementString( "exclusion", i.ToString() );
+            }
+
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+
+            writer.Close();
+        }
+
+        /*public void SaveProfile( string path ) {
             XmlDocument doc = new XmlDocument();
 
             XmlElement profileElement = doc.CreateElement( "profile" );
-
-            if( Name != null ) {
-                XmlElement elem = doc.CreateElement( "name" );
-                elem.InnerText = Name;
-                profileElement.AppendChild( elem );
-            }
 
             if( AccountID != null ) {
                 XmlElement elem = doc.CreateElement( "account_id" );
@@ -92,6 +154,8 @@ namespace Depressurizer {
                 elem.InnerText = CommunityName;
                 profileElement.AppendChild( elem );
             }
+
+            //TODO: bools
 
             XmlElement gameListElement = doc.CreateElement( "games" );
 
@@ -137,7 +201,7 @@ namespace Depressurizer {
             doc.AppendChild( profileElement );
 
             doc.Save( path );
-        }
+        }*/
     }
 
     public static class XmlHelper {
@@ -176,6 +240,25 @@ namespace Depressurizer {
         public static int GetIntFromXmlElement( XmlNode refNode, string path, int defVal ) {
             int val;
             if( GetIntFromXmlElement( refNode, path, out val ) ) {
+                return val;
+            }
+            return defVal;
+        }
+
+        public static bool GetBooleanFromXmlElement( XmlNode refNode, string path, out bool val ) {
+            string strVal;
+            if( GetStringFromXmlElement( refNode, path, out strVal ) ) {
+                if( bool.TryParse( strVal, out val ) ) {
+                    return true;
+                }
+            }
+            val = false;
+            return false;
+        }
+
+        public static bool GetBooleanFromXmlElement( XmlNode refNode, string path, bool defVal ) {
+            bool val;
+            if( GetBooleanFromXmlElement( refNode, path, out val ) ) {
                 return val;
             }
             return defVal;
