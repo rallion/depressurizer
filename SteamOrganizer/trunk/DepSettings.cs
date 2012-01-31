@@ -67,52 +67,6 @@ namespace Depressurizer {
             }
         }
 
-        private bool _downloadGamelistOnProfileLoad = true;
-        public bool DownloadGamelistOnProfileLoad {
-            get {
-                lock( threadLock ) {
-                    return _downloadGamelistOnProfileLoad;
-                }
-            }
-            set {
-                lock( threadLock ) {
-                    _downloadGamelistOnProfileLoad = value;
-                    outOfDate = true;
-                }
-            }
-        }
-
-        private bool _loadSteamCatsOnProfileLoad = false;
-        public bool LoadSteamCatsOnProfileLoad {
-            get {
-                lock( threadLock ) {
-                    return _loadSteamCatsOnProfileLoad;
-                }
-            }
-            set {
-                lock( threadLock ) {
-                    _loadSteamCatsOnProfileLoad = value;
-                    outOfDate = true;
-                }
-            }
-        }
-
-
-        private bool _autoSaveToSteam = true;
-        public bool AutoSaveToSteam {
-            get {
-                lock( threadLock ) {
-                    return _autoSaveToSteam;
-                }
-            }
-            set {
-                lock( threadLock ) {
-                    _autoSaveToSteam = value;
-                    outOfDate = true;
-                }
-            }
-        }
-
         private bool _removeExtraEntries = true;
         public bool RemoveExtraEntries {
             get {

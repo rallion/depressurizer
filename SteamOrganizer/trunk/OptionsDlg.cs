@@ -23,10 +23,7 @@ namespace Depressurizer {
             txtSteamPath.Text = settings.SteamPath;
             txtDefaultProfile.Text = settings.ProfileToLoad;
             chkLoadProfileOnStart.Checked = settings.LoadProfileOnStartup;
-            chkAutoSaveToSteam.Checked = settings.AutoSaveToSteam;
-            chkPLoadSteamCats.Checked = settings.LoadSteamCatsOnProfileLoad;
-            chkPLoadUpdateGameList.Checked = settings.DownloadGamelistOnProfileLoad;
-            chkRemoveUnwantedEntries.Checked = settings.RemoveExtraEntries;
+            chkRemoveExtraEntries.Checked = settings.RemoveExtraEntries;
         }
 
         private void SaveFieldsToSettings() {
@@ -35,10 +32,7 @@ namespace Depressurizer {
             settings.SteamPath = txtSteamPath.Text;
             settings.LoadProfileOnStartup = chkLoadProfileOnStart.Checked;
             settings.ProfileToLoad = txtDefaultProfile.Text;
-            settings.DownloadGamelistOnProfileLoad = chkPLoadUpdateGameList.Checked;
-            settings.LoadSteamCatsOnProfileLoad = chkPLoadSteamCats.Checked;
-            settings.AutoSaveToSteam = chkAutoSaveToSteam.Checked;
-            settings.RemoveExtraEntries = chkRemoveUnwantedEntries.Checked;
+            settings.RemoveExtraEntries = chkRemoveExtraEntries.Checked;
             //TODO: Add exception handling here
             settings.Save();
         }

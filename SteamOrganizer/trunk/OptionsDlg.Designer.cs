@@ -27,20 +27,15 @@
             this.cmdSteamPathBrowse = new System.Windows.Forms.Button();
             this.txtSteamPath = new System.Windows.Forms.TextBox();
             this.grpStartup = new System.Windows.Forms.GroupBox();
+            this.chkLoadProfileOnStart = new System.Windows.Forms.CheckBox();
             this.cmdDefaultProfileBrowse = new System.Windows.Forms.Button();
             this.txtDefaultProfile = new System.Windows.Forms.TextBox();
-            this.chkPLoadUpdateGameList = new System.Windows.Forms.CheckBox();
-            this.chkPLoadSteamCats = new System.Windows.Forms.CheckBox();
-            this.chkAutoSaveToSteam = new System.Windows.Forms.CheckBox();
-            this.chkRemoveUnwantedEntries = new System.Windows.Forms.CheckBox();
+            this.chkRemoveExtraEntries = new System.Windows.Forms.CheckBox();
             this.cmdAccept = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.grpLoading = new System.Windows.Forms.GroupBox();
             this.grpSaving = new System.Windows.Forms.GroupBox();
-            this.chkLoadProfileOnStart = new System.Windows.Forms.CheckBox();
             this.grpSteamDir.SuspendLayout();
             this.grpStartup.SuspendLayout();
-            this.grpLoading.SuspendLayout();
             this.grpSaving.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -91,6 +86,16 @@
             this.grpStartup.TabStop = false;
             this.grpStartup.Text = "On Startup";
             // 
+            // chkLoadProfileOnStart
+            // 
+            this.chkLoadProfileOnStart.AutoSize = true;
+            this.chkLoadProfileOnStart.Location = new System.Drawing.Point(11, 20);
+            this.chkLoadProfileOnStart.Name = "chkLoadProfileOnStart";
+            this.chkLoadProfileOnStart.Size = new System.Drawing.Size(84, 17);
+            this.chkLoadProfileOnStart.TabIndex = 4;
+            this.chkLoadProfileOnStart.Text = "Load profile:";
+            this.chkLoadProfileOnStart.UseVisualStyleBackColor = true;
+            // 
             // cmdDefaultProfileBrowse
             // 
             this.cmdDefaultProfileBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -111,50 +116,20 @@
             this.txtDefaultProfile.Size = new System.Drawing.Size(282, 20);
             this.txtDefaultProfile.TabIndex = 2;
             // 
-            // chkPLoadUpdateGameList
+            // chkRemoveExtraEntries
             // 
-            this.chkPLoadUpdateGameList.AutoSize = true;
-            this.chkPLoadUpdateGameList.Location = new System.Drawing.Point(6, 19);
-            this.chkPLoadUpdateGameList.Name = "chkPLoadUpdateGameList";
-            this.chkPLoadUpdateGameList.Size = new System.Drawing.Size(247, 17);
-            this.chkPLoadUpdateGameList.TabIndex = 2;
-            this.chkPLoadUpdateGameList.Text = "Automatically download gamelist on profile load";
-            this.chkPLoadUpdateGameList.UseVisualStyleBackColor = true;
-            // 
-            // chkPLoadSteamCats
-            // 
-            this.chkPLoadSteamCats.AutoSize = true;
-            this.chkPLoadSteamCats.Location = new System.Drawing.Point(6, 42);
-            this.chkPLoadSteamCats.Name = "chkPLoadSteamCats";
-            this.chkPLoadSteamCats.Size = new System.Drawing.Size(288, 17);
-            this.chkPLoadSteamCats.TabIndex = 3;
-            this.chkPLoadSteamCats.Text = "Automatically load categories from Steam on profile load";
-            this.chkPLoadSteamCats.UseVisualStyleBackColor = true;
-            // 
-            // chkAutoSaveToSteam
-            // 
-            this.chkAutoSaveToSteam.AutoSize = true;
-            this.chkAutoSaveToSteam.Location = new System.Drawing.Point(6, 19);
-            this.chkAutoSaveToSteam.Name = "chkAutoSaveToSteam";
-            this.chkAutoSaveToSteam.Size = new System.Drawing.Size(277, 17);
-            this.chkAutoSaveToSteam.TabIndex = 4;
-            this.chkAutoSaveToSteam.Text = "Automatically save to Steam when saving profile data";
-            this.chkAutoSaveToSteam.UseVisualStyleBackColor = true;
-            // 
-            // chkRemoveUnwantedEntries
-            // 
-            this.chkRemoveUnwantedEntries.AutoSize = true;
-            this.chkRemoveUnwantedEntries.Location = new System.Drawing.Point(6, 42);
-            this.chkRemoveUnwantedEntries.Name = "chkRemoveUnwantedEntries";
-            this.chkRemoveUnwantedEntries.Size = new System.Drawing.Size(345, 17);
-            this.chkRemoveUnwantedEntries.TabIndex = 5;
-            this.chkRemoveUnwantedEntries.Text = "Remove entries for deleted or unknown games in Steam settings file";
-            this.chkRemoveUnwantedEntries.UseVisualStyleBackColor = true;
+            this.chkRemoveExtraEntries.AutoSize = true;
+            this.chkRemoveExtraEntries.Location = new System.Drawing.Point(6, 19);
+            this.chkRemoveExtraEntries.Name = "chkRemoveExtraEntries";
+            this.chkRemoveExtraEntries.Size = new System.Drawing.Size(345, 17);
+            this.chkRemoveExtraEntries.TabIndex = 5;
+            this.chkRemoveExtraEntries.Text = "Remove entries for deleted or unknown games in Steam settings file";
+            this.chkRemoveExtraEntries.UseVisualStyleBackColor = true;
             // 
             // cmdAccept
             // 
             this.cmdAccept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdAccept.Location = new System.Drawing.Point(410, 279);
+            this.cmdAccept.Location = new System.Drawing.Point(410, 181);
             this.cmdAccept.Name = "cmdAccept";
             this.cmdAccept.Size = new System.Drawing.Size(75, 23);
             this.cmdAccept.TabIndex = 6;
@@ -165,7 +140,7 @@
             // cmdCancel
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdCancel.Location = new System.Drawing.Point(329, 279);
+            this.cmdCancel.Location = new System.Drawing.Point(329, 181);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 7;
@@ -173,49 +148,24 @@
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // grpLoading
-            // 
-            this.grpLoading.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpLoading.Controls.Add(this.chkPLoadUpdateGameList);
-            this.grpLoading.Controls.Add(this.chkPLoadSteamCats);
-            this.grpLoading.Location = new System.Drawing.Point(12, 128);
-            this.grpLoading.Name = "grpLoading";
-            this.grpLoading.Size = new System.Drawing.Size(473, 67);
-            this.grpLoading.TabIndex = 8;
-            this.grpLoading.TabStop = false;
-            this.grpLoading.Text = "Profile Loading";
-            // 
             // grpSaving
             // 
             this.grpSaving.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpSaving.Controls.Add(this.chkRemoveUnwantedEntries);
-            this.grpSaving.Controls.Add(this.chkAutoSaveToSteam);
-            this.grpSaving.Location = new System.Drawing.Point(12, 201);
+            this.grpSaving.Controls.Add(this.chkRemoveExtraEntries);
+            this.grpSaving.Location = new System.Drawing.Point(12, 128);
             this.grpSaving.Name = "grpSaving";
-            this.grpSaving.Size = new System.Drawing.Size(473, 70);
+            this.grpSaving.Size = new System.Drawing.Size(473, 45);
             this.grpSaving.TabIndex = 9;
             this.grpSaving.TabStop = false;
-            this.grpSaving.Text = "Saving";
-            // 
-            // chkLoadProfileOnStart
-            // 
-            this.chkLoadProfileOnStart.AutoSize = true;
-            this.chkLoadProfileOnStart.Location = new System.Drawing.Point(11, 20);
-            this.chkLoadProfileOnStart.Name = "chkLoadProfileOnStart";
-            this.chkLoadProfileOnStart.Size = new System.Drawing.Size(84, 17);
-            this.chkLoadProfileOnStart.TabIndex = 4;
-            this.chkLoadProfileOnStart.Text = "Load profile:";
-            this.chkLoadProfileOnStart.UseVisualStyleBackColor = true;
+            this.grpSaving.Text = "Manual Saving";
             // 
             // OptionsDlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(497, 312);
+            this.ClientSize = new System.Drawing.Size(497, 214);
             this.Controls.Add(this.grpSaving);
-            this.Controls.Add(this.grpLoading);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdAccept);
             this.Controls.Add(this.grpStartup);
@@ -228,8 +178,6 @@
             this.grpSteamDir.PerformLayout();
             this.grpStartup.ResumeLayout(false);
             this.grpStartup.PerformLayout();
-            this.grpLoading.ResumeLayout(false);
-            this.grpLoading.PerformLayout();
             this.grpSaving.ResumeLayout(false);
             this.grpSaving.PerformLayout();
             this.ResumeLayout(false);
@@ -244,14 +192,10 @@
         private System.Windows.Forms.GroupBox grpStartup;
         private System.Windows.Forms.Button cmdDefaultProfileBrowse;
         private System.Windows.Forms.TextBox txtDefaultProfile;
-        private System.Windows.Forms.CheckBox chkPLoadUpdateGameList;
-        private System.Windows.Forms.CheckBox chkPLoadSteamCats;
-        private System.Windows.Forms.CheckBox chkAutoSaveToSteam;
-        private System.Windows.Forms.CheckBox chkRemoveUnwantedEntries;
+        private System.Windows.Forms.CheckBox chkRemoveExtraEntries;
         private System.Windows.Forms.Button cmdAccept;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.GroupBox grpLoading;
-        private System.Windows.Forms.GroupBox grpSaving;
         private System.Windows.Forms.CheckBox chkLoadProfileOnStart;
+        private System.Windows.Forms.GroupBox grpSaving;
     }
 }
