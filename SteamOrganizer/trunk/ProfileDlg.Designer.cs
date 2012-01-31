@@ -41,6 +41,7 @@
             this.cmdOk = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.grpLoadOpt = new System.Windows.Forms.GroupBox();
+            this.chkImportDiscard = new System.Windows.Forms.CheckBox();
             this.chkImportOnLoad = new System.Windows.Forms.CheckBox();
             this.chkDownloadOnLoad = new System.Windows.Forms.CheckBox();
             this.grpSaveOpt = new System.Windows.Forms.GroupBox();
@@ -49,7 +50,6 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabMain = new System.Windows.Forms.TabPage();
             this.tabOpts = new System.Windows.Forms.TabPage();
-            this.chkImportDiscard = new System.Windows.Forms.CheckBox();
             this.grpUserInfo.SuspendLayout();
             this.grpProfInfo.SuspendLayout();
             this.grpActions.SuspendLayout();
@@ -249,6 +249,16 @@
             this.grpLoadOpt.TabStop = false;
             this.grpLoadOpt.Text = "Profile Loading Options";
             // 
+            // chkImportDiscard
+            // 
+            this.chkImportDiscard.AutoSize = true;
+            this.chkImportDiscard.Location = new System.Drawing.Point(6, 65);
+            this.chkImportDiscard.Name = "chkImportDiscard";
+            this.chkImportDiscard.Size = new System.Drawing.Size(276, 17);
+            this.chkImportDiscard.TabIndex = 2;
+            this.chkImportDiscard.Text = "When importing, discard existing category information";
+            this.chkImportDiscard.UseVisualStyleBackColor = true;
+            // 
             // chkImportOnLoad
             // 
             this.chkImportOnLoad.AutoSize = true;
@@ -340,16 +350,6 @@
             this.tabOpts.TabIndex = 1;
             this.tabOpts.Text = "Options";
             this.tabOpts.UseVisualStyleBackColor = true;
-            // 
-            // chkImportDiscard
-            // 
-            this.chkImportDiscard.AutoSize = true;
-            this.chkImportDiscard.Location = new System.Drawing.Point(6, 65);
-            this.chkImportDiscard.Name = "chkImportDiscard";
-            this.chkImportDiscard.Size = new System.Drawing.Size(238, 17);
-            this.chkImportDiscard.TabIndex = 2;
-            this.chkImportDiscard.Text = "Discard categories not found in Steam config";
-            this.chkImportDiscard.UseVisualStyleBackColor = true;
             // 
             // ProfileDlg
             // 

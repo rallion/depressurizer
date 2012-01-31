@@ -39,7 +39,7 @@ namespace Depressurizer {
                 doc.AppendChild( config );
                 try {
                     doc.Save( FilePath );
-                } catch( IOException e ) {
+                } catch( IOException ) {
                     // LOG: error
                 }
                 outOfDate = false;
@@ -63,9 +63,9 @@ namespace Depressurizer {
                             }
                         }
                     }
-                } catch( XmlException e ) {
+                } catch( XmlException ) {
                     // LOG: Error.
-                } catch( IOException e ) {
+                } catch( IOException ) {
                     // LOG: Error.
                 }
                 outOfDate = false;
