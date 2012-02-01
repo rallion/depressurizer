@@ -80,8 +80,8 @@ namespace Depressurizer {
             profile.AutoDownload = chkAutoDownload.Checked;
             profile.AutoExport = chkAutoExport.Checked;
             profile.AutoImport = chkAutoImport.Checked;
-            profile.DiscardExtraOnExport = chkExportDiscard.Checked;
-            profile.DiscardExtraOnImport = chkImportDiscard.Checked;
+            profile.ExportDiscard = chkExportDiscard.Checked;
+            profile.ImportDiscard = chkImportDiscard.Checked;
 
             if( !profile.SaveProfile( file.FullName ) ) {
                 MessageBox.Show( "Failed to create profile file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );

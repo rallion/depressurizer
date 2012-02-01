@@ -195,16 +195,17 @@ namespace Depressurizer {
         /// <param name="profileName">Name of the Steam profile to get</param>
         /// <returns>The number of games found in the profile</returns>
         public int LoadGameList( string profileName ) {
-
-            string url = string.Format( Properties.Resources.ProfileURL, profileName );
-            //string url = string.Format( @"http://steamcommunity.com/id/{0}/games?tab=all&xml=1", profileName );
-            WebRequest req = HttpWebRequest.Create( url );
-                    
-            WebResponse response = req.GetResponse();
-
             XmlDocument doc = new XmlDocument();
-            doc.Load( response.GetResponseStream() );
-            response.Close();
+            try {
+                string url = string.Format( Properties.Resources.ProfileURL, profileName );
+                WebRequest req = HttpWebRequest.Create( url );
+                WebResponse response = req.GetResponse();
+                doc.Load( response.GetResponseStream() );
+                response.Close();
+
+            } catch( Exception e ) {
+                throw new ApplicationException( "Failed to download profile data: " + e.Message, e );
+            }
 
             int loadedGames = 0;
             XmlNodeList gameNodes = doc.SelectNodes( "/gamesList/games/game" );
@@ -231,8 +232,14 @@ namespace Depressurizer {
 
             FileNode dataRoot;
 
-            using( StreamReader reader = new StreamReader( filePath, false ) ) {
-                dataRoot = FileNode.Load( reader, true );
+            try {
+                using( StreamReader reader = new StreamReader( filePath, false ) ) {
+                    dataRoot = FileNode.Load( reader, true );
+                }
+            } catch( ParseException e ) {
+                throw new ApplicationException( "Error parsing Steam config file: " + e.Message, e );
+            } catch( IOException e ) {
+                throw new ApplicationException( "Error opening Steam config file: " + e.Message, e );
             }
 
             Games.Clear();
@@ -287,7 +294,7 @@ namespace Depressurizer {
         /// Writes category information out to a steam config file. Also saves any other settings that had been loaded, to avoid setting loss.
         /// </summary>
         /// <param name="path">Full path of the steam config file to save</param>
-        public void SaveSteamFile( FileInfo file ) {
+        public void SaveSteamFile( string filePath ) {
             FileNode appListNode = backingData.GetNodeAt( new string[] { "Software", "Valve", "Steam", "apps" }, true );
 
             foreach( Game game in Games.Values ) {
@@ -310,17 +317,24 @@ namespace Depressurizer {
 
             FileNode fullFile = new FileNode();
             fullFile["UserLocalConfigStore"] = backingData;
-
-            FileStream fStream = file.Open( FileMode.Create, FileAccess.Write, FileShare.None );
-            using( StreamWriter writer = new StreamWriter( fStream ) ) {
-                fullFile.Save( writer );
+            try {
+                FileStream fStream = File.Open( filePath, FileMode.Create, FileAccess.Write, FileShare.None );
+                using( StreamWriter writer = new StreamWriter( fStream ) ) {
+                    fullFile.Save( writer );
+                }
+                fStream.Close();
+            } catch( ArgumentException e ) {
+                throw new ApplicationException( "Failed to save Steam config file: Invalid path specified.", e );
+            } catch( IOException e ) {
+                throw new ApplicationException( "Failed to save Steam config file: " + e.Message, e );
+            } catch( UnauthorizedAccessException e ) {
+                throw new ApplicationException( "Access denied on Steam config file: " + e.Message, e );
             }
-            fStream.Close();
         }
 
         public void AutoSave() {
             if( !AutoLoaded ) return;
-            SaveSteamFile( new FileInfo( string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", steamPath, steamId ) ) );
+            SaveSteamFile( string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", steamPath, steamId ) );
         }
     }
 }

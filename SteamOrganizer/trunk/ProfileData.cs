@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System;
 
 namespace Depressurizer {
     public class ProfileData {
@@ -8,6 +9,8 @@ namespace Depressurizer {
         public string FilePath = null;
 
         public GameData GameData = new GameData();
+
+        public SortedSet<int> ExclusionList = new SortedSet<int>();
 
         public string AccountID = null;
 
@@ -19,11 +22,25 @@ namespace Depressurizer {
 
         public bool AutoExport = true;
 
-        public bool DiscardExtraOnImport = false;
+        public bool ImportDiscard = false;
 
-        public bool DiscardExtraOnExport = true;
+        public bool ExportDiscard = true;
 
-        public SortedSet<int> ExclusionList = new SortedSet<int>();
+        public int ImportSteamData() {
+            string filePath = string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", DepSettings.Instance().SteamPath, AccountID );
+            return GameData.LoadSteamFile( filePath );
+        }
+
+        public int DownloadGameList() {
+            return GameData.LoadGameList( CommunityName );
+        }
+
+        public void ExportSteamData() {
+            string filePath = string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", DepSettings.Instance().SteamPath, AccountID );
+            GameData.SaveSteamFile( filePath );
+        }
+
+        #region Saving and Loading
 
         public static ProfileData LoadProfile( string path ) {
             ProfileData profile = new ProfileData();
@@ -42,8 +59,8 @@ namespace Depressurizer {
                 profile.AutoDownload = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_download", profile.AutoDownload );
                 profile.AutoImport = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_import", profile.AutoImport );
                 profile.AutoExport = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_export", profile.AutoExport );
-                profile.DiscardExtraOnImport = XmlHelper.GetBooleanFromXmlElement( profileNode, "discard_extra_on_import", profile.DiscardExtraOnImport );
-                profile.DiscardExtraOnExport = XmlHelper.GetBooleanFromXmlElement( profileNode, "discard_extra_on_export", profile.DiscardExtraOnExport );
+                profile.ImportDiscard = XmlHelper.GetBooleanFromXmlElement( profileNode, "discard_extra_on_import", profile.ImportDiscard );
+                profile.ExportDiscard = XmlHelper.GetBooleanFromXmlElement( profileNode, "discard_extra_on_export", profile.ExportDiscard );
 
                 XmlNode gameListNode = profileNode.SelectSingleNode( "games" );
                 if( gameListNode != null ) {
@@ -113,8 +130,8 @@ namespace Depressurizer {
             writer.WriteElementString( "auto_download", AutoDownload.ToString() );
             writer.WriteElementString( "auto_import", AutoImport.ToString() );
             writer.WriteElementString( "auto_export", AutoExport.ToString() );
-            writer.WriteElementString( "discard_extra_on_import", DiscardExtraOnImport.ToString() );
-            writer.WriteElementString( "discard_extra_on_export", DiscardExtraOnExport.ToString() );
+            writer.WriteElementString( "discard_extra_on_import", ImportDiscard.ToString() );
+            writer.WriteElementString( "discard_extra_on_export", ExportDiscard.ToString() );
 
             writer.WriteStartElement( "games" );
 
@@ -154,6 +171,8 @@ namespace Depressurizer {
             FilePath = path;
             return true;
         }
+
+        #endregion
     }
 
     public static class XmlHelper {

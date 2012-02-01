@@ -64,10 +64,8 @@ namespace Depressurizer {
                         lastSelectedCat = null; // Make sure the game list refreshes
                         FillCategoryList();
                     }
-                } catch( ParseException e ) {
-                    MessageBox.Show( e.Message, "File parsing error", MessageBoxButtons.OK, MessageBoxIcon.Error );
-                } catch( IOException e ) {
-                    MessageBox.Show( e.Message, "Error reading file", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                } catch( ApplicationException e ) {
+                    MessageBox.Show( e.Message, "File loading error", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
                 Cursor = Cursors.Default;
             }
@@ -83,16 +81,13 @@ namespace Depressurizer {
             if( res == DialogResult.OK ) {
                 Cursor = Cursors.WaitCursor;
                 try {
-                    gameData.SaveSteamFile( new FileInfo( dlg.FileName ) );
+                    gameData.SaveSteamFile( dlg.FileName );
                     statusMsg.Text = "File saved.";
                     return true;
-                } catch( IOException e ) {
+                } catch( ApplicationException e ) {
                     MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
-                } catch( UnauthorizedAccessException e ) {
-                    MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
-                } finally {
-                    Cursor = Cursors.Default;
                 }
+                Cursor = Cursors.Default;
             }
             return false;
         }
@@ -141,7 +136,7 @@ namespace Depressurizer {
                         statusMsg.Text = string.Format( "Loaded profile info for {0} games.", loadedGames );
                         FillGameList();
                     }
-                } catch( System.Net.WebException e ) {
+                } catch( ApplicationException e ) {
                     MessageBox.Show( e.Message, "Error loading profile data", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
                 Cursor = Cursors.Default;
@@ -603,7 +598,8 @@ namespace Depressurizer {
             ProfileDlg dlg = new ProfileDlg();
             DialogResult res = dlg.ShowDialog();
             if( res == System.Windows.Forms.DialogResult.OK ) {
-                
+                currentProfile = dlg.Profile;
+                gameData = currentProfile.GameData;
             }
         }
 
