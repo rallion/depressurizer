@@ -5,6 +5,8 @@ using System.Xml;
 namespace Depressurizer {
     public class ProfileData {
 
+        public string FilePath = null;
+
         public GameData GameData = new GameData();
 
         public string AccountID = null;
@@ -25,6 +27,8 @@ namespace Depressurizer {
 
         public static ProfileData LoadProfile( string path ) {
             ProfileData profile = new ProfileData();
+
+            profile.FilePath = path;
 
             XmlDocument doc = new XmlDocument();
             doc.Load( path );
@@ -81,18 +85,21 @@ namespace Depressurizer {
             }
         }
 
-        public void SaveProfile( string path ) {
-            FileStream fstream = File.Create( path );
-            SaveProfile( fstream );
-            fstream.Close();
+        public void SaveProfile() {
+            SaveProfile( FilePath );
         }
 
-        public void SaveProfile( FileStream fstream ) {
+        public bool SaveProfile( string path ) {
             XmlWriterSettings writeSettings = new XmlWriterSettings();
-            writeSettings.CloseOutput = false;
+            writeSettings.CloseOutput = true;
             writeSettings.Indent = true;
             
-            XmlWriter writer = XmlWriter.Create( fstream, writeSettings );
+            XmlWriter writer;
+            try {
+                writer = XmlWriter.Create( path, writeSettings );
+            } catch {
+                return false;
+            }
             writer.WriteStartElement( "profile" );
 
             if( AccountID != null ) {
@@ -144,6 +151,8 @@ namespace Depressurizer {
             writer.WriteEndElement();
 
             writer.Close();
+            FilePath = path;
+            return true;
         }
     }
 

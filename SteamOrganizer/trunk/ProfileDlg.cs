@@ -83,17 +83,9 @@ namespace Depressurizer {
             profile.DiscardExtraOnExport = chkExportDiscard.Checked;
             profile.DiscardExtraOnImport = chkImportDiscard.Checked;
 
-            FileStream fstream;
-            try {
-                fstream = file.Create();
-            } catch {
+            if( !profile.SaveProfile( file.FullName ) ) {
                 MessageBox.Show( "Failed to create profile file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 return false;
-            }
-
-            if( fstream != null ) {
-                profile.SaveProfile( fstream );
-                fstream.Close();
             }
 
             this.Profile = profile;
