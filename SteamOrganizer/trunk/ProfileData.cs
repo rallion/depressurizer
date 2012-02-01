@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 
 namespace Depressurizer {
-    class ProfileData {
+    public class ProfileData {
 
         public GameData GameData = new GameData();
 
@@ -84,7 +82,17 @@ namespace Depressurizer {
         }
 
         public void SaveProfile( string path ) {
-            XmlWriter writer = XmlWriter.Create( path );
+            FileStream fstream = File.Create( path );
+            SaveProfile( fstream );
+            fstream.Close();
+        }
+
+        public void SaveProfile( FileStream fstream ) {
+            XmlWriterSettings writeSettings = new XmlWriterSettings();
+            writeSettings.CloseOutput = false;
+            writeSettings.Indent = true;
+            
+            XmlWriter writer = XmlWriter.Create( fstream, writeSettings );
             writer.WriteStartElement( "profile" );
 
             if( AccountID != null ) {
@@ -137,71 +145,6 @@ namespace Depressurizer {
 
             writer.Close();
         }
-
-        /*public void SaveProfile( string path ) {
-            XmlDocument doc = new XmlDocument();
-
-            XmlElement profileElement = doc.CreateElement( "profile" );
-
-            if( AccountID != null ) {
-                XmlElement elem = doc.CreateElement( "account_id" );
-                elem.InnerText = AccountID;
-                profileElement.AppendChild( elem );
-            }
-
-            if( CommunityName != null ) {
-                XmlElement elem = doc.CreateElement( "community_name" );
-                elem.InnerText = CommunityName;
-                profileElement.AppendChild( elem );
-            }
-
-            //TODO: bools
-
-            XmlElement gameListElement = doc.CreateElement( "games" );
-
-            foreach( Game g in GameData.Games.Values ) {
-                XmlElement gameElement = doc.CreateElement( "game" );
-
-                XmlElement elem = doc.CreateElement( "id" );
-                elem.InnerText = g.Id.ToString();
-                gameElement.AppendChild( elem );
-
-                if( g.Name != null ) {
-                    elem = doc.CreateElement( "name" );
-                    elem.InnerText = g.Name;
-                    gameElement.AppendChild( elem );
-                }
-
-                if( g.Category != null ) {
-                    elem = doc.CreateElement( "category" );
-                    elem.InnerText = g.Category.Name;
-                    gameElement.AppendChild( elem );
-                }
-
-                if( g.Favorite ) {
-                    elem = doc.CreateElement( "favorite" );
-                    gameElement.AppendChild( elem );
-                }
-
-                gameListElement.AppendChild( gameElement );
-            }
-
-            profileElement.AppendChild( gameListElement );
-
-            XmlElement exclusionListElement = doc.CreateElement( "exclusions" );
-
-            foreach( int i in ExclusionList ) {
-                XmlElement elem = doc.CreateElement( "exclusion" );
-                elem.InnerText = i.ToString();
-                exclusionListElement.AppendChild( elem );
-            }
-
-            profileElement.AppendChild( exclusionListElement );
-
-            doc.AppendChild( profileElement );
-
-            doc.Save( path );
-        }*/
     }
 
     public static class XmlHelper {

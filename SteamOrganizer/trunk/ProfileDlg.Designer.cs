@@ -42,11 +42,11 @@
             this.cmdCancel = new System.Windows.Forms.Button();
             this.grpLoadOpt = new System.Windows.Forms.GroupBox();
             this.chkImportDiscard = new System.Windows.Forms.CheckBox();
-            this.chkImportOnLoad = new System.Windows.Forms.CheckBox();
-            this.chkDownloadOnLoad = new System.Windows.Forms.CheckBox();
+            this.chkAutoImport = new System.Windows.Forms.CheckBox();
+            this.chkAutoDownload = new System.Windows.Forms.CheckBox();
             this.grpSaveOpt = new System.Windows.Forms.GroupBox();
             this.chkExportDiscard = new System.Windows.Forms.CheckBox();
-            this.chkExportOnSave = new System.Windows.Forms.CheckBox();
+            this.chkAutoExport = new System.Windows.Forms.CheckBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabMain = new System.Windows.Forms.TabPage();
             this.tabOpts = new System.Windows.Forms.TabPage();
@@ -194,6 +194,8 @@
             // chkActImport
             // 
             this.chkActImport.AutoSize = true;
+            this.chkActImport.Checked = true;
+            this.chkActImport.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkActImport.Location = new System.Drawing.Point(9, 44);
             this.chkActImport.Name = "chkActImport";
             this.chkActImport.Size = new System.Drawing.Size(209, 17);
@@ -204,6 +206,8 @@
             // chkActDownload
             // 
             this.chkActDownload.AutoSize = true;
+            this.chkActDownload.Checked = true;
+            this.chkActDownload.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkActDownload.Location = new System.Drawing.Point(9, 20);
             this.chkActDownload.Name = "chkActDownload";
             this.chkActDownload.Size = new System.Drawing.Size(259, 17);
@@ -239,8 +243,8 @@
             this.grpLoadOpt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpLoadOpt.Controls.Add(this.chkImportDiscard);
-            this.grpLoadOpt.Controls.Add(this.chkImportOnLoad);
-            this.grpLoadOpt.Controls.Add(this.chkDownloadOnLoad);
+            this.grpLoadOpt.Controls.Add(this.chkAutoImport);
+            this.grpLoadOpt.Controls.Add(this.chkAutoDownload);
             this.grpLoadOpt.Location = new System.Drawing.Point(6, 6);
             this.grpLoadOpt.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.grpLoadOpt.Name = "grpLoadOpt";
@@ -259,32 +263,34 @@
             this.chkImportDiscard.Text = "When importing, discard existing category information";
             this.chkImportDiscard.UseVisualStyleBackColor = true;
             // 
-            // chkImportOnLoad
+            // chkAutoImport
             // 
-            this.chkImportOnLoad.AutoSize = true;
-            this.chkImportOnLoad.Location = new System.Drawing.Point(6, 42);
-            this.chkImportOnLoad.Name = "chkImportOnLoad";
-            this.chkImportOnLoad.Size = new System.Drawing.Size(265, 17);
-            this.chkImportOnLoad.TabIndex = 1;
-            this.chkImportOnLoad.Text = "Automatically import categories from Steam on load";
-            this.chkImportOnLoad.UseVisualStyleBackColor = true;
+            this.chkAutoImport.AutoSize = true;
+            this.chkAutoImport.Location = new System.Drawing.Point(6, 42);
+            this.chkAutoImport.Name = "chkAutoImport";
+            this.chkAutoImport.Size = new System.Drawing.Size(265, 17);
+            this.chkAutoImport.TabIndex = 1;
+            this.chkAutoImport.Text = "Automatically import categories from Steam on load";
+            this.chkAutoImport.UseVisualStyleBackColor = true;
             // 
-            // chkDownloadOnLoad
+            // chkAutoDownload
             // 
-            this.chkDownloadOnLoad.AutoSize = true;
-            this.chkDownloadOnLoad.Location = new System.Drawing.Point(6, 19);
-            this.chkDownloadOnLoad.Name = "chkDownloadOnLoad";
-            this.chkDownloadOnLoad.Size = new System.Drawing.Size(329, 17);
-            this.chkDownloadOnLoad.TabIndex = 0;
-            this.chkDownloadOnLoad.Text = "Automatically download game list from Steam Community on load";
-            this.chkDownloadOnLoad.UseVisualStyleBackColor = true;
+            this.chkAutoDownload.AutoSize = true;
+            this.chkAutoDownload.Checked = true;
+            this.chkAutoDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAutoDownload.Location = new System.Drawing.Point(6, 19);
+            this.chkAutoDownload.Name = "chkAutoDownload";
+            this.chkAutoDownload.Size = new System.Drawing.Size(329, 17);
+            this.chkAutoDownload.TabIndex = 0;
+            this.chkAutoDownload.Text = "Automatically download game list from Steam Community on load";
+            this.chkAutoDownload.UseVisualStyleBackColor = true;
             // 
             // grpSaveOpt
             // 
             this.grpSaveOpt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpSaveOpt.Controls.Add(this.chkExportDiscard);
-            this.grpSaveOpt.Controls.Add(this.chkExportOnSave);
+            this.grpSaveOpt.Controls.Add(this.chkAutoExport);
             this.grpSaveOpt.Location = new System.Drawing.Point(6, 99);
             this.grpSaveOpt.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.grpSaveOpt.Name = "grpSaveOpt";
@@ -296,6 +302,8 @@
             // chkExportDiscard
             // 
             this.chkExportDiscard.AutoSize = true;
+            this.chkExportDiscard.Checked = true;
+            this.chkExportDiscard.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkExportDiscard.Location = new System.Drawing.Point(6, 42);
             this.chkExportDiscard.Name = "chkExportDiscard";
             this.chkExportDiscard.Size = new System.Drawing.Size(370, 17);
@@ -303,15 +311,17 @@
             this.chkExportDiscard.Text = "Remove entries for deleted or unknown games in Steam configuration file";
             this.chkExportDiscard.UseVisualStyleBackColor = true;
             // 
-            // chkExportOnSave
+            // chkAutoExport
             // 
-            this.chkExportOnSave.AutoSize = true;
-            this.chkExportOnSave.Location = new System.Drawing.Point(6, 19);
-            this.chkExportOnSave.Name = "chkExportOnSave";
-            this.chkExportOnSave.Size = new System.Drawing.Size(305, 17);
-            this.chkExportOnSave.TabIndex = 0;
-            this.chkExportOnSave.Text = "Automatically save categories to Steam when saving profile";
-            this.chkExportOnSave.UseVisualStyleBackColor = true;
+            this.chkAutoExport.AutoSize = true;
+            this.chkAutoExport.Checked = true;
+            this.chkAutoExport.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAutoExport.Location = new System.Drawing.Point(6, 19);
+            this.chkAutoExport.Name = "chkAutoExport";
+            this.chkAutoExport.Size = new System.Drawing.Size(305, 17);
+            this.chkAutoExport.TabIndex = 0;
+            this.chkAutoExport.Text = "Automatically save categories to Steam when saving profile";
+            this.chkAutoExport.UseVisualStyleBackColor = true;
             // 
             // tabControl
             // 
@@ -404,11 +414,11 @@
         private System.Windows.Forms.Button cmdOk;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.GroupBox grpLoadOpt;
-        private System.Windows.Forms.CheckBox chkImportOnLoad;
-        private System.Windows.Forms.CheckBox chkDownloadOnLoad;
+        private System.Windows.Forms.CheckBox chkAutoImport;
+        private System.Windows.Forms.CheckBox chkAutoDownload;
         private System.Windows.Forms.GroupBox grpSaveOpt;
         private System.Windows.Forms.CheckBox chkExportDiscard;
-        private System.Windows.Forms.CheckBox chkExportOnSave;
+        private System.Windows.Forms.CheckBox chkAutoExport;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabMain;
         private System.Windows.Forms.TabPage tabOpts;

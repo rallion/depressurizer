@@ -596,8 +596,15 @@ namespace Depressurizer {
         }
 
         private void menu_File_NewProfile_Click( object sender, EventArgs e ) {
+            CreateNewProfile();
+        }
+
+        private void CreateNewProfile() {
             ProfileDlg dlg = new ProfileDlg();
-            dlg.Show();
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                
+            }
         }
 
         private void menu_File_LoadProfile_Click( object sender, EventArgs e ) {
