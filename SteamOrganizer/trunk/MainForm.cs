@@ -33,6 +33,15 @@ namespace Depressurizer {
 
         DepSettings settings = DepSettings.Instance();
         #endregion
+
+        #region Properties
+        public bool ProfileLoaded {
+            get {
+                return currentProfile != null;
+            }
+        }
+        #endregion
+
         public FormMain() {
             gameData = new GameData();
             InitializeComponent();
@@ -41,26 +50,30 @@ namespace Depressurizer {
             FillCategoryList();
         }
 
-        #region Saving and Loading
+        #region Manual Operations
         /// <summary>
-        /// Loads a Steam configuration file. Asks the user to select a file, handles the load, and refreshes the UI.
+        /// Loads a Steam configuration file and adds its data to the currently loaded game list. Asks the user to select a file, handles the load, and refreshes the UI.
         /// </summary>
-        void ManualLoad() {
-            if( !CheckForUnsaved() ) {
-                return;
+        void ManualImport() {
+            if( ProfileLoaded || gameData.Games.Count > 0 ) {
+                if( MessageBox.Show( "This action will add the contents of a Steam config file to the currently loaded game list, and will overwrite the category information for any existing games. If you do not want to do this, close the open profile or gamelist first.\nContinue loading file?",
+                    "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Information )
+                 == DialogResult.No ) {
+                    return;
+                }
             }
+
             OpenFileDialog dlg = new OpenFileDialog();
             DialogResult res = dlg.ShowDialog();
             if( res == DialogResult.OK ) {
                 Cursor = Cursors.WaitCursor;
                 try {
-                    int loadedGames = gameData.LoadSteamFile( dlg.FileName );
+                    int loadedGames = gameData.ImportSteamFile( dlg.FileName );
                     if( loadedGames == 0 ) {
                         MessageBox.Show( "Warning: No game info found in the specified file." );
                     } else {
-                        unsavedChanges = false;
-                        menu_File_AutoSave.Enabled = false;
-                        statusMsg.Text = string.Format( "Loaded local info for {0} games.", loadedGames );
+                        unsavedChanges = true;
+                        statusMsg.Text = string.Format( "Loaded category info for {0} games.", loadedGames );
                         lastSelectedCat = null; // Make sure the game list refreshes
                         FillCategoryList();
                     }
@@ -75,13 +88,13 @@ namespace Depressurizer {
         /// Saves a Steam configuration file. Asks the user to select the file to save as.
         /// </summary>
         /// <returns>True if save was completed, false otherwise</returns>
-        bool ManualSave() {
+        bool ManualExport() {
             SaveFileDialog dlg = new SaveFileDialog();
             DialogResult res = dlg.ShowDialog();
             if( res == DialogResult.OK ) {
                 Cursor = Cursors.WaitCursor;
                 try {
-                    gameData.SaveSteamFile( dlg.FileName );
+                    gameData.SaveSteamFile( dlg.FileName, settings.RemoveExtraEntries );
                     statusMsg.Text = "File saved.";
                     return true;
                 } catch( ApplicationException e ) {
@@ -92,52 +105,33 @@ namespace Depressurizer {
             return false;
         }
 
-        private void AutoLoad() {
-            if( !CheckForUnsaved() ) {
-                return;
-            }
-            AutoLoadDlg dlg = new AutoLoadDlg( gameData );
-            DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
-                menu_File_AutoSave.Enabled = true;
-                unsavedChanges = false;
-                FillCategoryList();
-                FillGameList();
-                statusMsg.Text = "Steam config loaded.";
-            }
-        }
-
-        void AutoSave() {
-            Cursor = Cursors.WaitCursor;
-            try {
-                gameData.AutoSave();
-                statusMsg.Text = "File autosaved.";
-            } catch( IOException e ) {
-                MessageBox.Show( e.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
-            } catch( UnauthorizedAccessException e ) {
-                MessageBox.Show( e.Message + "\nYou may use the Manual Save option to save the file to a different location.", "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error );
-            } finally {
-                Cursor = Cursors.Default;
-            }
-        }
-
         /// <summary>
-        /// Loads game list information from a Steam profile. Asks user for Steam profile name.
+        /// Loads game list information from a Steam profile and adds to currently loaded game list. Asks user for Steam profile name.
         /// </summary>
-        public void ManualProfileLoad() {
-            GetStringDlg dlg = new GetStringDlg( "", "Load profile", "Enter profile name:", "Load Profile" );
+        public void ManualDownload() {
+
+            if( ProfileLoaded || gameData.Games.Count > 0 ) {
+                if( MessageBox.Show( "This action will add the contents of a Steam community game list to the currently loaded game list. If you do not want to do this, close the open game list or profile first.\nContinue loading games?",
+                    "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Information )
+                 == DialogResult.No ) {
+                    return;
+                }
+            }
+
+            GetStringDlg dlg = new GetStringDlg( "", "Download game list", "Enter custom URL name:", "Download game list" );
             if( dlg.ShowDialog() == DialogResult.OK ) {
                 Cursor = Cursors.WaitCursor;
                 try {
                     int loadedGames = gameData.LoadGameList( dlg.Value );
                     if( loadedGames == 0 ) {
-                        MessageBox.Show( "No game data found. Please make sure the profile is spelled correctly, and that the profile is public.", "No data found", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+                        MessageBox.Show( "No game data found. Please make sure the custom URL name is spelled correctly, and that the profile is public.", "No data found", MessageBoxButtons.OK, MessageBoxIcon.Warning );
                     } else {
-                        statusMsg.Text = string.Format( "Loaded profile info for {0} games.", loadedGames );
+                        unsavedChanges = true;
+                        statusMsg.Text = string.Format( "Loaded {0} games.", loadedGames );
                         FillGameList();
                     }
                 } catch( ApplicationException e ) {
-                    MessageBox.Show( e.Message, "Error loading profile data", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    MessageBox.Show( e.Message, "Error loading game list data", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
                 Cursor = Cursors.Default;
             }
@@ -357,15 +351,24 @@ namespace Depressurizer {
             }
         }
 
-        void ClearData() {
+        /// <summary>
+        /// Unloads the current profile or game list, making sure the user gets the option to save any changes.
+        /// </summary>
+        /// <param name="updateUI">If true, will redraw the UI. Otherwise, will leave it up to the caller to do so.</param>
+        /// <returns>True if there is now no loaded profile, false otherwise.</returns>
+        void Unload( bool updateUI = true ) {
             if( !CheckForUnsaved() ) {
                 return;
             }
+
+            currentProfile = null;
+            gameData = new GameData();
             unsavedChanges = false;
-            menu_File_AutoSave.Enabled = false;
-            gameData.Clear();
-            FillCategoryList();
-            FillGameList();
+
+            if( updateUI ) {
+                FillCategoryList();
+                FillGameList();
+            }
         }
         #endregion
 
@@ -442,24 +445,199 @@ namespace Depressurizer {
             return false;
         }
 
+        /// <summary>
+        /// If there are any unsaved changes, asks the user if they want to save. Also gives the user the option to cancel the calling action.
+        /// </summary>
+        /// <returns>True if the action should proceed, false otherwise.</returns>
         private bool CheckForUnsaved() {
             if( !unsavedChanges ) {
                 return true;
             }
+
             DialogResult res = MessageBox.Show( "Unsaved changes will be lost. Save first?", "Unsaved changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning );
             if( res == System.Windows.Forms.DialogResult.No ) {
+                // Don't save, just continue
                 return true;
             }
             if( res == System.Windows.Forms.DialogResult.Cancel ) {
+                // Don't save, don't continue
                 return false;
             }
-            if( gameData.AutoLoaded ) {
-                gameData.AutoSave();
-                return true;
+            if( ProfileLoaded ) {
+                try {
+                    SaveProfile();
+                    return true;
+                } catch( ApplicationException e ) {
+                    MessageBox.Show( "Saving profile data failed: " + e.Message, "Error saving file.", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+                    return false;
+                }
+
             } else {
-                return ManualSave();
+                return ManualExport();
             }
         }
+        #endregion
+
+        #region Profile Management
+
+        private void CreateNewProfile() {
+            ProfileDlg dlg = new ProfileDlg();
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                Cursor = Cursors.WaitCursor;
+                currentProfile = dlg.Profile;
+                gameData = currentProfile.GameData;
+
+                if( dlg.DownloadOnCreate ) {
+                    UpdateProfileDownload( false );
+                }
+
+                if( dlg.ImportOnCreate ) {
+                    UpdateProfileImport( false );
+                }
+
+                FillCategoryList();
+                FillGameList();
+                Cursor = Cursors.Default;
+            }
+        }
+
+        /// <summary>
+        /// Prompts user for a profile file to load, then loads it.
+        /// </summary>
+        void LoadProfile() {
+            if( !CheckForUnsaved() ) return;
+
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.DefaultExt = "profile";
+            dlg.AddExtension = true;
+            dlg.CheckFileExists = true;
+            dlg.Filter = "Profiles (*.profile)|*.profile";
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                LoadProfile( dlg.FileName, false );
+            }
+        }
+
+        /// <summary>
+        /// Loads the given profile file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="checkForChanges"></param>
+        void LoadProfile( string path, bool checkForChanges = true ) {
+            if( checkForChanges && !CheckForUnsaved() ) return;
+
+            try {
+                currentProfile = ProfileData.Load( path );
+            } catch( ApplicationException e ) {
+                MessageBox.Show( e.Message, "Error loading profile", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+                return;
+            }
+
+            gameData = currentProfile.GameData;
+
+            if( currentProfile.AutoDownload ) {
+                UpdateProfileDownload();
+            }
+            if( currentProfile.AutoImport ) {
+                UpdateProfileImport();
+            }
+
+            FillCategoryList();
+            FillGameList();
+        }
+
+        /// <summary>
+        /// Prompts user for a file location and saves profile
+        /// </summary>
+        void SaveProfileAs() {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.DefaultExt = "profile";
+            dlg.AddExtension = true;
+            dlg.CheckPathExists = true;
+            dlg.Filter = "Profiles (*.profile)|*.profile";
+            DialogResult res = dlg.ShowDialog();
+            if( res == System.Windows.Forms.DialogResult.OK ) {
+                SaveProfile( dlg.FileName );
+            }
+        }
+
+        /// <summary>
+        /// Saves profile data to a file and performs any related tasks. This is the main saving function, all saves go through this function.
+        /// </summary>
+        /// <param name="path">Path to save to. If null, just saves profile to its current path.</param>
+        /// <returns>True if successful, false if there is a failure</returns>
+        bool SaveProfile( string path = null ) {
+            if( currentProfile.AutoExport ) {
+                try {
+                    currentProfile.ExportSteamData();
+                } catch( ApplicationException e ) {
+                    MessageBox.Show( e.Message, "Error exporting to Steam", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                }
+            }
+            try {
+                if( path == null ) {
+                    currentProfile.Save();
+                } else {
+                    currentProfile.Save( path );
+                }
+                unsavedChanges = false;
+                return true;
+            } catch( ApplicationException e ) {
+                MessageBox.Show( e.Message, "Error saving profile", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return false;
+            }
+
+        }
+
+        void UpdateProfileDownload( bool updateUI = true ) {
+            if( currentProfile != null ) {
+                if( updateUI ) Cursor = Cursors.WaitCursor;
+                try {
+                    if( currentProfile.DownloadGameList() > 0 ) {
+                        unsavedChanges = true;
+                        if( updateUI ) {
+                            FillCategoryList();
+                            FillGameList();
+                        }
+                    }
+                    if( updateUI ) Cursor = Cursors.Default;
+                } catch( ApplicationException e ) {
+                    if( updateUI ) Cursor = Cursors.Default;
+                    MessageBox.Show( e.Message, "Error downloading game list", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+                }
+            }
+        }
+
+        void UpdateProfileImport( bool updateUI = true ) {
+            if( currentProfile != null ) {
+                if( updateUI ) Cursor = Cursors.WaitCursor;
+                try {
+                    if( currentProfile.ImportSteamData() > 0 ) {
+                        unsavedChanges = true;
+                        if( updateUI ) {
+                            FillCategoryList();
+                            FillGameList();
+                        }
+                    }
+                    if( updateUI ) Cursor = Cursors.Default;
+                } catch( ApplicationException e ) {
+                    if( updateUI ) Cursor = Cursors.Default;
+                    MessageBox.Show( e.Message, "Error importing steam data list", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+                }
+            }
+        }
+
+        void ProfileExport() {
+            if( currentProfile != null ) {
+                try {
+                    currentProfile.ExportSteamData();
+                } catch( ApplicationException e ) {
+                    MessageBox.Show( e.Message, "Error exporting to Steam", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                }
+            }
+        }
+
         #endregion
 
         #region UI Event Handlers
@@ -500,37 +678,59 @@ namespace Depressurizer {
         }
         #endregion
         #region Main menu
-        private void menu_File_AutoLoad_Click( object sender, EventArgs e ) {
-            AutoLoad();
+        private void menu_File_NewProfile_Click( object sender, EventArgs e ) {
+            CreateNewProfile();
         }
 
-        private void menu_File_AutoSave_Click( object sender, EventArgs e ) {
-            if( gameData.AutoLoaded ) {
-                AutoSave();
-            } else {
-                MessageBox.Show( "Cannot Auto Save unless current data was Auro Loaded in.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
-            }
+        private void menu_File_LoadProfile_Click( object sender, EventArgs e ) {
+            LoadProfile();
         }
 
-        private void clearToolStripMenuItem_Click( object sender, EventArgs e ) {
-            ClearData();
+        private void menu_File_SaveProfile_Click( object sender, EventArgs e ) {
+            SaveProfile();
         }
 
-        private void menu_File_Load_Click( object sender, EventArgs e ) {
-            ManualLoad();
+        private void menu_File_SaveProfileAs_Click( object sender, EventArgs e ) {
+            SaveProfileAs();
         }
 
-        private void menu_File_ProfileLoad_Click( object sender, EventArgs e ) {
-            ManualProfileLoad();
+        private void menu_File_Close_Click( object sender, EventArgs e ) {
+            Unload();
         }
 
-        private void menu_File_Save_Click( object sender, EventArgs e ) {
-            ManualSave();
+        private void menu_File_Manual_Import_Click( object sender, EventArgs e ) {
+            ManualImport();
+        }
+
+        private void menu_File_Manual_Download_Click( object sender, EventArgs e ) {
+            ManualDownload();
+        }
+
+        private void menu_File_Manual_Export_Click( object sender, EventArgs e ) {
+            ManualExport();
         }
 
         private void menu_File_Exit_Click( object sender, EventArgs e ) {
             this.Close();
         }
+
+        private void menu_Profile_Download_Click( object sender, EventArgs e ) {
+            UpdateProfileDownload();
+        }
+
+        private void menu_Profile_Import_Click( object sender, EventArgs e ) {
+            UpdateProfileImport();
+        }
+
+        private void menu_Profile_Export_Click( object sender, EventArgs e ) {
+            ProfileExport();
+        }
+
+        private void menu_Config_Settings_Click( object sender, EventArgs e ) {
+            OptionsDlg dlg = new OptionsDlg();
+            dlg.ShowDialog();
+        }
+
         #endregion
         #region Buttons
         private void cmdCatAdd_Click( object sender, EventArgs e ) {
@@ -582,56 +782,6 @@ namespace Depressurizer {
             UpdateSelectedStatusText();
         }
 
-        #endregion
-
-        private void FormMain_FormClosing( object sender, FormClosingEventArgs e ) {
-            if( e.CloseReason == CloseReason.UserClosing ) {
-                e.Cancel = !CheckForUnsaved();
-            }
-        }
-
-        private void menu_File_NewProfile_Click( object sender, EventArgs e ) {
-            CreateNewProfile();
-        }
-
-        private void CreateNewProfile() {
-            ProfileDlg dlg = new ProfileDlg();
-            DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
-                currentProfile = dlg.Profile;
-                gameData = currentProfile.GameData;
-            }
-        }
-
-        private void menu_File_LoadProfile_Click( object sender, EventArgs e ) {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.DefaultExt = "profile";
-            dlg.AddExtension = true;
-            dlg.CheckFileExists = true;
-            dlg.Filter = "Profiles (*.prof)|*.profile";
-            DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
-                currentProfile = ProfileData.LoadProfile( dlg.FileName );
-            }
-        }
-
-        private void menu_File_SaveProfile_Click( object sender, EventArgs e ) {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.DefaultExt = "profile";
-            dlg.AddExtension = true;
-            dlg.CheckPathExists = true;
-            dlg.Filter = "Profiles (*.profile)|*.profile";
-            DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
-                currentProfile.SaveProfile( dlg.FileName );
-            }
-        }
-
-        private void menu_Config_Settings_Click( object sender, EventArgs e ) {
-            OptionsDlg dlg = new OptionsDlg();
-            dlg.ShowDialog();
-        }
-
         private void FormMain_Load( object sender, EventArgs e ) {
             if( settings.SteamPath == null ) {
                 SteamPathDlg dlg = new SteamPathDlg();
@@ -641,6 +791,12 @@ namespace Depressurizer {
             }
         }
 
+        private void FormMain_FormClosing( object sender, FormClosingEventArgs e ) {
+            if( e.CloseReason == CloseReason.UserClosing ) {
+                e.Cancel = !CheckForUnsaved();
+            }
+        }
+        #endregion
     }
 
     /// <summary>

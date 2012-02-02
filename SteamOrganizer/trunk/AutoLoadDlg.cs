@@ -134,7 +134,7 @@ namespace Depressurizer {
 
             if( loadFile ) {
                 try {
-                    gameData.LoadSteamFile( fullConfigFilePath );
+                    gameData.ImportSteamFile( fullConfigFilePath );
                 } catch( ParseException e ) {
                     if( DialogResult.No == MessageBox.Show( string.Format( "Error parsing file: {0}\nLoad profile anyway?", e.Message ), "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation ) ) {
                         return false;

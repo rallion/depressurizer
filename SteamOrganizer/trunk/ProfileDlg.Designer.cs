@@ -41,7 +41,6 @@
             this.cmdOk = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.grpLoadOpt = new System.Windows.Forms.GroupBox();
-            this.chkImportDiscard = new System.Windows.Forms.CheckBox();
             this.chkAutoImport = new System.Windows.Forms.CheckBox();
             this.chkAutoDownload = new System.Windows.Forms.CheckBox();
             this.grpSaveOpt = new System.Windows.Forms.GroupBox();
@@ -242,26 +241,15 @@
             // 
             this.grpLoadOpt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpLoadOpt.Controls.Add(this.chkImportDiscard);
             this.grpLoadOpt.Controls.Add(this.chkAutoImport);
             this.grpLoadOpt.Controls.Add(this.chkAutoDownload);
             this.grpLoadOpt.Location = new System.Drawing.Point(6, 6);
             this.grpLoadOpt.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.grpLoadOpt.Name = "grpLoadOpt";
-            this.grpLoadOpt.Size = new System.Drawing.Size(614, 87);
+            this.grpLoadOpt.Size = new System.Drawing.Size(614, 65);
             this.grpLoadOpt.TabIndex = 0;
             this.grpLoadOpt.TabStop = false;
             this.grpLoadOpt.Text = "Profile Loading Options";
-            // 
-            // chkImportDiscard
-            // 
-            this.chkImportDiscard.AutoSize = true;
-            this.chkImportDiscard.Location = new System.Drawing.Point(6, 65);
-            this.chkImportDiscard.Name = "chkImportDiscard";
-            this.chkImportDiscard.Size = new System.Drawing.Size(276, 17);
-            this.chkImportDiscard.TabIndex = 2;
-            this.chkImportDiscard.Text = "When importing, discard existing category information";
-            this.chkImportDiscard.UseVisualStyleBackColor = true;
             // 
             // chkAutoImport
             // 
@@ -291,7 +279,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpSaveOpt.Controls.Add(this.chkExportDiscard);
             this.grpSaveOpt.Controls.Add(this.chkAutoExport);
-            this.grpSaveOpt.Location = new System.Drawing.Point(6, 99);
+            this.grpSaveOpt.Location = new System.Drawing.Point(6, 77);
             this.grpSaveOpt.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.grpSaveOpt.Name = "grpSaveOpt";
             this.grpSaveOpt.Size = new System.Drawing.Size(614, 65);
@@ -422,6 +410,5 @@
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabMain;
         private System.Windows.Forms.TabPage tabOpts;
-        private System.Windows.Forms.CheckBox chkImportDiscard;
     }
 }

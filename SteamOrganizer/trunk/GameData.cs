@@ -49,31 +49,15 @@ namespace Depressurizer {
         #region Fields
         public Dictionary<int, Game> Games;
         public List<Category> Categories;
-
-        // Complete steam setting file data that was loaded
-        private FileNode backingData;
-
-        public bool AutoLoaded { get; private set; }
-        private string steamId;
-        private string steamPath;
-
         #endregion
-
-        public void SetAutoload( string steamPath, string steamId ) {
-            AutoLoaded = true;
-            this.steamId = steamId;
-            this.steamPath = steamPath;
-        }
 
         public GameData() {
             Games = new Dictionary<int, Game>();
             Categories = new List<Category>();
-            AutoLoaded = false;
         }
 
         #region Modifiers
         public void Clear() {
-            AutoLoaded = false;
             Games.Clear();
             Categories.Clear();
         }
@@ -228,7 +212,7 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="filePath">The path of the file to open</param>
         /// <returns>The number of game entries found</returns>
-        public int LoadSteamFile( string filePath ) {
+        public int ImportSteamFile( string filePath ) {
 
             FileNode dataRoot;
 
@@ -241,10 +225,6 @@ namespace Depressurizer {
             } catch( IOException e ) {
                 throw new ApplicationException( "Error opening Steam config file: " + e.Message, e );
             }
-
-            Games.Clear();
-            Categories.Clear();
-            this.backingData = dataRoot;
 
             FileNode appsNode = dataRoot.GetNodeAt( new string[] { "Software", "Valve", "Steam", "apps" }, true );
             return LoadGames( appsNode );
@@ -279,10 +259,10 @@ namespace Depressurizer {
                         if( !Games.ContainsKey( gameId ) ) {
                             Game newGame = new Game( gameId, string.Empty );
                             Games.Add( gameId, newGame );
-                            loadedGames++;
                         }
                         Games[gameId].Category = cat;
                         Games[gameId].Favorite = fav;
+                        loadedGames++;
                     }
                 }
             }
@@ -294,8 +274,33 @@ namespace Depressurizer {
         /// Writes category information out to a steam config file. Also saves any other settings that had been loaded, to avoid setting loss.
         /// </summary>
         /// <param name="path">Full path of the steam config file to save</param>
-        public void SaveSteamFile( string filePath ) {
-            FileNode appListNode = backingData.GetNodeAt( new string[] { "Software", "Valve", "Steam", "apps" }, true );
+        public void SaveSteamFile( string filePath, bool discardMissing ) {
+            FileNode fileData = new FileNode();
+            try {
+                using( StreamReader reader = new StreamReader( filePath, false ) ) {
+                    fileData = FileNode.Load( reader, true );
+                }
+            } catch { }
+
+            FileNode appListNode = fileData.GetNodeAt( new string[] { "Software", "Valve", "Steam", "apps" }, true );
+
+            if( discardMissing ) {
+                Dictionary<string, FileNode> gameNodeArray = appListNode.NodeArray;
+                if( gameNodeArray != null ) {
+                    string[] keys = new string[ gameNodeArray.Count ];
+                    gameNodeArray.Keys.CopyTo( keys, 0 );
+                    foreach( string key in keys ) {
+                        int gameId;
+                        if( int.TryParse( key, out gameId ) ) {
+                            if( !Games.ContainsKey( gameId ) ) {
+                                gameNodeArray.Remove( key );
+                            }
+                        } else {
+                            gameNodeArray.Remove( key );
+                        }
+                    }
+                }
+            }
 
             foreach( Game game in Games.Values ) {
                 FileNode gameNode = appListNode[game.Id.ToString()];
@@ -316,7 +321,7 @@ namespace Depressurizer {
             appListNode.CleanTree();
 
             FileNode fullFile = new FileNode();
-            fullFile["UserLocalConfigStore"] = backingData;
+            fullFile["UserLocalConfigStore"] = fileData;
             try {
                 FileStream fStream = File.Open( filePath, FileMode.Create, FileAccess.Write, FileShare.None );
                 using( StreamWriter writer = new StreamWriter( fStream ) ) {
@@ -330,11 +335,6 @@ namespace Depressurizer {
             } catch( UnauthorizedAccessException e ) {
                 throw new ApplicationException( "Access denied on Steam config file: " + e.Message, e );
             }
-        }
-
-        public void AutoSave() {
-            if( !AutoLoaded ) return;
-            SaveSteamFile( string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", steamPath, steamId ) );
         }
     }
 }

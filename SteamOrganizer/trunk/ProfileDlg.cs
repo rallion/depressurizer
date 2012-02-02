@@ -12,6 +12,18 @@ namespace Depressurizer {
     public partial class ProfileDlg : Form {
         public ProfileData Profile;
 
+        public bool DownloadOnCreate {
+            get {
+                return chkActDownload.Checked;
+            }
+        }
+
+        public bool ImportOnCreate {
+            get {
+                return chkActImport.Checked;
+            }
+        }
+
         public ProfileDlg() {
             InitializeComponent();
         }
@@ -69,7 +81,7 @@ namespace Depressurizer {
                 try {
                     file.Directory.Create();
                 } catch {
-                    MessageBox.Show( "Failed to create directory to store profile file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    MessageBox.Show( "Failed to create parent directory of profile file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
                     return false;
                 }
             }
@@ -81,10 +93,10 @@ namespace Depressurizer {
             profile.AutoExport = chkAutoExport.Checked;
             profile.AutoImport = chkAutoImport.Checked;
             profile.ExportDiscard = chkExportDiscard.Checked;
-            profile.ImportDiscard = chkImportDiscard.Checked;
-
-            if( !profile.SaveProfile( file.FullName ) ) {
-                MessageBox.Show( "Failed to create profile file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            try {
+                profile.Save( file.FullName );
+            } catch( ApplicationException e ) {
+                MessageBox.Show( e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 return false;
             }
 

@@ -33,8 +33,11 @@ namespace Depressurizer {
             settings.LoadProfileOnStartup = chkLoadProfileOnStart.Checked;
             settings.ProfileToLoad = txtDefaultProfile.Text;
             settings.RemoveExtraEntries = chkRemoveExtraEntries.Checked;
-            //TODO: Add exception handling here
-            settings.Save();
+            try {
+                settings.Save();
+            } catch( Exception e ) {
+                MessageBox.Show( "Error saving settings file: " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            }
         }
 
         private void cmdCancel_Click( object sender, EventArgs e ) {

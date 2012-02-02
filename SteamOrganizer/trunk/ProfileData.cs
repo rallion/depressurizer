@@ -22,13 +22,11 @@ namespace Depressurizer {
 
         public bool AutoExport = true;
 
-        public bool ImportDiscard = false;
-
         public bool ExportDiscard = true;
 
         public int ImportSteamData() {
             string filePath = string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", DepSettings.Instance().SteamPath, AccountID );
-            return GameData.LoadSteamFile( filePath );
+            return GameData.ImportSteamFile( filePath );
         }
 
         public int DownloadGameList() {
@@ -37,18 +35,23 @@ namespace Depressurizer {
 
         public void ExportSteamData() {
             string filePath = string.Format( @"{0}\userdata\{1}\7\remote\sharedconfig.vdf", DepSettings.Instance().SteamPath, AccountID );
-            GameData.SaveSteamFile( filePath );
+            GameData.SaveSteamFile( filePath, ExportDiscard );
         }
 
         #region Saving and Loading
 
-        public static ProfileData LoadProfile( string path ) {
+        public static ProfileData Load( string path ) {
             ProfileData profile = new ProfileData();
 
             profile.FilePath = path;
 
             XmlDocument doc = new XmlDocument();
-            doc.Load( path );
+            
+            try {
+                doc.Load( path );
+            } catch( Exception e ) {
+                throw new ApplicationException( "Error loading profile: " + e.Message, e );
+            }
 
             XmlNode profileNode = doc.SelectSingleNode( "/profile" );
 
@@ -59,8 +62,7 @@ namespace Depressurizer {
                 profile.AutoDownload = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_download", profile.AutoDownload );
                 profile.AutoImport = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_import", profile.AutoImport );
                 profile.AutoExport = XmlHelper.GetBooleanFromXmlElement( profileNode, "auto_export", profile.AutoExport );
-                profile.ImportDiscard = XmlHelper.GetBooleanFromXmlElement( profileNode, "discard_extra_on_import", profile.ImportDiscard );
-                profile.ExportDiscard = XmlHelper.GetBooleanFromXmlElement( profileNode, "discard_extra_on_export", profile.ExportDiscard );
+                profile.ExportDiscard = XmlHelper.GetBooleanFromXmlElement( profileNode, "export_discard", profile.ExportDiscard );
 
                 XmlNode gameListNode = profileNode.SelectSingleNode( "games" );
                 if( gameListNode != null ) {
@@ -102,11 +104,11 @@ namespace Depressurizer {
             }
         }
 
-        public void SaveProfile() {
-            SaveProfile( FilePath );
+        public void Save() {
+            Save( FilePath );
         }
 
-        public bool SaveProfile( string path ) {
+        public bool Save( string path ) {
             XmlWriterSettings writeSettings = new XmlWriterSettings();
             writeSettings.CloseOutput = true;
             writeSettings.Indent = true;
@@ -114,8 +116,8 @@ namespace Depressurizer {
             XmlWriter writer;
             try {
                 writer = XmlWriter.Create( path, writeSettings );
-            } catch {
-                return false;
+            } catch (Exception e) {
+                throw new ApplicationException( "Error saving profile file: " + e.Message, e );    
             }
             writer.WriteStartElement( "profile" );
 
@@ -130,8 +132,7 @@ namespace Depressurizer {
             writer.WriteElementString( "auto_download", AutoDownload.ToString() );
             writer.WriteElementString( "auto_import", AutoImport.ToString() );
             writer.WriteElementString( "auto_export", AutoExport.ToString() );
-            writer.WriteElementString( "discard_extra_on_import", ImportDiscard.ToString() );
-            writer.WriteElementString( "discard_extra_on_export", ExportDiscard.ToString() );
+            writer.WriteElementString( "export_discard", ExportDiscard.ToString() );
 
             writer.WriteStartElement( "games" );
 
