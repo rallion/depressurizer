@@ -1,4 +1,5 @@
 #summary General Use Guide
+#labels Featured
 
 == Introduction ==
 
