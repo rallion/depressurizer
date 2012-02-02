@@ -1,0 +1,37 @@
+#summary General Use Guide
+
+== Introduction ==
+
+Depressurizer is a program that will allow you to much more easily categorize games within large libraries, giving you an alternative to the current Steam client interface.
+
+
+== Requirements ==
+
+  * Windows platform with .NET 4.0 and a Steam installation
+
+  * A working internet connection
+
+  * A Steam Community Profile that's set to be public
+
+*Important:* In order to use the program effectively, you must first make sure that your Steam Community Profile has been set up, and that your profile is set to "Public." Otherwise, the program will have no way to access a list of your games.
+
+== Before You Begin ==
+
+No special installation steps are necessary. Just unpack the archive anywhere on your hard drive. To run the program, just run Depressurizer.exe.
+
+*Note:* For some setups, it may be a good idea to run the program as an administrator. This will be required for optimal use if you are running under a user account that does not have write access to the Steam installation directory. You can set the executable to always run as admin in the file Properties dialog under the Compatibility tab.
+
+== Basic Use Guide (0.2.2) ==
+
+Before you begin, make sure that Steam is not running. At the least, you will have to shut down Steam before you save. Otherwise, all your work may be erased.
+
+  # After starting the program, click File > Load...
+  # You will need to fill out the information on the Load dialog. Click the 'help' links for help with individual fields. If you're not sure what to use for your Profile name, log into your account at the [http://www.steamcommunity.com Steam Community Website] and click the "Edit my profile" link on the right. You're looking for the "Custom URL" field. You just need the name, not the whole address.
+  # Once you fill these out, click the Load button, and after a moment you should see a list of all your games. You can now edit categories and move your games around. Selecting a category in the list on the left will filter your view to games in that category. Create new categories by clicking the "add" button under the category list, or by Selecting 'Add new...' in the lower right dropdown then clicking "Set Category" (this method will also assign all selected games to the new category). Games can be categorized by dragging them to the category list or using the dropdown in the lower right.
+  # Make sure Steam is not running. Click on File > Save, and you're done. Load Steam up again to make sure everything worked okay.
+
+== Known Issues and Caveats ==
+
+This is a work in progress. There are many features that just aren't present yet.
+
+Some games will not show up in the program. This is a result of the games not showing up on your community profile page. Likewise, there are also many "games" that show up in the program but do _not_ show up in the actual Steam client (mostly DLC packs). There are plans to add features to alleviate, but not eliminate, both of these problems.
