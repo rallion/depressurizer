@@ -1,0 +1,46 @@
+=== 0.3.0 (Feb 2 2012) ===
+==== Features ====
+  * Profiles: Game list and categories can now be saved in a Depressurizer profile file, rather than just being saved directly to Steam. This allows for easier saving and loading, as well as keeping your categories intact if Steam loses them.
+  * Persistent Settings: The program will now remember the path to Steam, as well as a couple new options.
+==== Functional Changes ====
+  * Now loads profile data from the XML profile data rather than the HTML profile page
+==== UI Changes ====
+  * Terminology used has changed somewhat, and menus totally rearranged to accomodate new features.
+  * Reworked status updates to provide cleaner feedback and slightly changed a few message boxes
+  * Title bar now shows an asterisk if there are unsaved changes
+  * Inappropriate menu options are now disabled
+==== Fixes ====
+  * Program no longer crashes if it does not have file write permission on save.
+  * Fixed some strangeness regarding when the program prompts you about unsaved changes.
+----
+=== 0.2.2 (Jan 14 2012) ===
+==== Fixes ====
+  * Fixes loading sharedconfig files with different root names
+  * Fixes loading profile data with incorrect app IDs
+----
+===0.2.1 (Dec 30 2011)===
+====Fixes====
+  * Fixes potential crash on file load
+----
+===0.2 (Nov 9 2011)===
+====Noteworthy changes====
+  *Added automatic saving and loading functions
+  *Program now prompts you to save if you are about to lose changes
+  *Added exception handler to allow for easier reporting and resolution of any remaining crashes.
+====Functional changes====
+  *Added some limitations on category names to avoid confusing situations
+  *Added Clear option to menu to easily clear all data
+====Interface changes====
+  *Added status bar to give some extra feedback
+  *Added some message popups when certain "warning"-inducing events occur
+  * The game list will no longer completely redraw itself and scroll back to the top every time it changes
+  * Category lists do not lose their selections whenever refreshed
+  * Changed category list box to a different control type to allow easier item selection
+  * Changed menu layout
+  * Program will now show a "wait" cursor while it is loading or saving data
+  * Game names loaded from Steam profiles will no longer have backslashes before single-quotes
+====Fixes====
+  * Fixed some crash bugs
+----
+===0.1 (Nov 2 2011)===
+  * Initial release
