@@ -5,7 +5,6 @@
 
 Depressurizer is a program that will allow you to much more easily categorize games within large libraries, giving you an alternative to the current Steam client interface.
 
-
 == Requirements ==
 
   * Windows platform with .NET 4.0 and a Steam installation
@@ -24,7 +23,7 @@ No special installation steps are necessary. Just unpack the archive anywhere on
 
 == Basic Use Guide (0.3.0) ==
 
-Before you begin, make sure that Steam is not running. At the least, you will have to shut down Steam before you save. Otherwise, all your work may be erased.
+Before you begin, make sure that Steam is not running. At the least, you will have to shut down Steam before you save.
 
   # After starting the program for the first time, it will ask you for the path to Steam. Confirm that the suggested path is correct, or enter the path manually, and click OK.
   # On first run, the program will prompt you to create a profile. Make sure that the Account ID is correct; if the game can access your Steam folder, it's probably already filled in. Type your Community URL Name in the next field. If you're not sure what to use here, log into your account at the [http://www.steamcommunity.com Steam Community Website] and click the "Edit my profile" link on the right. You're looking for the "Custom URL" field. You just need the name, not the whole address.
