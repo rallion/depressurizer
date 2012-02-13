@@ -47,4 +47,9 @@ If you want to make further changes later, or if you want to categorize new game
 
 This is a work in progress. There are many features that just aren't present yet.
 
-Some games will not show up in the program. This is a result of the games not showing up on your community profile page. Likewise, there are also many "games" that show up in the program but do _not_ show up in the actual Steam client (mostly DLC packs). There are plans to add features to alleviate, but not eliminate, both of these problems.
+Some games will not show up in the program. This is a result of the games not showing up on your community profile page. Likewise, there are also many "games" that show up in the program but do _not_ show up in the actual Steam client (mostly DLC packs). *As of 0.3.1*, missing games can be manually added and extra games can be manually deleted from within the program.
+
+== Planned Features ==
+
+  * Automatic categorization of games based on the genre in the Steam store
+  * Automatic ignoring of DLC packs based on a list distributed with the program
