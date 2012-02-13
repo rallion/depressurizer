@@ -1,3 +1,16 @@
+=== 0.3.1 (Feb 13 2012) ===
+
+==== Features ====
+  * Games can now be manually added, edited, or removed from a profile entirely.
+  * Implemented an "ignore" list, which will prevent the program from ever adding certain games to your list after downloading your game list or importing existing categories.
+==== UI ====
+  * Added some keyboard shortcuts
+  * Added right-click context menus to the game and category lists
+  * Category list now provides some visual feedback when dragging games over it
+  * Changed the style of the category dropdown box to speed up interaction
+  * Buttons and options that aren't currently usable are now disabled
+  * Fixed the incorrect tab order on some forms
+----
 === 0.3.0 (Feb 2 2012) ===
 ==== Features ====
   * Profiles: Game list and categories can now be saved in a Depressurizer profile file, rather than just being saved directly to Steam. This allows for easier saving and loading, as well as keeping your categories intact if Steam loses them.
