@@ -21,7 +21,7 @@ No special installation steps are necessary. Just unpack the archive anywhere on
 
 *Note:* For some setups, it may be a good idea to run the program as an administrator. This will be required for optimal use if you are running under a user account that does not have write access to the Steam installation directory. You can set the executable to always run as admin in the file Properties dialog under the Compatibility tab.
 
-== Basic Use Guide (0.3.0) ==
+== Basic Use Guide (0.3.0 through 0.4.0) ==
 
 Before you begin, make sure that Steam is not running. At the least, you will have to shut down Steam before you save.
 
@@ -44,11 +44,6 @@ If you want to make further changes later, or if you want to categorize new game
 
 == Known Issues and Caveats ==
 
-This is a work in progress. There are many features that just aren't present yet.
+This is a work in progress.
 
-Some games will not show up in the program. This is a result of the games not showing up on your community profile page. Likewise, there are also many "games" that show up in the program but do _not_ show up in the actual Steam client (mostly DLC packs). *As of 0.3.1*, missing games can be manually added and extra games can be manually deleted from within the program.
-
-== Planned Features ==
-
-  * Automatic categorization of games based on the genre in the Steam store
-  * Automatic ignoring of DLC packs based on a list distributed with the program
+Some games will not show up in the program. This is a result of the games not showing up on your community profile page. Likewise, there are also many "games" that show up in the program but do _not_ show up in the actual Steam client (mostly DLC packs). *As of 0.3.1*, missing games can be manually added and extra games can be manually deleted from within the program. *As of 0.4.0*, DLC packs should be ignored by default, at least in most cases.
