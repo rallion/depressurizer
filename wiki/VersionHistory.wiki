@@ -3,6 +3,7 @@
 ====Features====
   * Integrated game and genre database
     * Games can now be automatically categorized according to the genre that the Steam Store has them listed under.
+    * DLC items will be automatically ignored by the program by default.
     * Games will also be assigned names even if imported from local config files.
     * A built-in database editor allows viewing, updating, and customization of this database.
 
