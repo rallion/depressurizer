@@ -7,7 +7,7 @@
 
 ====Fixes====
   * Fixed issue with category filtering in the DB editor.
----
+----
 ===0.4.0 (March 17 2012)===
 
 ====Features====
