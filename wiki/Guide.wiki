@@ -21,7 +21,7 @@ No special installation steps are necessary. Just unpack the archive anywhere on
 
 *Note:* For some setups, it may be a good idea to run the program as an administrator. This will be required for optimal use if you are running under a user account that does not have write access to the Steam installation directory. You can set the executable to always run as admin in the file Properties dialog under the Compatibility tab.
 
-== Basic Use Guide (0.3.0 through 0.4.0) ==
+== Basic Use Guide (0.3.0 through 0.4.1) ==
 
 Before you begin, make sure that Steam is not running. At the least, you will have to shut down Steam before you save.
 
