@@ -1,3 +1,13 @@
+===0.4.1 (July 13 2012)===
+
+====Database====
+  * Updated the included database file
+  * Fixed problem with scraping genre info for game IDs that redirect to other IDs that are barred with an age gate.
+  * Fetching the game list now checks for changed names on existing IDs, and treats any IDs with new names as entirely new entries.
+
+====Fixes====
+  * Fixed issue with category filtering in the DB editor.
+---
 ===0.4.0 (March 17 2012)===
 
 ====Features====
