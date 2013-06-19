@@ -21,16 +21,18 @@ No special installation steps are necessary. Just unpack the archive anywhere on
 
 *Note:* For some setups, it may be a good idea to run the program as an administrator. This will be required for optimal use if you are running under a user account that does not have write access to the Steam installation directory. You can set the executable to always run as admin in the file Properties dialog under the Compatibility tab.
 
-== Basic Use Guide (0.3.0 through 0.4.1) ==
+== Basic Use Guide (for version 0.4.4) ==
 
 Before you begin, make sure that Steam is not running. At the least, you will have to shut down Steam before you save.
 
   # After starting the program for the first time, it will ask you for the path to Steam. Confirm that the suggested path is correct, or enter the path manually, and click OK.
-  # On first run, the program will prompt you to create a profile. Make sure that the Account ID is correct; if the game can access your Steam folder, it's probably already filled in. Type your Community URL Name in the next field. If you're not sure what to use here, log into your account at the [http://www.steamcommunity.com Steam Community Website] and click the "Edit my profile" link on the right. You're looking for the "Custom URL" field. You just need the name, not the whole address.
-  # Click the OK button, and the program will create your profile file, and also download a list of all your games and import any existing category information from Steam. You can now edit categories and move your games around. Selecting a category in the list on the left will filter your view to games in that category. Create new categories by clicking the "add" button under the category list, or by Selecting 'Add new...' in the lower right dropdown then clicking "Set Category" (this method will also assign all selected games to the new category). Games can be categorized by dragging them to the category list or using the dropdown in the lower right.
+  # On first run, the program will prompt you to create a profile. It will show you a list of accounts with settings saved in your Steam installation. Yours should be here; select it.
+  # Click the OK button, and the program will create your profile file, and also download a list of all your games and import any existing category information from Steam.
+  # You can auto-categorize games by selecting them and clicking the "Auto-Categorize" button in the lower right corner of the window.
+  # You can also manually edit categories and move your games around. Selecting a category in the list on the left will filter your view to games in that category. Create new categories by clicking the "add" button under the category list, or by Selecting 'Add new...' in the lower right dropdown then clicking "Set Category" (this method will also assign all selected games to the new category). Games can be categorized by dragging them to the category list or using the dropdown in the lower right.
   # When you are done, make sure Steam is not running. Click on File > Save Profile, and you're done. The program should automatically export your category info back to Steam. Load Steam up again to make sure everything worked okay.
 
-If you want to make further changes later, or if you want to categorize new games, or if Steam eats your categories and you need to re-set them, just run the program again. If you left all the settings at their default values, the program will automatically load up your previously set categories and download an updated game list (this may take a few moments). You can then edit and save again as desired.
+If you want to make further changes later, or if you want to categorize new games, or if Steam eats your categories and you need to re-set them, just run the program again. If you left all the settings at their default values, the program will automatically load up your previously set categories and download an updated game list (this may take a few moments). You can then edit and/or save again as desired.
 
 == On terminology ==
 
@@ -40,7 +42,7 @@ If you want to make further changes later, or if you want to categorize new game
 
   * Export: The program writes all your category data to Steam so that you can see it in the Steam client
 
-  * Download: The program grabs your game list from the community site. This is the only way for the program to get a list of your games, or to get the names of any games.
+  * Download: The program grabs your game list from the community site. This is the only way for the program to get a list of your games.
 
 == Known Issues and Caveats ==
 
