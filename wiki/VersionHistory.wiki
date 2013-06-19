@@ -1,3 +1,16 @@
+===0.4.4 (Jun 19 2013)===
+
+====UI and Usability====
+  * Profile creation no longer requires you to enter your profile URL name manually. The profile page now presents a list of all accounts with saved settings existing under your current Steam installation. All Steam account information is now referenced by the 64-bit Steam ID, which means that the program will now work even if you don't have a profile URL name set.
+  * If an attempt is made to download a profile's game list, and the profile is not set to "Public," the program will now provide an error message that specifically says so instead of saying that there were no games.
+  * Adding an item to the selection in the main list now sets the "Set Favorite" combo box to the opposite value of the selected item. This lets the "Set Favorite" button be used like a simple toggle in the simple case.
+  * Manually downloading a game list can be done by steam ID or by custom URL name.
+  * Program logging can now be controlled through the settings dialog.
+
+====Other changes====
+  * Program logging is now enabled by default, and uses a more sane file scheme.
+  * If the full directory structure required to save the Steam config file does not exist, the program will create it instead of showing an error message.
+----
 ===0.4.3 (Apr 9 2013)===
 
 ====Features====
