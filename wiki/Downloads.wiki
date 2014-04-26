@@ -1,0 +1,34 @@
+#summary Main download page
+
+== Latest version: 0.4.5 (April 25, 2014) ==
+
+===Download Links:===
+[https://drive.google.com/uc?export=&id=0B3ShtVgwRb2sVnQ5MHFFUlRNOWM Direct download]
+
+[https://docs.google.com/file/d/0B3ShtVgwRb2sVnQ5MHFFUlRNOWM On Google Drive]
+
+===Changes in 0.4.5===
+
+====Features====
+ * Now has the capability to handle non-Steam games. At the moment, this is disabled by default. To enable this feature, go to the "Ignored Games" section of your profile and uncheck "Ignore external games." For now, the games will only appear if they have been previously launched from the Steam client at least once.
+ * You can now launch games directly from Depressurizer.
+
+====UI and Usability====
+ * Now supports localization, and is currently translated into Spanish.
+ * Changes to the look of the game list
+ * The game list can now optionally be displayed with groups for different categories.
+
+====Database changes====
+ * Fixed scraping problems caused by recent changes to the Steam store pages.
+ * Database now contains game publisher, developer, release date, a list of store flags (like Full Controller Support, Multiplayer, etc) and Metacritic link. This doesn't really do any good at the moment, but it's groudwork for future improvements.
+ * Database file is now saved using gzip compression to prevent it from ballooning in size as new fields are added to it.
+
+====Bug Fixes====
+ * Fixed a crash that could occur if the program was unable to open a log file.
+ * You can no longer attempt to manually add multiple games with the same ID
+
+----
+===Older versions===
+[https://drive.google.com/folderview?id=0B3ShtVgwRb2sUVJuUlZpWjA4RzQ Downloads]
+
+[VersionHistory Changelogs]
