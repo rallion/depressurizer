@@ -1,11 +1,17 @@
 #summary Main download page
 
-== Latest version: 0.4.5 (April 25, 2014) ==
+== Latest version: 0.4.5.1 (May 1, 2014) ==
 
 ===Download Links:===
-[https://drive.google.com/uc?export=&id=0B3ShtVgwRb2sVnQ5MHFFUlRNOWM Direct download]
+[https://drive.google.com/uc?export=&id=0B3ShtVgwRb2scVpOZUhLakNaQ1E Direct download]
 
-[https://docs.google.com/file/d/0B3ShtVgwRb2sVnQ5MHFFUlRNOWM On Google Drive]
+[https://docs.google.com/file/d/0B3ShtVgwRb2scVpOZUhLakNaQ1E On Google Drive]
+
+===Changes in 0.4.5.1===
+
+====Bug Fixes====
+
+ * Fixed crash that could occur when loading shortcut data.
 
 ===Changes in 0.4.5===
 
