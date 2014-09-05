@@ -40,7 +40,7 @@ namespace Depressurizer
                 if (Int64.TryParse(txtEntry.Text, out IdVal))
                 {
                     Custom = false;
-                    System.Windows.Forms.DialogResult = DialogResult.OK;
+                    this.DialogResult = DialogResult.OK;
                     Close();
                 }
                 else
@@ -52,7 +52,7 @@ namespace Depressurizer
             {
                 Custom = true;
                 UrlVal = txtEntry.Text;
-                System.Windows.Forms.DialogResult = DialogResult.OK;
+                this.DialogResult = DialogResult.OK;
                 Close();
             }
         }
