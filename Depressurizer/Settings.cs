@@ -16,178 +16,185 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
-using System.Windows.Forms;
-using Rallion;
+using Depressurizer.Lib;
 
-namespace Depressurizer {
-
-    enum StartupAction {
+namespace Depressurizer
+{
+    internal enum StartupAction
+    {
         None,
         Load,
         Create
     }
 
-    enum GameListSource {
+    internal enum GameListSource
+    {
         XmlPreferred,
         XmlOnly,
         WebsiteOnly
     }
 
-    enum UserLanguage
+    internal enum UserLanguage
     {
         windows,
         en,
         es
     }
 
-    class Settings : AppSettings {
-
+    internal class Settings : AppSettings
+    {
         private static Settings instance;
+        private int _configBackupCount = 3;
+        private GameListSource _listSource = GameListSource.XmlPreferred;
+        private int _logBackups = 1;
+        private LoggerLevel _logLevel = LoggerLevel.Info;
+        private int _logSize = 2000000;
+        private string _profileToLoad;
+        private bool _removeExtraEntries = true;
+        private bool _singleCatMode;
+        private StartupAction _startupAction = StartupAction.Create;
 
-        public static Settings Instance() {
-            if( instance == null ) {
-                instance = new Settings();
-            }
-            return instance;
+        private string _steamPath;
+        private UserLanguage _userLanguage = UserLanguage.windows;
+
+        private Settings()
+        {
+            FilePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                       @"\Depressurizer\Settings.xml";
         }
 
-        public int SettingsVersion {
-            get {
-                return 2;
-            }
+        public int SettingsVersion
+        {
+            get { return 2; }
         }
 
-        private string _steamPath = null;
-        public string SteamPath {
-            get {
-                return _steamPath;
-            }
-            set {
-                if( _steamPath != value ) {
+        public string SteamPath
+        {
+            get { return _steamPath; }
+            set
+            {
+                if (_steamPath != value)
+                {
                     _steamPath = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private int _configBackupCount = 3;
-        public int ConfigBackupCount {
-            get {
-                return _configBackupCount;
-            }
-            set {
-                if( _configBackupCount != value ) {
+        public int ConfigBackupCount
+        {
+            get { return _configBackupCount; }
+            set
+            {
+                if (_configBackupCount != value)
+                {
                     _configBackupCount = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private StartupAction _startupAction = StartupAction.Create;
-        public StartupAction StartupAction {
-            get {
-                return _startupAction;
-            }
-            set {
-                if( _startupAction != value ) {
+        public StartupAction StartupAction
+        {
+            get { return _startupAction; }
+            set
+            {
+                if (_startupAction != value)
+                {
                     _startupAction = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private string _profileToLoad = null;
-        public string ProfileToLoad {
-            get {
-                return _profileToLoad;
-            }
-            set {
-                if( _profileToLoad != value ) {
+        public string ProfileToLoad
+        {
+            get { return _profileToLoad; }
+            set
+            {
+                if (_profileToLoad != value)
+                {
                     _profileToLoad = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private bool _removeExtraEntries = true;
-        public bool RemoveExtraEntries {
-            get {
-                return _removeExtraEntries;
-            }
-            set {
-                if( _removeExtraEntries != value ) {
+        public bool RemoveExtraEntries
+        {
+            get { return _removeExtraEntries; }
+            set
+            {
+                if (_removeExtraEntries != value)
+                {
                     _removeExtraEntries = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private GameListSource _listSource = GameListSource.XmlPreferred;
-        public GameListSource ListSource {
-            get {
-                return _listSource;
-            }
-            set {
-                if( _listSource != value ) {
+        public GameListSource ListSource
+        {
+            get { return _listSource; }
+            set
+            {
+                if (_listSource != value)
+                {
                     _listSource = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private LoggerLevel _logLevel = LoggerLevel.Info;
-        public LoggerLevel LogLevel {
-            get {
-                return _logLevel;
-            }
-            set {
+        public LoggerLevel LogLevel
+        {
+            get { return _logLevel; }
+            set
+            {
                 Program.Logger.Level = value;
-                if( _logLevel != value ) {
+                if (_logLevel != value)
+                {
                     _logLevel = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private int _logSize = 2000000;
-        public int LogSize {
-            get {
-                return _logSize;
-            }
-            set {
+        public int LogSize
+        {
+            get { return _logSize; }
+            set
+            {
                 Program.Logger.MaxFileSize = value;
-                if( _logSize != value ) {
+                if (_logSize != value)
+                {
                     _logSize = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private int _logBackups = 1;
-        public int LogBackups {
-            get {
-                return _logBackups;
-            }
-            set {
+        public int LogBackups
+        {
+            get { return _logBackups; }
+            set
+            {
                 Program.Logger.MaxBackup = value;
-                if( _logBackups != value ) {
+                if (_logBackups != value)
+                {
                     _logBackups = value;
                     outOfDate = true;
                 }
             }
         }
 
-        private UserLanguage _userLanguage = UserLanguage.windows;
         public UserLanguage UserLang
         {
-            get
-            {
-                return _userLanguage;
-            }
+            get { return _userLanguage; }
             set
             {
                 if (_userLanguage != value)
@@ -197,6 +204,24 @@ namespace Depressurizer {
                     changeLanguage(_userLanguage);
                 }
             }
+        }
+
+        public bool SingleCatMode
+        {
+            get { return _singleCatMode; }
+            set
+            {
+                if (_singleCatMode != value)
+                {
+                    _singleCatMode = value;
+                    outOfDate = true;
+                }
+            }
+        }
+
+        public static Settings Instance()
+        {
+            return instance ?? (instance = new Settings());
         }
 
         private void changeLanguage(UserLanguage userLanguage)
@@ -217,29 +242,6 @@ namespace Depressurizer {
             }
 
             Thread.CurrentThread.CurrentUICulture = newCulture;
-        }
-
-        private bool _singleCatMode = false;
-        public bool SingleCatMode {
-            get {
-                return _singleCatMode;
-            }
-            set {
-                if( _singleCatMode != value ) {
-                    _singleCatMode = value;
-                    outOfDate = true;
-                }
-            }
-        }
-
-        private Settings()
-            : base() {
-            FilePath = System.Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ) + @"\Depressurizer\Settings.xml";
-        }
-
-        public override void Load() {
-            base.Load();
-         //   Program.Logger.Level = LogLevel;
         }
     }
 }

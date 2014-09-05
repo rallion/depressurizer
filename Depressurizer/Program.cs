@@ -16,21 +16,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 using System;
 using System.Windows.Forms;
-using Rallion;
+using Depressurizer.Lib;
 
-namespace Depressurizer {
-    static class Program {
-
+namespace Depressurizer
+{
+    internal static class Program
+    {
         public static AppLogger Logger;
         public static GameDB GameDB;
 
         /// <summary>
-        /// The main entry point for the application.
+        ///     The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main() {
+        private static void Main()
+        {
             FatalError.InitializeHandler();
 
             Logger = new AppLogger();
@@ -42,13 +45,12 @@ namespace Depressurizer {
             Logger.FileNameTemplate = "Depressurizer.log";
 
             Settings settings = Settings.Instance();
-            settings.Load();
 
             Logger.Write(LoggerLevel.Info, GlobalStrings.Program_ProgramInitialized, Logger.Level);
 
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault( false );
-            Application.Run( new FormMain() );
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new FormMain());
 
             settings.Save();
 

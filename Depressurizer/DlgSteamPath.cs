@@ -16,48 +16,62 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 using System;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
-namespace Depressurizer {
-    public partial class DlgSteamPath : Form {
-        public string Path {
-            get {
-                return txtPath.Text.Trim().TrimEnd( new char[] { '\\' } );
-            }
-        }
-        
-        public DlgSteamPath() {
+namespace Depressurizer
+{
+    public partial class DlgSteamPath : Form
+    {
+        public DlgSteamPath()
+        {
             InitializeComponent();
             txtPath.Text = GetSteamPath();
         }
 
-        private void cmdOk_Click( object sender, EventArgs e ) {
-            if( !Directory.Exists( Path ) ) {
-                DialogResult res = MessageBox.Show(GlobalStrings.DlgSteamPath_ThatPathDoesNotExist, GlobalStrings.DBEditDlg_Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-                if( res == System.Windows.Forms.DialogResult.No ) {
+        public string Path
+        {
+            get { return txtPath.Text.Trim().TrimEnd(new[] {'\\'}); }
+        }
+
+        private void cmdOk_Click(object sender, EventArgs e)
+        {
+            if (!Directory.Exists(Path))
+            {
+                DialogResult res = MessageBox.Show(GlobalStrings.DlgSteamPath_ThatPathDoesNotExist,
+                    GlobalStrings.DBEditDlg_Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2);
+                if (res == DialogResult.No)
+                {
                     return;
                 }
             }
-            this.Close();
+            Close();
         }
 
-        private void cmdBrowse_Click( object sender, EventArgs e ) {
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
+        private void cmdBrowse_Click(object sender, EventArgs e)
+        {
+            var dlg = new FolderBrowserDialog();
             DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
+            if (res == DialogResult.OK)
+            {
                 txtPath.Text = dlg.SelectedPath;
             }
         }
 
-        private string GetSteamPath() {
-            try {
-                string s = Registry.GetValue( @"HKEY_CURRENT_USER\Software\Valve\Steam", "steamPath", null ) as string;
-                if( s == null ) s = string.Empty;
-                return s.Replace( '/', '\\' );
-            } catch {
+        private string GetSteamPath()
+        {
+            try
+            {
+                string s = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "steamPath", null) as string ??
+                           string.Empty;
+                return s.Replace('/', '\\');
+            }
+            catch
+            {
                 return string.Empty;
             }
         }

@@ -14,78 +14,94 @@ Public License for more details.
 You should have received a copy of the GNU General Public License along with Depressurizer.  If not, see
 <http://www.gnu.org/licenses/>.
 */
+
 using System;
 using System.Windows.Forms;
 
-namespace Depressurizer {
-    public partial class DlgGame : Form {
-        GameList Data;
+namespace Depressurizer
+{
+    public partial class DlgGame : Form
+    {
+        private readonly GameList Data;
+
+        private readonly bool editMode;
         public GameInfo Game;
 
-        bool editMode;
-
-        private DlgGame() {
+        private DlgGame()
+        {
             InitializeComponent();
         }
 
-        public DlgGame( GameList data, GameInfo game = null )
-            : this() {
-            this.Data = data;
+        public DlgGame(GameList data, GameInfo game = null)
+            : this()
+        {
+            Data = data;
             Game = game;
             editMode = Game != null;
         }
 
-        private void GameDlg_Load( object sender, EventArgs e ) {
-            if( editMode ) {
+        private void GameDlg_Load(object sender, EventArgs e)
+        {
+            if (editMode)
+            {
                 Text = GlobalStrings.DlgGame_EditGame;
                 txtId.Text = Game.Id.ToString();
                 txtName.Text = Game.Name;
-                txtCategory.Text = Game.GetCatStringExcept( Data.FavoriteCategory );
-                chkFavorite.Checked = Game.ContainsCategory( Data.FavoriteCategory );
+                txtCategory.Text = Game.GetCatStringExcept(Data.FavoriteCategory);
+                chkFavorite.Checked = Game.ContainsCategory(Data.FavoriteCategory);
                 chkHidden.Checked = Game.Hidden;
                 txtId.ReadOnly = true;
-                
-            } else {
+            }
+            else
+            {
                 Text = GlobalStrings.DlgGame_CreateGame;
             }
         }
 
-        private void cmdCancel_Click( object sender, EventArgs e ) {
-            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Close();
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
-        private void cmdOk_Click( object sender, EventArgs e ) {           
-            if( editMode ) {
+        private void cmdOk_Click(object sender, EventArgs e)
+        {
+            if (editMode)
+            {
                 Game.Name = txtName.Text;
-            } else {
+            }
+            else
+            {
                 int id;
-                if( !int.TryParse( txtId.Text, out id ) ) {
-                    MessageBox.Show(GlobalStrings.DlgGameDBEntry_IDMustBeInteger, GlobalStrings.DBEditDlg_Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if (!int.TryParse(txtId.Text, out id))
+                {
+                    MessageBox.Show(GlobalStrings.DlgGameDBEntry_IDMustBeInteger, GlobalStrings.DBEditDlg_Warning,
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 // jpodadera. Control if Game ID already exists to avoid exceptions
                 if (Data.Games.ContainsKey(id))
                 {
-                    MessageBox.Show(GlobalStrings.DBEditDlg_GameIdAlreadyExists, GlobalStrings.DBEditDlg_Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(GlobalStrings.DBEditDlg_GameIdAlreadyExists, GlobalStrings.DBEditDlg_Error,
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                else
-                {
-                    Game = new GameInfo(id, txtName.Text);
-                    Data.Games.Add(id, Game);
-                }
+                Game = new GameInfo(id, txtName.Text);
+                Data.Games.Add(id, Game);
             }
 
-            if( chkFavorite.Checked ) {
-                Game.AddCategory( Data.FavoriteCategory );
-            } else {
-                Game.RemoveCategory( Data.FavoriteCategory );
+            if (chkFavorite.Checked)
+            {
+                Game.AddCategory(Data.FavoriteCategory);
+            }
+            else
+            {
+                Game.RemoveCategory(Data.FavoriteCategory);
             }
             Game.Hidden = chkHidden.Checked;
 
-            DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }
