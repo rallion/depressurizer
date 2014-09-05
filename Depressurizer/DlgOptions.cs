@@ -16,29 +16,35 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 using System;
 using System.Windows.Forms;
-using Rallion;
+using Depressurizer.Lib;
 
-namespace Depressurizer {
-    public partial class DlgOptions : Form {
-
-        public DlgOptions() {
+namespace Depressurizer
+{
+    public partial class DlgOptions : Form
+    {
+        public DlgOptions()
+        {
             InitializeComponent();
         }
 
-        private void OptionsForm_Load( object sender, EventArgs e ) {
-            string[] levels = Enum.GetNames( typeof(LoggerLevel) );
-            cmbLogLevel.Items.AddRange( levels );
-            
+        private void OptionsForm_Load(object sender, EventArgs e)
+        {
+            object[] levels = Enum.GetNames(typeof (LoggerLevel));
+            cmbLogLevel.Items.AddRange(levels);
+
             FillFieldsFromSettings();
         }
 
-        private void FillFieldsFromSettings() {
+        private void FillFieldsFromSettings()
+        {
             Settings settings = Settings.Instance();
             txtSteamPath.Text = settings.SteamPath;
             txtDefaultProfile.Text = settings.ProfileToLoad;
-            switch( settings.StartupAction ) {
+            switch (settings.StartupAction)
+            {
                 case StartupAction.Load:
                     radLoad.Checked = true;
                     break;
@@ -49,7 +55,8 @@ namespace Depressurizer {
                     radNone.Checked = true;
                     break;
             }
-            switch (settings.ListSource) {
+            switch (settings.ListSource)
+            {
                 case GameListSource.XmlPreferred:
                     cmbDatSrc.SelectedIndex = 0;
                     break;
@@ -60,10 +67,10 @@ namespace Depressurizer {
                     cmbDatSrc.SelectedIndex = 2;
                     break;
             }
-            
+
             chkRemoveExtraEntries.Checked = settings.RemoveExtraEntries;
 
-            cmbLogLevel.SelectedIndex = (int)settings.LogLevel;
+            cmbLogLevel.SelectedIndex = (int) settings.LogLevel;
             numLogSize.Value = settings.LogSize;
             numLogBackup.Value = settings.LogBackups;
 
@@ -81,19 +88,26 @@ namespace Depressurizer {
             }
         }
 
-        private void SaveFieldsToSettings() {
+        private void SaveFieldsToSettings()
+        {
             Settings settings = Settings.Instance();
 
             settings.SteamPath = txtSteamPath.Text;
-            if( radLoad.Checked ) {
+            if (radLoad.Checked)
+            {
                 settings.StartupAction = StartupAction.Load;
-            } else if( radCreate.Checked ) {
+            }
+            else if (radCreate.Checked)
+            {
                 settings.StartupAction = StartupAction.Create;
-            } else {
+            }
+            else
+            {
                 settings.StartupAction = StartupAction.None;
             }
 
-            switch( cmbDatSrc.SelectedIndex ) {
+            switch (cmbDatSrc.SelectedIndex)
+            {
                 case 0:
                     settings.ListSource = GameListSource.XmlPreferred;
                     break;
@@ -108,9 +122,9 @@ namespace Depressurizer {
             settings.ProfileToLoad = txtDefaultProfile.Text;
             settings.RemoveExtraEntries = chkRemoveExtraEntries.Checked;
 
-            settings.LogLevel = (LoggerLevel)cmbLogLevel.SelectedIndex;
-            settings.LogSize = (int)numLogSize.Value;
-            settings.LogBackups = (int)numLogBackup.Value;
+            settings.LogLevel = (LoggerLevel) cmbLogLevel.SelectedIndex;
+            settings.LogSize = (int) numLogSize.Value;
+            settings.LogBackups = (int) numLogBackup.Value;
 
             switch (cmbLanguage.SelectedIndex)
             {
@@ -125,38 +139,50 @@ namespace Depressurizer {
                     break;
             }
 
-            try {
+            try
+            {
                 settings.Save();
-            } catch( Exception e ) {
-                MessageBox.Show(GlobalStrings.DlgOptions_ErrorSavingSettingsFile + e.Message, GlobalStrings.DBEditDlg_Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(GlobalStrings.DlgOptions_ErrorSavingSettingsFile + e.Message,
+                    GlobalStrings.DBEditDlg_Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         #region Event handlers
-        private void cmdCancel_Click( object sender, EventArgs e ) {
-            this.Close();
+
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
-        private void cmdAccept_Click( object sender, EventArgs e ) {
+        private void cmdAccept_Click(object sender, EventArgs e)
+        {
             SaveFieldsToSettings();
-            this.Close();
+            Close();
         }
 
-        private void cmdSteamPathBrowse_Click( object sender, EventArgs e ) {
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
+        private void cmdSteamPathBrowse_Click(object sender, EventArgs e)
+        {
+            var dlg = new FolderBrowserDialog();
             DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
+            if (res == DialogResult.OK)
+            {
                 txtSteamPath.Text = dlg.SelectedPath;
             }
         }
 
-        private void cmdDefaultProfileBrowse_Click( object sender, EventArgs e ) {
-            OpenFileDialog dlg = new OpenFileDialog();
+        private void cmdDefaultProfileBrowse_Click(object sender, EventArgs e)
+        {
+            var dlg = new OpenFileDialog();
             DialogResult res = dlg.ShowDialog();
-            if( res == System.Windows.Forms.DialogResult.OK ) {
+            if (res == DialogResult.OK)
+            {
                 txtDefaultProfile.Text = dlg.FileName;
             }
         }
+
         #endregion
     }
 }

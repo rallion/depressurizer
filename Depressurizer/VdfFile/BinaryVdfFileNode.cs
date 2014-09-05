@@ -16,196 +16,230 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System;
+
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
-namespace Depressurizer {
+namespace Depressurizer.VdfFile
+{
     /// <summary>
-    /// Represents a single node in a Valve's VDF binary file.
+    ///     Represents a single node in a Valve's VDF binary file.
     /// </summary>
-    public class BinaryVdfFileNode : VdfFileNode {
-
-        protected override VdfFileNode CreateNode() {
-            return new BinaryVdfFileNode();
-        }
-
+    public class BinaryVdfFileNode : VdfFileNode
+    {
         /// <summary>
-        /// Creates a new array-type node
+        ///     Creates a new array-type node
         /// </summary>
         public BinaryVdfFileNode()
-            : base() {
+        {
         }
 
         /// <summary>
-        /// Creates a new value-type node
+        ///     Creates a new value-type node
         /// </summary>
         /// <param name="value">Value of the string</param>
-        public BinaryVdfFileNode( string value )
-            : base( value ) { }
+        public BinaryVdfFileNode(string value)
+            : base(value)
+        {
+        }
 
-        public BinaryVdfFileNode( int value )
-            : base( value ) { }
+        public BinaryVdfFileNode(int value)
+            : base(value)
+        {
+        }
 
         #region Utility
 
         /// <summary>
-        /// Reads a from the specified stream until it reaches a string terminator (double quote with no escaping slash).
-        /// The opening double quote should already be read, and the last one will be discarded.
+        ///     Reads a from the specified stream until it reaches a string terminator (double quote with no escaping slash).
+        ///     The opening double quote should already be read, and the last one will be discarded.
         /// </summary>
-        /// <param name="stream">The stream to read from. After the operation, the stream position will be just past the closing quote.</param>
         /// <returns>The string encapsulated by the quotes.</returns>
-        private static string GetStringToken( BinaryReader reader ) {
+        private static string GetStringToken(BinaryReader reader)
+        {
             bool endOfStream = false;
             bool stringDone = false;
-            StringBuilder sb = new StringBuilder();
-            byte nextByte;
-            do {
-                try {
-                    nextByte = reader.ReadByte();
+            var sb = new StringBuilder();
+            do
+            {
+                try
+                {
+                    byte nextByte = reader.ReadByte();
 
-                    if( nextByte == 0 ) {
+                    if (nextByte == 0)
+                    {
                         stringDone = true;
-                    } else {
-                        sb.Append( (char)nextByte );
                     }
-                } catch( EndOfStreamException ) {
+                    else
+                    {
+                        sb.Append((char) nextByte);
+                    }
+                }
+                catch (EndOfStreamException)
+                {
                     endOfStream = true;
                 }
-            } while( !stringDone && !( endOfStream ) );
+            } while (!stringDone && !(endOfStream));
 
-            if( !stringDone ) {
-                if( endOfStream ) {
-                    throw new ParseException( GlobalStrings.TextVdfFile_UnexpectedEOF );
-                }
+            if (!stringDone)
+            {
+                throw new ParseException(GlobalStrings.TextVdfFile_UnexpectedEOF);
             }
             return sb.ToString();
         }
 
         /// <summary>
-        /// Writes a array key to a stream, adding start/end bytes.
+        ///     Writes a array key to a stream, adding start/end bytes.
         /// </summary>
         /// <param name="writer">Stream to write to</param>
         /// <param name="arrayKey">String to write</param>
-        private void WriteArrayKey( BinaryWriter writer, string arrayKey ) {
-            writer.Write( (byte)0 );
-            writer.Write( arrayKey.ToCharArray() );
-            writer.Write( (byte)0 );
+        private void WriteArrayKey(BinaryWriter writer, string arrayKey)
+        {
+            writer.Write((byte) 0);
+            writer.Write(arrayKey.ToCharArray());
+            writer.Write((byte) 0);
         }
 
         /// <summary>
-        /// Writes a pair o key and value to a stream, adding star/end and separator bytes
+        ///     Writes a pair o key and value to a stream, adding star/end and separator bytes
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="pair"></param>
-        private void WriteStringValue( BinaryWriter writer, string key, string val ) {
-            writer.Write( (byte)1 );
-            writer.Write( key.ToCharArray() );
-            writer.Write( (byte)0 );
-            writer.Write( val.ToCharArray() );
-            writer.Write( (byte)0 );
+        /// <param name="key"></param>
+        /// <param name="val"></param>
+        private void WriteStringValue(BinaryWriter writer, string key, string val)
+        {
+            writer.Write((byte) 1);
+            writer.Write(key.ToCharArray());
+            writer.Write((byte) 0);
+            writer.Write(val.ToCharArray());
+            writer.Write((byte) 0);
         }
 
-        private void WriteIntegerValue( BinaryWriter writer, string key, int val ) {
-            writer.Write( (byte)2 );
-            writer.Write( key.ToCharArray() );
-            writer.Write( (byte)0 );
-            writer.Write( val );
+        private void WriteIntegerValue(BinaryWriter writer, string key, int val)
+        {
+            writer.Write((byte) 2);
+            writer.Write(key.ToCharArray());
+            writer.Write((byte) 0);
+            writer.Write(val);
         }
 
         /// <summary>
-        /// Write an end byte to stream
+        ///     Write an end byte to stream
         /// </summary>
         /// <param name="writer"></param>
-        private void WriteEndByte( BinaryWriter writer ) {
-            writer.Write( (byte)8 );
+        private void WriteEndByte(BinaryWriter writer)
+        {
+            writer.Write((byte) 8);
         }
 
         #endregion
 
         #region Saving and loading
+
         /// <summary>
-        /// Loads a FileNode from stream.
+        ///     Loads a FileNode from stream.
         /// </summary>
         /// <param name="stream">Stream to load from</param>
         /// <returns>FileNode representing the contents of the stream.</returns>
-        public static BinaryVdfFileNode Load( BinaryReader stream ) {
-            BinaryVdfFileNode thisLevel = new BinaryVdfFileNode();
+        public static BinaryVdfFileNode Load(BinaryReader stream)
+        {
+            var thisLevel = new BinaryVdfFileNode();
 
             bool endOfStream = false;
 
 
-            while( !endOfStream ) {
-
+            while (!endOfStream)
+            {
                 //SkipWhitespace( stream );
                 byte nextByte;
-                try {
+                try
+                {
                     nextByte = stream.ReadByte();
-                } catch( EndOfStreamException ) {
+                }
+                catch (EndOfStreamException)
+                {
                     endOfStream = true;
                     nextByte = 8;
                 }
                 // Get key
-                string key = null;
-                if( endOfStream || nextByte == 8 ) {
+                string key;
+                if (endOfStream || nextByte == 8)
+                {
                     break;
-                } else if( nextByte == 0 ) {
-                    key = GetStringToken( stream );
-                    BinaryVdfFileNode newNode;
-                    newNode = Load( stream );
+                }
+                if (nextByte == 0)
+                {
+                    key = GetStringToken(stream);
+                    BinaryVdfFileNode newNode = Load(stream);
                     thisLevel[key] = newNode;
-                } else if( nextByte == 1 ) {
-                    key = GetStringToken( stream );
-                    thisLevel[key] = new BinaryVdfFileNode( GetStringToken( stream ) );
-                } else if( nextByte == 2 ) {
-                    key = GetStringToken( stream );
+                }
+                else if (nextByte == 1)
+                {
+                    key = GetStringToken(stream);
+                    thisLevel[key] = new BinaryVdfFileNode(GetStringToken(stream));
+                }
+                else if (nextByte == 2)
+                {
+                    key = GetStringToken(stream);
                     int val = stream.ReadInt32();
-                    thisLevel[key] = new BinaryVdfFileNode( val );
-                } else {
-                    throw new ParseException( string.Format( GlobalStrings.TextVdfFile_UnexpectedCharacterKey, nextByte.ToString() ) );
+                    thisLevel[key] = new BinaryVdfFileNode(val);
+                }
+                else
+                {
+                    throw new ParseException(string.Format(GlobalStrings.TextVdfFile_UnexpectedCharacterKey,
+                        nextByte));
                 }
             }
             return thisLevel;
         }
 
         /// <summary>
-        /// Write complete VdfFileNode to a stream
+        ///     Write complete VdfFileNode to a stream
         /// </summary>
         /// <param name="stream">Stream to write to</param>
-        public void Save( BinaryWriter stream ) {
-            Save( stream, null );
+        public void Save(BinaryWriter stream)
+        {
+            Save(stream, null);
         }
 
         /// <summary>
-        /// Writes this FileNode and childs to a stream
+        ///     Writes this FileNode and children to a stream
         /// </summary>
         /// <param name="stream">Stream to write to</param>
         /// <param name="actualKey">Name of node to write.</param>
-        private void Save( BinaryWriter stream, string actualKey ) {
-            switch( NodeType ) {
+        private void Save(BinaryWriter stream, string actualKey)
+        {
+            switch (NodeType)
+            {
                 case ValueType.Array:
-                    if( !string.IsNullOrEmpty( actualKey ) )
-                        WriteArrayKey( stream, actualKey );
+                    if (!string.IsNullOrEmpty(actualKey))
+                        WriteArrayKey(stream, actualKey);
                     Dictionary<string, VdfFileNode> data = NodeArray;
-                    foreach( KeyValuePair<string, VdfFileNode> entry in data ) {
-                        ( (BinaryVdfFileNode)entry.Value ).Save( stream, entry.Key );
+                    foreach (var entry in data)
+                    {
+                        ((BinaryVdfFileNode) entry.Value).Save(stream, entry.Key);
                     }
-                    WriteEndByte( stream );
+                    WriteEndByte(stream);
                     break;
                 case ValueType.String:
-                    if( !string.IsNullOrEmpty( actualKey ) )
-                        WriteStringValue( stream, actualKey, NodeString );
+                    if (!string.IsNullOrEmpty(actualKey))
+                        WriteStringValue(stream, actualKey, NodeString);
                     break;
                 case ValueType.Int:
-                    if( !string.IsNullOrEmpty( actualKey ) ) {
-                        WriteIntegerValue( stream, actualKey, NodeInt );
+                    if (!string.IsNullOrEmpty(actualKey))
+                    {
+                        WriteIntegerValue(stream, actualKey, NodeInt);
                     }
                     break;
             }
         }
 
         #endregion
+
+        protected override VdfFileNode CreateNode()
+        {
+            return new BinaryVdfFileNode();
+        }
     }
 }
