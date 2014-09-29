@@ -31,6 +31,7 @@
             this.grpList = new System.Windows.Forms.GroupBox();
             this.panEditGenre = new System.Windows.Forms.Panel();
             this.grpEditGenre = new System.Windows.Forms.GroupBox();
+            this.genreChkUseTags = new System.Windows.Forms.CheckBox();
             this.genreHelpRemoveExisting = new System.Windows.Forms.LinkLabel();
             this.genreHelpPrefix = new System.Windows.Forms.LinkLabel();
             this.genreLblPrefix = new System.Windows.Forms.Label();
@@ -45,8 +46,10 @@
             this.genreNumMaxCats = new System.Windows.Forms.NumericUpDown();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.panEditFlags = new System.Windows.Forms.Panel();
             this.flagsGrp = new System.Windows.Forms.GroupBox();
+            this.flagsHelpPrefix = new System.Windows.Forms.LinkLabel();
             this.flagsTbl = new System.Windows.Forms.TableLayoutPanel();
             this.flagsCmdCheckAll = new System.Windows.Forms.Button();
             this.flagsCmdUncheckAll = new System.Windows.Forms.Button();
@@ -54,21 +57,19 @@
             this.flagsLstIncluded = new System.Windows.Forms.ListView();
             this.flagsTxtPrefix = new System.Windows.Forms.TextBox();
             this.flagsLblPrefix = new System.Windows.Forms.Label();
-            this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.ttHelp = new System.Windows.Forms.ToolTip(this.components);
-            this.flagsHelpPrefix = new System.Windows.Forms.LinkLabel();
             this.grpList.SuspendLayout();
             this.panEditGenre.SuspendLayout();
             this.grpEditGenre.SuspendLayout();
             this.genreTblIgnore.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.genreNumMaxCats)).BeginInit();
-            this.panEditFlags.SuspendLayout();
-            this.flagsGrp.SuspendLayout();
-            this.flagsTbl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
+            this.panEditFlags.SuspendLayout();
+            this.flagsGrp.SuspendLayout();
+            this.flagsTbl.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstAutoCats
@@ -146,6 +147,7 @@
             // 
             // grpEditGenre
             // 
+            this.grpEditGenre.Controls.Add(this.genreChkUseTags);
             this.grpEditGenre.Controls.Add(this.genreHelpRemoveExisting);
             this.grpEditGenre.Controls.Add(this.genreHelpPrefix);
             this.grpEditGenre.Controls.Add(this.genreLblPrefix);
@@ -164,10 +166,21 @@
             this.grpEditGenre.TabStop = false;
             this.grpEditGenre.Text = "Edit Genre AutoCat";
             // 
+            // genreChkUseTags
+            // 
+            this.genreChkUseTags.AutoSize = true;
+            this.genreChkUseTags.Location = new System.Drawing.Point(46, 96);
+            this.genreChkUseTags.Name = "genreChkUseTags";
+            this.genreChkUseTags.Size = new System.Drawing.Size(144, 17);
+            this.genreChkUseTags.TabIndex = 11;
+            this.genreChkUseTags.Text = "Use Popular Steam Tags";
+            this.genreChkUseTags.UseVisualStyleBackColor = true;
+            this.genreChkUseTags.CheckedChanged += new System.EventHandler(this.genreChkUseTags_CheckChanged);
+            // 
             // genreHelpRemoveExisting
             // 
             this.genreHelpRemoveExisting.AutoSize = true;
-            this.genreHelpRemoveExisting.Location = new System.Drawing.Point(238, 86);
+            this.genreHelpRemoveExisting.Location = new System.Drawing.Point(238, 79);
             this.genreHelpRemoveExisting.Name = "genreHelpRemoveExisting";
             this.genreHelpRemoveExisting.Size = new System.Drawing.Size(13, 13);
             this.genreHelpRemoveExisting.TabIndex = 10;
@@ -265,7 +278,7 @@
             // genreChkRemoveExisting
             // 
             this.genreChkRemoveExisting.AutoSize = true;
-            this.genreChkRemoveExisting.Location = new System.Drawing.Point(46, 82);
+            this.genreChkRemoveExisting.Location = new System.Drawing.Point(46, 77);
             this.genreChkRemoveExisting.Name = "genreChkRemoveExisting";
             this.genreChkRemoveExisting.Size = new System.Drawing.Size(186, 17);
             this.genreChkRemoveExisting.TabIndex = 4;
@@ -275,7 +288,7 @@
             // genreLblMacCats
             // 
             this.genreLblMacCats.AutoSize = true;
-            this.genreLblMacCats.Location = new System.Drawing.Point(64, 47);
+            this.genreLblMacCats.Location = new System.Drawing.Point(64, 44);
             this.genreLblMacCats.Name = "genreLblMacCats";
             this.genreLblMacCats.Size = new System.Drawing.Size(148, 26);
             this.genreLblMacCats.TabIndex = 3;
@@ -283,7 +296,7 @@
             // 
             // genreNumMaxCats
             // 
-            this.genreNumMaxCats.Location = new System.Drawing.Point(6, 50);
+            this.genreNumMaxCats.Location = new System.Drawing.Point(6, 46);
             this.genreNumMaxCats.Maximum = new decimal(new int[] {
             5,
             0,
@@ -318,6 +331,28 @@
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             // 
+            // splitContainer
+            // 
+            this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer.Location = new System.Drawing.Point(4, 4);
+            this.splitContainer.Name = "splitContainer";
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.grpList);
+            this.splitContainer.Panel1MinSize = 125;
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.panEditGenre);
+            this.splitContainer.Panel2.Controls.Add(this.panEditFlags);
+            this.splitContainer.Panel2MinSize = 250;
+            this.splitContainer.Size = new System.Drawing.Size(611, 262);
+            this.splitContainer.SplitterDistance = 197;
+            this.splitContainer.TabIndex = 7;
+            // 
             // panEditFlags
             // 
             this.panEditFlags.Controls.Add(this.flagsGrp);
@@ -342,6 +377,16 @@
             this.flagsGrp.TabIndex = 0;
             this.flagsGrp.TabStop = false;
             this.flagsGrp.Text = "Edit Flag Autocat";
+            // 
+            // flagsHelpPrefix
+            // 
+            this.flagsHelpPrefix.AutoSize = true;
+            this.flagsHelpPrefix.Location = new System.Drawing.Point(238, 22);
+            this.flagsHelpPrefix.Name = "flagsHelpPrefix";
+            this.flagsHelpPrefix.Size = new System.Drawing.Size(13, 13);
+            this.flagsHelpPrefix.TabIndex = 5;
+            this.flagsHelpPrefix.TabStop = true;
+            this.flagsHelpPrefix.Text = "?";
             // 
             // flagsTbl
             // 
@@ -421,38 +466,6 @@
             this.flagsLblPrefix.TabIndex = 0;
             this.flagsLblPrefix.Text = "Prefix:";
             // 
-            // splitContainer
-            // 
-            this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer.Location = new System.Drawing.Point(4, 4);
-            this.splitContainer.Name = "splitContainer";
-            // 
-            // splitContainer.Panel1
-            // 
-            this.splitContainer.Panel1.Controls.Add(this.grpList);
-            this.splitContainer.Panel1MinSize = 125;
-            // 
-            // splitContainer.Panel2
-            // 
-            this.splitContainer.Panel2.Controls.Add(this.panEditFlags);
-            this.splitContainer.Panel2.Controls.Add(this.panEditGenre);
-            this.splitContainer.Panel2MinSize = 250;
-            this.splitContainer.Size = new System.Drawing.Size(611, 262);
-            this.splitContainer.SplitterDistance = 197;
-            this.splitContainer.TabIndex = 7;
-            // 
-            // flagsHelpPrefix
-            // 
-            this.flagsHelpPrefix.AutoSize = true;
-            this.flagsHelpPrefix.Location = new System.Drawing.Point(238, 22);
-            this.flagsHelpPrefix.Name = "flagsHelpPrefix";
-            this.flagsHelpPrefix.Size = new System.Drawing.Size(13, 13);
-            this.flagsHelpPrefix.TabIndex = 5;
-            this.flagsHelpPrefix.TabStop = true;
-            this.flagsHelpPrefix.Text = "?";
-            // 
             // DlgAutoCat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -474,14 +487,14 @@
             this.grpEditGenre.PerformLayout();
             this.genreTblIgnore.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.genreNumMaxCats)).EndInit();
-            this.panEditFlags.ResumeLayout(false);
-            this.flagsGrp.ResumeLayout(false);
-            this.flagsGrp.PerformLayout();
-            this.flagsTbl.ResumeLayout(false);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            this.panEditFlags.ResumeLayout(false);
+            this.flagsGrp.ResumeLayout(false);
+            this.flagsGrp.PerformLayout();
+            this.flagsTbl.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -507,8 +520,14 @@
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Label genreLblPrefix;
         private System.Windows.Forms.TextBox genreTxtPrefix;
+        private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.LinkLabel genreHelpPrefix;
+        private System.Windows.Forms.LinkLabel genreHelpRemoveExisting;
+        private System.Windows.Forms.ToolTip ttHelp;
+        private System.Windows.Forms.CheckBox genreChkUseTags;
         private System.Windows.Forms.Panel panEditFlags;
         private System.Windows.Forms.GroupBox flagsGrp;
+        private System.Windows.Forms.LinkLabel flagsHelpPrefix;
         private System.Windows.Forms.TableLayoutPanel flagsTbl;
         private System.Windows.Forms.Button flagsCmdCheckAll;
         private System.Windows.Forms.Button flagsCmdUncheckAll;
@@ -516,10 +535,5 @@
         private System.Windows.Forms.ListView flagsLstIncluded;
         private System.Windows.Forms.TextBox flagsTxtPrefix;
         private System.Windows.Forms.Label flagsLblPrefix;
-        private System.Windows.Forms.SplitContainer splitContainer;
-        private System.Windows.Forms.LinkLabel genreHelpPrefix;
-        private System.Windows.Forms.LinkLabel genreHelpRemoveExisting;
-        private System.Windows.Forms.ToolTip ttHelp;
-        private System.Windows.Forms.LinkLabel flagsHelpPrefix;
     }
 }

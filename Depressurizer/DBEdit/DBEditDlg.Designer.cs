@@ -78,6 +78,7 @@ namespace Depressurizer {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusMsg = new System.Windows.Forms.ToolStripStatusLabel();
             this.statSelected = new System.Windows.Forms.ToolStripStatusLabel();
+            this.colTags = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mainMenu.SuspendLayout();
             this.grpFilter.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -92,7 +93,6 @@ namespace Depressurizer {
             // 
             // menu_File
             // 
-            resources.ApplyResources(this.menu_File, "menu_File");
             this.menu_File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_File_Save,
             this.menu_File_SaveAs,
@@ -102,45 +102,46 @@ namespace Depressurizer {
             this.menu_File_Sep2,
             this.menu_File_Exit});
             this.menu_File.Name = "menu_File";
+            resources.ApplyResources(this.menu_File, "menu_File");
             // 
             // menu_File_Save
             // 
-            resources.ApplyResources(this.menu_File_Save, "menu_File_Save");
             this.menu_File_Save.Name = "menu_File_Save";
+            resources.ApplyResources(this.menu_File_Save, "menu_File_Save");
             this.menu_File_Save.Click += new System.EventHandler(this.menu_File_Save_Click);
             // 
             // menu_File_SaveAs
             // 
-            resources.ApplyResources(this.menu_File_SaveAs, "menu_File_SaveAs");
             this.menu_File_SaveAs.Name = "menu_File_SaveAs";
+            resources.ApplyResources(this.menu_File_SaveAs, "menu_File_SaveAs");
             this.menu_File_SaveAs.Click += new System.EventHandler(this.menu_File_SaveAs_Click);
             // 
             // menu_File_Load
             // 
-            resources.ApplyResources(this.menu_File_Load, "menu_File_Load");
             this.menu_File_Load.Name = "menu_File_Load";
+            resources.ApplyResources(this.menu_File_Load, "menu_File_Load");
             this.menu_File_Load.Click += new System.EventHandler(this.menu_File_Load_Click);
             // 
             // menu_File_Sep1
             // 
-            resources.ApplyResources(this.menu_File_Sep1, "menu_File_Sep1");
             this.menu_File_Sep1.Name = "menu_File_Sep1";
+            resources.ApplyResources(this.menu_File_Sep1, "menu_File_Sep1");
             // 
             // menu_File_Clear
             // 
-            resources.ApplyResources(this.menu_File_Clear, "menu_File_Clear");
             this.menu_File_Clear.Name = "menu_File_Clear";
+            resources.ApplyResources(this.menu_File_Clear, "menu_File_Clear");
             this.menu_File_Clear.Click += new System.EventHandler(this.menu_File_Clear_Click);
             // 
             // menu_File_Sep2
             // 
-            resources.ApplyResources(this.menu_File_Sep2, "menu_File_Sep2");
             this.menu_File_Sep2.Name = "menu_File_Sep2";
+            resources.ApplyResources(this.menu_File_Sep2, "menu_File_Sep2");
             // 
             // menu_File_Exit
             // 
-            resources.ApplyResources(this.menu_File_Exit, "menu_File_Exit");
             this.menu_File_Exit.Name = "menu_File_Exit";
+            resources.ApplyResources(this.menu_File_Exit, "menu_File_Exit");
             this.menu_File_Exit.Click += new System.EventHandler(this.menu_File_Exit_Click);
             // 
             // lstGames
@@ -150,7 +151,8 @@ namespace Depressurizer {
             this.colName,
             this.colID,
             this.colGenre,
-            this.colType});
+            this.colType,
+            this.colTags});
             this.lstGames.FullRowSelect = true;
             this.lstGames.GridLines = true;
             this.lstGames.HideSelection = false;
@@ -324,22 +326,26 @@ namespace Depressurizer {
             // 
             // statusStrip1
             // 
-            resources.ApplyResources(this.statusStrip1, "statusStrip1");
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusMsg,
             this.statSelected});
+            resources.ApplyResources(this.statusStrip1, "statusStrip1");
             this.statusStrip1.Name = "statusStrip1";
             // 
             // statusMsg
             // 
-            resources.ApplyResources(this.statusMsg, "statusMsg");
             this.statusMsg.Name = "statusMsg";
+            resources.ApplyResources(this.statusMsg, "statusMsg");
             this.statusMsg.Spring = true;
             // 
             // statSelected
             // 
-            resources.ApplyResources(this.statSelected, "statSelected");
             this.statSelected.Name = "statSelected";
+            resources.ApplyResources(this.statSelected, "statSelected");
+            // 
+            // colTags
+            // 
+            resources.ApplyResources(this.colTags, "colTags");
             // 
             // DBEditDlg
             // 
@@ -412,6 +418,7 @@ namespace Depressurizer {
         private System.Windows.Forms.ToolStripStatusLabel statusMsg;
         private System.Windows.Forms.ToolStripMenuItem menu_File_SaveAs;
         private System.Windows.Forms.CheckBox chkAgeGate;
+        private System.Windows.Forms.ColumnHeader colTags;
     }
 }
 

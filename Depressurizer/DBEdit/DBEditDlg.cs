@@ -282,7 +282,7 @@ namespace Depressurizer {
         }
 
         void AddGameToList( GameDBEntry g ) {
-            ListViewItem item = new ListViewItem( new string[] { g.Name, g.Id.ToString(), g.Genre, g.Type.ToString() } );
+            ListViewItem item = new ListViewItem( new string[] { g.Name, g.Id.ToString(), g.Genre, g.Type.ToString(), g.Tags } );
             item.Tag = g;
             lstGames.Items.Add( item );
         }
