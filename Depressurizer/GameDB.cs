@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Xml;
 using Rallion;
 using System.IO.Compression;
@@ -51,7 +52,7 @@ namespace Depressurizer {
         private static Regex regGamecheck = new Regex( "<a[^>]*>All Games</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled );
 
         private static Regex regGenre = new Regex( "<div class=\\\"details_block\\\">\\s*<b>Title:</b>[^<]*<br>\\s*<b>Genre:</b>\\s*(<a[^>]*>([^<]+)</a>,?\\s*)+\\s*<br>", RegexOptions.Compiled | RegexOptions.IgnoreCase );
-        private static Regex regTags = new Regex( @"<div[^>]+class=""glance_tags popular_tags""[^>]*>(\s*<a[^>]+class=""app_tag""[^>]*>\s*([a-z0-9][a-z0-9\-\s]*[a-z0-9])\s*</a>)+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex regTags = new Regex( @"<div[^>]+class=""glance_tags popular_tags""[^>]*>(\s*<a[^>]+class=""app_tag""[^>]*>\s*([a-z0-9][a-z0-9\-\s&;'\.]*[a-z0-9])\s*</a>)+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         //private static Regex regDLC = new Regex("<div class=\\\"name\\\"><a href=[^>]*>Downloadable Content</a></div>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static Regex regFlags = new Regex( "<a href=\\\"http://store.steampowered.com/search/\\?category2=[0-9]+\\\" class=\\\"name\\\">([^<]*)</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled );
@@ -187,7 +188,7 @@ namespace Depressurizer {
                 int genres = m.Groups[2].Captures.Count;
                 string[] array = new string[genres];
                 for( int i = 0; i < genres; i++ ) {
-                    array[i] = m.Groups[2].Captures[i].Value;
+                    array[i] = HttpUtility.HtmlDecode(m.Groups[2].Captures[i].Value);
                 }
                 this.Genre = string.Join( ", ", array );
                 return true;
@@ -198,7 +199,7 @@ namespace Depressurizer {
         private bool GetTagsFromPage( string page ) {
             var m = regTags.Match(page);
             if( m.Success ) {
-                var tags = ( from object capture in m.Groups[2].Captures select capture.ToString() )
+                var tags = ( from object capture in m.Groups[2].Captures select HttpUtility.HtmlDecode(capture.ToString()) )
                            .ToList();
 
                 this.Tags = string.Join( ", ", tags.Take( 5 ) );
