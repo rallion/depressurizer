@@ -127,6 +127,7 @@ namespace Depressurizer {
         public string Prefix { get; set; }
 
         public List<string> IgnoredGenres { get; set; }
+        public bool UseTags { get; set; }
 
         // Serialization keys
         public const string TypeIdString = "AutoCatGenre";
@@ -134,6 +135,7 @@ namespace Depressurizer {
             XmlName_Name = "Name",
             XmlName_RemOther = "RemoveOthers",
             XmlName_MaxCats = "MaxCategories",
+            XmlName_UseTags = "UseTags",
             XmlName_Prefix = "Prefix",
             XmlName_IgnoreList = "Ignored",
             XmlName_IgnoreItem = "Ignore";
@@ -143,16 +145,21 @@ namespace Depressurizer {
         /// <summary>
         /// Creates a new AutoCatGenre object, which autocategorizes games based on the genres in the Steam store.
         /// </summary>
-        /// <param name="db">Reference to GameDB to use</param>
-        /// <param name="games">Reference to the GameList to act on</param>
+        /// <param name="name"></param>
+        /// <param name="prefix"></param>
         /// <param name="maxCategories">Maximum number of categories to assign per game. 0 indicates no limit.</param>
         /// <param name="removeOthers">If true, removes any OTHER genre-named categories from each game processed. Will not remove categories that do not match a genre found in the database.</param>
-        public AutoCatGenre( string name, string prefix = "", int maxCategories = 0, bool removeOthers = false, List<string> ignore = null )
+        /// <param name="ignore"></param>
+        /// <param name="useTags"></param>
+        /// <param name="db">Reference to GameDB to use</param>
+        /// <param name="games">Reference to the GameList to act on</param>
+        public AutoCatGenre(string name, string prefix = "", int maxCategories = 0, bool removeOthers = false, List<string> ignore = null, bool useTags = false)
             : base( name ) {
             MaxCategories = maxCategories;
             RemoveOtherGenres = removeOthers;
             Prefix = prefix;
             IgnoredGenres = ( ignore == null ) ? new List<string>() : ignore;
+            UseTags = useTags;
         }
 
         protected AutoCatGenre( AutoCatGenre other )
@@ -161,6 +168,7 @@ namespace Depressurizer {
             this.RemoveOtherGenres = other.RemoveOtherGenres;
             this.Prefix = other.Prefix;
             this.IgnoredGenres = new List<string>( other.IgnoredGenres );
+            this.UseTags = other.UseTags;
         }
 
         public override AutoCat Clone() {
@@ -174,7 +182,7 @@ namespace Depressurizer {
             base.PreProcess( games, db );
             if( RemoveOtherGenres ) {
 
-                SortedSet<string> genreStrings = db.GetAllGenres();
+                SortedSet<string> genreStrings = db.GetAllGenres(UseTags);
                 genreCategories = new SortedSet<Category>();
 
                 foreach( string cStr in genreStrings ) {
@@ -208,6 +216,10 @@ namespace Depressurizer {
 
             GameDBEntry dbEntry = db.Games[game.Id];
             string genreString = dbEntry.Genre;
+
+            if( UseTags && !String.IsNullOrEmpty( dbEntry.Tags ) ) {
+                genreString += ", " + dbEntry.Tags;
+            }
 
             if( RemoveOtherGenres && genreCategories != null ) {
                 game.RemoveCategory( genreCategories );
@@ -243,6 +255,7 @@ namespace Depressurizer {
             if( Prefix != null ) writer.WriteElementString( XmlName_Prefix, Prefix );
             writer.WriteElementString( XmlName_MaxCats, MaxCategories.ToString() );
             writer.WriteElementString( XmlName_RemOther, RemoveOtherGenres.ToString() );
+            writer.WriteElementString( XmlName_UseTags, UseTags.ToString() );
 
             writer.WriteStartElement( XmlName_IgnoreList );
 
@@ -260,6 +273,7 @@ namespace Depressurizer {
             int maxCats = XmlUtil.GetIntFromNode( xElement[XmlName_MaxCats], 0 );
             bool remOther = XmlUtil.GetBoolFromNode( xElement[XmlName_RemOther], false );
             string prefix = XmlUtil.GetStringFromNode( xElement[XmlName_Prefix], null );
+            bool useTags = XmlUtil.GetBoolFromNode( xElement[XmlName_UseTags], false );
 
             List<string> ignore = new List<string>();
 
@@ -274,7 +288,7 @@ namespace Depressurizer {
                 }
             }
 
-            AutoCatGenre result = new AutoCatGenre( name, prefix, maxCats, remOther, ignore );
+            AutoCatGenre result = new AutoCatGenre( name, prefix, maxCats, remOther, ignore, useTags );
             return result;
         }
     }

@@ -21,10 +21,10 @@ namespace Depressurizer {
 
         #region UI Uptaters
 
-        private void FillGenreList() {
+        private void FillGenreList(bool useTags = false) {
             genreLstIgnore.Items.Clear();
             if( Program.GameDB != null ) {
-                SortedSet<string> genreList = Program.GameDB.GetAllGenres();
+                SortedSet<string> genreList = Program.GameDB.GetAllGenres(useTags);
                 foreach( string s in genreList ) {
                     genreLstIgnore.Items.Add( s );
                 }
@@ -78,6 +78,7 @@ namespace Depressurizer {
             genreChkRemoveExisting.Checked = ac.RemoveOtherGenres;
             genreNumMaxCats.Value = ac.MaxCategories;
             genreTxtPrefix.Text = ac.Prefix;
+            genreChkUseTags.Checked = ac.UseTags;
 
             foreach( ListViewItem item in genreLstIgnore.Items ) {
                 item.Checked = ac.IgnoredGenres.Contains( item.Text );
@@ -113,6 +114,7 @@ namespace Depressurizer {
             ac.Prefix = genreTxtPrefix.Text;
             ac.MaxCategories = (int)genreNumMaxCats.Value;
             ac.RemoveOtherGenres = genreChkRemoveExisting.Checked;
+            ac.UseTags = genreChkUseTags.Checked;
 
             ac.IgnoredGenres.Clear();
             foreach( ListViewItem i in genreLstIgnore.Items ) {
@@ -253,6 +255,10 @@ namespace Depressurizer {
 
         private void cmdRename_Click( object sender, EventArgs e ) {
             RenameAutoCat( lstAutoCats.SelectedItem as AutoCat );
+        }
+
+        private void genreChkUseTags_CheckChanged( object sender, EventArgs e ) {
+            FillGenreList( genreChkUseTags.Checked );
         }
 
         #endregion

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -29,6 +30,7 @@ namespace Depressurizer {
         public int Id;
         public string Name;
         public string Genre;
+        public string Tags;
 
         // New stuff:
         // Basics:
@@ -49,6 +51,7 @@ namespace Depressurizer {
         private static Regex regGamecheck = new Regex( "<a[^>]*>All Games</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled );
 
         private static Regex regGenre = new Regex( "<div class=\\\"details_block\\\">\\s*<b>Title:</b>[^<]*<br>\\s*<b>Genre:</b>\\s*(<a[^>]*>([^<]+)</a>,?\\s*)+\\s*<br>", RegexOptions.Compiled | RegexOptions.IgnoreCase );
+        private static Regex regTags = new Regex( @"<div[^>]+class=""glance_tags popular_tags""[^>]*>(\s*<a[^>]+class=""app_tag""[^>]*>\s*([a-z0-9][a-z0-9\-\s]*[a-z0-9])\s*</a>)+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         //private static Regex regDLC = new Regex("<div class=\\\"name\\\"><a href=[^>]*>Downloadable Content</a></div>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static Regex regFlags = new Regex( "<a href=\\\"http://store.steampowered.com/search/\\?category2=[0-9]+\\\" class=\\\"name\\\">([^<]*)</a>", RegexOptions.IgnoreCase | RegexOptions.Compiled );
@@ -155,6 +158,7 @@ namespace Depressurizer {
             if( regGamecheck.IsMatch( page ) ) {
 
                 GetGenreFromPage( page );
+                GetTagsFromPage( page );
                 GetOtherFromPage( page );
                 GetMetalinkFromSteam( page );
                 //TODO: add metacritic scrape
@@ -186,6 +190,18 @@ namespace Depressurizer {
                     array[i] = m.Groups[2].Captures[i].Value;
                 }
                 this.Genre = string.Join( ", ", array );
+                return true;
+            }
+            return false;
+        }
+
+        private bool GetTagsFromPage( string page ) {
+            var m = regTags.Match(page);
+            if( m.Success ) {
+                var tags = ( from object capture in m.Groups[2].Captures select capture.ToString() )
+                           .ToList();
+
+                this.Tags = string.Join( ", ", tags.Take( 5 ) );
                 return true;
             }
             return false;
@@ -290,25 +306,24 @@ namespace Depressurizer {
         #endregion
 
         #region Aggregate Accessors
+
         /// <summary>
         /// Gets a list of all Steam store genres found in the entire database.
         /// Only recalculates if necessary.
         /// </summary>
+        /// <param name="useTags"></param>
         /// <returns>A set of genres, as strings</returns>
-        public SortedSet<string> GetAllGenres() {
-            if( allStoreGenres == null ) {
-                return CalculateAllGenres();
-            } else {
-                return allStoreGenres;
-            }
+        public SortedSet<string> GetAllGenres(bool useTags) {
+            return CalculateAllGenres(useTags);
         }
 
         /// <summary>
         /// Gets a list of all Steam store genres found in the entire database.
         /// Always recalculates.
         /// </summary>
+        /// <param name="useTags"></param>
         /// <returns>A set of genres, as strings</returns>
-        public SortedSet<string> CalculateAllGenres() {
+        public SortedSet<string> CalculateAllGenres(bool useTags) {
             if( allStoreGenres == null ) {
                 allStoreGenres = new SortedSet<string>( StringComparer.OrdinalIgnoreCase );
             } else {
@@ -317,10 +332,15 @@ namespace Depressurizer {
 
             foreach( GameDBEntry entry in Games.Values ) {
                 string fullGenreString = entry.Genre;
+                if( useTags && !string.IsNullOrEmpty(entry.Tags) ) {
+                    fullGenreString += ", " + entry.Tags;
+                }
                 if( !string.IsNullOrEmpty( fullGenreString ) ) {
                     string[] genreStrings = fullGenreString.Split( genreSep );
                     foreach( string s in genreStrings ) {
-                        allStoreGenres.Add( s.Trim() );
+                        if( !allStoreGenres.Contains(s.Trim()) ) { 
+                            allStoreGenres.Add( s.Trim() );
+                        }
                     }
                 }
             }
@@ -456,6 +476,9 @@ namespace Depressurizer {
                     if( !string.IsNullOrEmpty( g.Genre ) ) {
                         writer.WriteElementString( "genre", g.Genre );
                     }
+                    if( !string.IsNullOrEmpty( g.Tags ) ) {
+                        writer.WriteElementString( "tags", g.Tags );
+                    }
                     if( !string.IsNullOrEmpty( g.Developer ) ) {
                         writer.WriteElementString( "developer", g.Developer );
                     }
@@ -523,6 +546,7 @@ namespace Depressurizer {
                     }
 
                     g.Genre = XmlUtil.GetStringFromNode( gameNode["genre"], null );
+                    g.Tags = XmlUtil.GetStringFromNode( gameNode["tags"], null );
 
                     g.Developer = XmlUtil.GetStringFromNode( gameNode["developer"], null );
                     g.Publisher = XmlUtil.GetStringFromNode( gameNode["publisher"], null );
