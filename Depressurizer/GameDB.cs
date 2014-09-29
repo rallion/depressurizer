@@ -334,7 +334,7 @@ namespace Depressurizer {
             foreach( GameDBEntry entry in Games.Values ) {
                 string fullGenreString = entry.Genre;
                 if( useTags && !string.IsNullOrEmpty(entry.Tags) ) {
-                    fullGenreString += ", " + entry.Tags;
+                    fullGenreString += ( !string.IsNullOrEmpty(fullGenreString ) ? ", " : "" ) + entry.Tags;
                 }
                 if( !string.IsNullOrEmpty( fullGenreString ) ) {
                     string[] genreStrings = fullGenreString.Split( genreSep );

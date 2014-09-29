@@ -218,7 +218,7 @@ namespace Depressurizer {
             string genreString = dbEntry.Genre;
 
             if( UseTags && !String.IsNullOrEmpty( dbEntry.Tags ) ) {
-                genreString += ", " + dbEntry.Tags;
+                genreString += ( !string.IsNullOrEmpty( genreString ) ? ", " : "" ) + dbEntry.Tags;
             }
 
             if( RemoveOtherGenres && genreCategories != null ) {
