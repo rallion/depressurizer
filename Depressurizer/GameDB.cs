@@ -47,6 +47,7 @@ namespace Depressurizer {
 
         public int ReviewTotal = 0;
         public int ReviewPositivePercentage = 0;
+        public string ReviewPositiveSummary = "unknown";
 
         // Metacritic:
         public string MC_Url = null;
@@ -70,6 +71,8 @@ namespace Depressurizer {
         private static Regex regMetalink = new Regex( "<div id=\\\"game_area_metalink\\\">\\s*<a href=\\\"http://www.metacritic.com/game/pc/([^\\\"]*)", RegexOptions.IgnoreCase | RegexOptions.Compiled );
 
         private static Regex regReviews = new Regex( @"data-store-tooltip=""([\d]+)% of the ([\d,]+) user reviews for this game are positive.""", RegexOptions.IgnoreCase | RegexOptions.Compiled );
+        private static Regex regReviewsSummary = new Regex("<span class=\\\"game_review_summary[\\s\\w]*\\\" itemprop=\\\"description\\\">([\\s\\w]+)</span>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        
         #endregion
 
         #region Scraping
@@ -255,6 +258,13 @@ namespace Depressurizer {
                 }
             }
 
+            // Get user review summary data
+            m = regReviewsSummary.Match(page);
+            if (m.Success)
+            {
+                this.ReviewPositiveSummary = m.Groups[1].Captures[0].Value;
+            }
+
             m = regMetalink.Match( page );
             if( m.Success ) {
                 this.MC_Url = m.Groups[1].Captures[0].Value;
@@ -296,6 +306,7 @@ namespace Depressurizer {
                 if( other.ReviewTotal != 0 ) {
                     this.ReviewTotal = other.ReviewTotal;
                     this.ReviewPositivePercentage = other.ReviewPositivePercentage;
+                    this.ReviewPositiveSummary = other.ReviewPositiveSummary;
                 }
 
                 if( !string.IsNullOrEmpty( other.MC_Url ) ) MC_Url = other.MC_Url;
@@ -334,6 +345,7 @@ namespace Depressurizer {
             XmlName_Game_Flag = "flag",
             XmlName_Game_ReviewTotal = "reviewTotal",
             XmlName_Game_ReviewPositivePercent = "reviewPositiveP",
+            XmlName_Game_ReviewPositiveSummary = "reviewPositiveS",
             XmlName_Game_MCUrl = "mcUrl",
             XmlName_Game_Date = "steamDate";
 
@@ -355,6 +367,29 @@ namespace Depressurizer {
                 return Games[id].Name;
             } else {
                 return null;
+            }
+        }
+
+        public int GetRating(int id)
+        {
+            if (Games.ContainsKey(id))
+            {
+                return Games[id].ReviewPositivePercentage;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public string GetRatingSummary(int id)
+        {
+            if (Games.ContainsKey(id))
+            {
+                return Games[id].ReviewPositiveSummary;
+            }
+            else
+            {
+                return "unknown";
             }
         }
 
@@ -712,7 +747,8 @@ namespace Depressurizer {
 
                     if( g.ReviewTotal > 0 ) {
                         writer.WriteElementString( XmlName_Game_ReviewTotal, g.ReviewTotal.ToString() );
-                        writer.WriteElementString( XmlName_Game_ReviewPositivePercent, g.ReviewPositivePercentage.ToString() );
+                        writer.WriteElementString(XmlName_Game_ReviewPositivePercent, g.ReviewPositivePercentage.ToString());
+                        writer.WriteElementString(XmlName_Game_ReviewPositiveSummary, g.ReviewPositiveSummary.ToString());
                     }
 
                     if( !string.IsNullOrEmpty( g.MC_Url ) ) {
@@ -839,7 +875,8 @@ namespace Depressurizer {
                     g.Flags = XmlUtil.GetStringsFromNodeList( gameNode.SelectNodes( XmlName_Game_Flag ) );
 
                     g.ReviewTotal = XmlUtil.GetIntFromNode( gameNode[XmlName_Game_ReviewTotal], 0 );
-                    g.ReviewPositivePercentage = XmlUtil.GetIntFromNode( gameNode[XmlName_Game_ReviewPositivePercent], 0 );
+                    g.ReviewPositivePercentage = XmlUtil.GetIntFromNode(gameNode[XmlName_Game_ReviewPositivePercent], 0);
+                    g.ReviewPositiveSummary = XmlUtil.GetStringFromNode(gameNode[XmlName_Game_ReviewPositiveSummary], null);
 
                     g.MC_Url = XmlUtil.GetStringFromNode( gameNode[XmlName_Game_MCUrl], null );
 

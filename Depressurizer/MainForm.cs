@@ -75,6 +75,8 @@ namespace Depressurizer {
             {2, GameInfoSorter.SortModes.Cats},
             {3, GameInfoSorter.SortModes.Favorite},
             {4, GameInfoSorter.SortModes.Hidden},
+            {5, GameInfoSorter.SortModes.ReviewPositiveSummary},
+            {6, GameInfoSorter.SortModes.ReviewPositivePercentage},
         };
         #endregion
 
@@ -1009,7 +1011,9 @@ namespace Depressurizer {
                 g.Name,
                 g.GetCatString( GlobalStrings.MainForm_Uncategorized ),
                 g.IsFavorite() ? "X" : String.Empty,
-                g.Hidden ? "X" : String.Empty
+                g.Hidden ? "X" : String.Empty,
+                g.ReviewPositiveSummary != null ? g.ReviewPositiveSummary : String.Empty,
+                g.ReviewPositivePercentage < 0 ? "0" : g.ReviewPositivePercentage.ToString()
             } );
 
             // Shortcut games show with italic font. 
