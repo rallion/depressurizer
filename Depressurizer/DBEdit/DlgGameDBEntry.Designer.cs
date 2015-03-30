@@ -77,6 +77,8 @@ namespace Depressurizer {
             this.lblReviewCount = new System.Windows.Forms.Label();
             this.lblReviewScore = new System.Windows.Forms.Label();
             this.numReviewScore = new System.Windows.Forms.NumericUpDown();
+            this.lblReviewSummary = new System.Windows.Forms.Label();
+            this.txtReviewSummary = new System.Windows.Forms.TextBox();
             this.numReviewCount = new System.Windows.Forms.NumericUpDown();
             this.lblReviewScorePct = new System.Windows.Forms.Label();
             this.grpPlat.SuspendLayout();
@@ -279,6 +281,16 @@ namespace Depressurizer {
             resources.ApplyResources(this.numReviewScore, "numReviewScore");
             this.numReviewScore.Name = "numReviewScore";
             // 
+            // lblReviewSummary
+            // 
+            resources.ApplyResources(this.lblReviewSummary, "lblReviewSummary");
+            this.lblReviewSummary.Name = "lblReviewSummary";
+            // 
+            // txtReviewSummary
+            // 
+            resources.ApplyResources(this.txtReviewSummary, "txtReviewSummary");
+            this.txtReviewSummary.Name = "txtReviewSummary";
+            // 
             // numReviewCount
             // 
             resources.ApplyResources(this.numReviewCount, "numReviewCount");
@@ -306,6 +318,8 @@ namespace Depressurizer {
             this.Controls.Add(this.numReviewScore);
             this.Controls.Add(this.lblReviewScore);
             this.Controls.Add(this.lblReviewCount);
+            this.Controls.Add(this.txtReviewSummary);
+            this.Controls.Add(this.lblReviewSummary);
             this.Controls.Add(this.txtTags);
             this.Controls.Add(this.lblTags);
             this.Controls.Add(this.chkAppInfoUpdate);
@@ -384,8 +398,10 @@ namespace Depressurizer {
         private System.Windows.Forms.TextBox txtTags;
         private System.Windows.Forms.Label lblReviewCount;
         private System.Windows.Forms.Label lblReviewScore;
+        private System.Windows.Forms.Label lblReviewSummary;
         private System.Windows.Forms.NumericUpDown numReviewScore;
         private System.Windows.Forms.NumericUpDown numReviewCount;
+        private System.Windows.Forms.TextBox txtReviewSummary;
         private System.Windows.Forms.Label lblReviewScorePct;
     }
 }

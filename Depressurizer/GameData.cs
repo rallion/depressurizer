@@ -51,6 +51,9 @@ namespace Depressurizer {
 
         public bool Hidden;
 
+        public int ReviewPositivePercentage = 0;
+        public string ReviewPositiveSummary = "unknown";
+
         public SortedSet<Category> Categories;
 
         public GameListingSource Source;
@@ -83,10 +86,13 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="id">ID of the new game. Positive means it's the game's Steam ID, negative means it's a non-steam game.</param>
         /// <param name="name">Game title</param>
-        public GameInfo( int id, string name, GameList list ) {
+        public GameInfo(int id, string name, GameList list, int reviewPositivePercentage = 0)
+        {
             Id = id;
             Name = name;
             Hidden = false;
+            ReviewPositivePercentage = (id > 0) ? Program.GameDB.GetRating(id) : 0;
+            ReviewPositiveSummary = (id > 0) ? Program.GameDB.GetRatingSummary(id) : "non-steam";
             Categories = new SortedSet<Category>();
             this.GameList = list;
         }
@@ -813,7 +819,7 @@ namespace Depressurizer {
 
                             game.ApplySource( GameListingSource.SteamConfig );
 
-                            game.Hidden = ( gameNodePair.Value.ContainsKey( "hidden" ) && gameNodePair.Value["hidden"].NodeInt != 0 );
+                            game.Hidden = (gameNodePair.Value.ContainsKey("hidden") && gameNodePair.Value["hidden"].NodeInt != 0);
 
                             VdfFileNode tagsNode = gameNodePair.Value["tags"];
                             if( tagsNode != null ) {
@@ -1336,7 +1342,9 @@ namespace Depressurizer {
             Name,
             Cats,
             Favorite,
-            Hidden
+            Hidden,
+            ReviewPositiveSummary,
+            ReviewPositivePercentage
         }
 
         public SortModes SortMode;
@@ -1352,6 +1360,20 @@ namespace Depressurizer {
         }
 
         public int Compare( GameInfo a, GameInfo b ) {
+            Dictionary<String, int> reviewSummaryOrder = new Dictionary<String, int>
+            {
+                {"Overwhelmingly Positive", 15},
+                {"Very Positive", 14},
+                {"Positive", 13},
+                {"Mostly Positive", 12},
+                {"Mixed", 11},
+                {"Mostly Negative", 10},
+                {"Negative", 9},
+                {"Very Negative", 8},
+                {"Overwhelmingly Negative", 7},
+                {"non-steam", 6},
+                {"unknown", 5}
+            };
             int res = 0;
             switch( SortMode ) {
                 case SortModes.Id:
@@ -1368,6 +1390,14 @@ namespace Depressurizer {
                     break;
                 case SortModes.Hidden:
                     res = ( a.Hidden ? 1 : 0 ) - ( b.Hidden ? 1 : 0 );
+                    break;
+                case SortModes.ReviewPositiveSummary:
+                    int a1 = (a.ReviewPositiveSummary != null && reviewSummaryOrder[a.ReviewPositiveSummary] != null) ? reviewSummaryOrder[a.ReviewPositiveSummary] : -1;
+                    int b1 = (b.ReviewPositiveSummary != null && reviewSummaryOrder[b.ReviewPositiveSummary] != null) ? reviewSummaryOrder[b.ReviewPositiveSummary] : -1;
+                    res = a1 - b1;
+                    break;
+                case SortModes.ReviewPositivePercentage:
+                    res = a.ReviewPositivePercentage - b.ReviewPositivePercentage;
                     break;
             }
             return SortDirection * res;
