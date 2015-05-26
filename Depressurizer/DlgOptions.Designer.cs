@@ -61,6 +61,11 @@ namespace Depressurizer {
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.grpLanguage = new System.Windows.Forms.GroupBox();
             this.cmbLanguage = new System.Windows.Forms.ComboBox();
+            this.tabUpdates = new System.Windows.Forms.TabPage();
+            this.grpAutoUpdate = new System.Windows.Forms.GroupBox();
+            this.grpUpdateRules = new System.Windows.Forms.GroupBox();
+            this.cmbUpdtStyle = new System.Windows.Forms.ComboBox();
+            this.chkCtrlUpdates = new System.Windows.Forms.CheckBox();
             this.tabLogging = new System.Windows.Forms.TabPage();
             this.numLogBackup = new System.Windows.Forms.NumericUpDown();
             this.numLogSize = new System.Windows.Forms.NumericUpDown();
@@ -78,6 +83,9 @@ namespace Depressurizer {
             this.tabControl.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.grpLanguage.SuspendLayout();
+            this.tabUpdates.SuspendLayout();
+            this.grpAutoUpdate.SuspendLayout();
+            this.grpUpdateRules.SuspendLayout();
             this.tabLogging.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numLogBackup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numLogSize)).BeginInit();
@@ -197,6 +205,7 @@ namespace Depressurizer {
             // 
             resources.ApplyResources(this.tabControl, "tabControl");
             this.tabControl.Controls.Add(this.tabGeneral);
+            this.tabControl.Controls.Add(this.tabUpdates);
             this.tabControl.Controls.Add(this.tabLogging);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -230,6 +239,48 @@ namespace Depressurizer {
             resources.GetString("cmbLanguage.Items2")});
             resources.ApplyResources(this.cmbLanguage, "cmbLanguage");
             this.cmbLanguage.Name = "cmbLanguage";
+            // 
+            // tabUpdates
+            // 
+            this.tabUpdates.Controls.Add(this.grpAutoUpdate);
+            resources.ApplyResources(this.tabUpdates, "tabUpdates");
+            this.tabUpdates.Name = "tabUpdates";
+            this.tabUpdates.UseVisualStyleBackColor = true;
+            // 
+            // grpAutoUpdate
+            // 
+            resources.ApplyResources(this.grpAutoUpdate, "grpAutoUpdate");
+            this.grpAutoUpdate.Controls.Add(this.grpUpdateRules);
+            this.grpAutoUpdate.Controls.Add(this.chkCtrlUpdates);
+            this.grpAutoUpdate.Name = "grpAutoUpdate";
+            this.grpAutoUpdate.TabStop = false;
+            this.grpAutoUpdate.Enter += new System.EventHandler(this.grpAutoUpdate_Enter);
+            // 
+            // grpUpdateRules
+            // 
+            resources.ApplyResources(this.grpUpdateRules, "grpUpdateRules");
+            this.grpUpdateRules.Controls.Add(this.cmbUpdtStyle);
+            this.grpUpdateRules.Name = "grpUpdateRules";
+            this.grpUpdateRules.TabStop = false;
+            // 
+            // cmbUpdtStyle
+            // 
+            resources.ApplyResources(this.cmbUpdtStyle, "cmbUpdtStyle");
+            this.cmbUpdtStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbUpdtStyle.FormattingEnabled = true;
+            this.cmbUpdtStyle.Items.AddRange(new object[] {
+            resources.GetString("cmbUpdtStyle.Items"),
+            resources.GetString("cmbUpdtStyle.Items1"),
+            resources.GetString("cmbUpdtStyle.Items2"),
+            resources.GetString("cmbUpdtStyle.Items3")});
+            this.cmbUpdtStyle.Name = "cmbUpdtStyle";
+            this.cmbUpdtStyle.SelectedIndexChanged += new System.EventHandler(this.cmbUpdtStyle_SelectedIndexChanged);
+            // 
+            // chkCtrlUpdates
+            // 
+            resources.ApplyResources(this.chkCtrlUpdates, "chkCtrlUpdates");
+            this.chkCtrlUpdates.Name = "chkCtrlUpdates";
+            this.chkCtrlUpdates.UseVisualStyleBackColor = true;
             // 
             // tabLogging
             // 
@@ -337,6 +388,10 @@ namespace Depressurizer {
             this.tabControl.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.grpLanguage.ResumeLayout(false);
+            this.tabUpdates.ResumeLayout(false);
+            this.grpAutoUpdate.ResumeLayout(false);
+            this.grpAutoUpdate.PerformLayout();
+            this.grpUpdateRules.ResumeLayout(false);
             this.tabLogging.ResumeLayout(false);
             this.tabLogging.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numLogBackup)).EndInit();
@@ -378,5 +433,10 @@ namespace Depressurizer {
         private System.Windows.Forms.GroupBox grpDatabase;
         private System.Windows.Forms.CheckBox chkAutosaveDB;
         private System.Windows.Forms.CheckBox chkUpdateAppInfoOnStartup;
+        private System.Windows.Forms.TabPage tabUpdates;
+        private System.Windows.Forms.GroupBox grpAutoUpdate;
+        private System.Windows.Forms.CheckBox chkCtrlUpdates;
+        private System.Windows.Forms.GroupBox grpUpdateRules;
+        private System.Windows.Forms.ComboBox cmbUpdtStyle;
     }
 }

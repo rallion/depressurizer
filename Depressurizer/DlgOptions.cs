@@ -164,5 +164,15 @@ namespace Depressurizer {
             }
         }
         #endregion
+
+        private void grpAutoUpdate_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbUpdtStyle_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

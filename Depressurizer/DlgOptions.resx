@@ -693,6 +693,153 @@
   <data name="&gt;&gt;tabGeneral.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="grpAutoUpdate.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="grpUpdateRules.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="cmbUpdtStyle.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="cmbUpdtStyle.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="cmbUpdtStyle.Items" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="cmbUpdtStyle.Items1" xml:space="preserve">
+    <value>Do not auto update</value>
+  </data>
+  <data name="cmbUpdtStyle.Items2" xml:space="preserve">
+    <value>Only auto update favourites</value>
+  </data>
+  <data name="cmbUpdtStyle.Items3" xml:space="preserve">
+    <value>Update favourites as high priority</value>
+  </data>
+  <data name="cmbUpdtStyle.Location" type="System.Drawing.Point, System.Drawing">
+    <value>11, 18</value>
+  </data>
+  <data name="cmbUpdtStyle.Size" type="System.Drawing.Size, System.Drawing">
+    <value>519, 20</value>
+  </data>
+  <data name="cmbUpdtStyle.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cmbUpdtStyle.Name" xml:space="preserve">
+    <value>cmbUpdtStyle</value>
+  </data>
+  <data name="&gt;&gt;cmbUpdtStyle.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbUpdtStyle.Parent" xml:space="preserve">
+    <value>grpUpdateRules</value>
+  </data>
+  <data name="&gt;&gt;cmbUpdtStyle.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="grpUpdateRules.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 40</value>
+  </data>
+  <data name="grpUpdateRules.Size" type="System.Drawing.Size, System.Drawing">
+    <value>536, 48</value>
+  </data>
+  <data name="grpUpdateRules.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="grpUpdateRules.Text" xml:space="preserve">
+    <value>Auto Update Rules</value>
+  </data>
+  <data name="&gt;&gt;grpUpdateRules.Name" xml:space="preserve">
+    <value>grpUpdateRules</value>
+  </data>
+  <data name="&gt;&gt;grpUpdateRules.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grpUpdateRules.Parent" xml:space="preserve">
+    <value>grpAutoUpdate</value>
+  </data>
+  <data name="&gt;&gt;grpUpdateRules.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="chkCtrlUpdates.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="chkCtrlUpdates.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="chkCtrlUpdates.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="chkCtrlUpdates.Size" type="System.Drawing.Size, System.Drawing">
+    <value>319, 16</value>
+  </data>
+  <data name="chkCtrlUpdates.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="chkCtrlUpdates.Text" xml:space="preserve">
+    <value>Enable controlling steam auto updates with Depressurizer</value>
+  </data>
+  <data name="&gt;&gt;chkCtrlUpdates.Name" xml:space="preserve">
+    <value>chkCtrlUpdates</value>
+  </data>
+  <data name="&gt;&gt;chkCtrlUpdates.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkCtrlUpdates.Parent" xml:space="preserve">
+    <value>grpAutoUpdate</value>
+  </data>
+  <data name="&gt;&gt;chkCtrlUpdates.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="grpAutoUpdate.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 13</value>
+  </data>
+  <data name="grpAutoUpdate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>548, 96</value>
+  </data>
+  <data name="grpAutoUpdate.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="grpAutoUpdate.Text" xml:space="preserve">
+    <value>Auto Updating Games In Steam</value>
+  </data>
+  <data name="&gt;&gt;grpAutoUpdate.Name" xml:space="preserve">
+    <value>grpAutoUpdate</value>
+  </data>
+  <data name="&gt;&gt;grpAutoUpdate.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grpAutoUpdate.Parent" xml:space="preserve">
+    <value>tabUpdates</value>
+  </data>
+  <data name="&gt;&gt;grpAutoUpdate.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="tabUpdates.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabUpdates.Size" type="System.Drawing.Size, System.Drawing">
+    <value>560, 316</value>
+  </data>
+  <data name="tabUpdates.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="tabUpdates.Text" xml:space="preserve">
+    <value>AutoUpdates</value>
+  </data>
+  <data name="&gt;&gt;tabUpdates.Name" xml:space="preserve">
+    <value>tabUpdates</value>
+  </data>
+  <data name="&gt;&gt;tabUpdates.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabUpdates.Parent" xml:space="preserve">
+    <value>tabControl</value>
+  </data>
+  <data name="&gt;&gt;tabUpdates.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="numLogBackup.Location" type="System.Drawing.Point, System.Drawing">
     <value>130, 59</value>
   </data>
