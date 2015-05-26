@@ -81,6 +81,10 @@ namespace Depressurizer {
                     cmbLanguage.SelectedIndex = 0;
                     break;
             }
+
+            chkCtrlUpdates.Checked = settings.CtrlUpdates;
+
+            cmbUpdtStyle.SelectedIndex = (int)settings.GameAutoUpdateStyle;
         }
 
         private void SaveFieldsToSettings() {
@@ -131,6 +135,10 @@ namespace Depressurizer {
                     break;
             }
 
+            settings.CtrlUpdates = chkCtrlUpdates.Checked;
+
+            settings.GameAutoUpdateStyle = (GameAutoUpdateStyle) cmbUpdtStyle.SelectedIndex;
+
             try {
                 settings.Save();
             } catch( Exception e ) {
@@ -166,10 +174,10 @@ namespace Depressurizer {
 
         private void chkCtrlUpdates_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.chkCtrlUpdates.Checked == true){
-                this.grpUpdateRules.Enabled = true;
+            if (chkCtrlUpdates.Checked == true){
+                grpUpdateRules.Enabled = true;
             } else {
-                this.grpUpdateRules.Enabled = false;
+                grpUpdateRules.Enabled = false;
             }
         }
         #endregion

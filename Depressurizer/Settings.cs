@@ -43,6 +43,14 @@ namespace Depressurizer {
         es
     }
 
+    public enum GameAutoUpdateStyle
+    {
+        DEFAULT,
+        NONE,
+        ONLY_FAV,
+        FAV_PRIORITY
+    }
+
     class Settings : AppSettings {
 
         private static Settings instance;
@@ -222,6 +230,40 @@ namespace Depressurizer {
                     _userLanguage = value;
                     outOfDate = true;
                     changeLanguage(_userLanguage);
+                }
+            }
+        }
+
+        private bool _ctrlUpdates = false;
+        public bool CtrlUpdates
+        {
+            get
+            {
+                return _ctrlUpdates;
+            }
+            set
+            {
+                if (_ctrlUpdates != value)
+                {
+                    _ctrlUpdates = value;
+                    outOfDate = true;
+                }
+            }
+        }
+
+        private GameAutoUpdateStyle _gameAutoUpdateStyle = GameAutoUpdateStyle.DEFAULT;
+        public GameAutoUpdateStyle GameAutoUpdateStyle
+        {
+            get
+            {
+                return _gameAutoUpdateStyle;
+            }
+            set
+            {
+                if (_gameAutoUpdateStyle != value)
+                {
+                    outOfDate = true;
+                    _gameAutoUpdateStyle = value;
                 }
             }
         }
