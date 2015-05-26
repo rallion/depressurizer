@@ -1,0 +1,46 @@
+"UserLocalConfigStore"
+{
+	"friends"
+	{
+		"PersonaName"		"Rabscuttle"
+		"22202"
+		{
+			"name"		"Rabscuttle"
+			"NameHistory"
+			{
+				"0"		"Rabscuttle"
+			}
+		}
+	}
+	"apps"
+	{
+		"vbc"		"0"
+	}
+	"Licenses"
+	{
+		"0"		"010000002db86b249696e36a1e070315f3ce69b5953cc3f1150d1a8d95d7658b295c61090446ed3eb84bc877feb6d7fd46c4297d0e85160ad05e1215698caa7e7e70bc6706a73abd9c9b7ab761e1fcd98f2d1b82e15d4e3d76b9c90deb3a262b1de03b683c7f48c7def6ada35ab9e01c4299a75568a22e91e9ce44f16f191d9ec47f89faf943a1b2e0ae634176f35727e6b0be1111ce371b017f5383e7e69bba7f533ba18be55dee88fd482c4fd4c249ace1ac96deeaefc9eab85f1b1d29257be0fe32227057f913b001995bb4fb60a10816dce16a"
+	}
+	"apptickets"
+	{
+		"7"		"32000000040000000890191001001001070000005558f97a80f01eac000000004b2b6355cbda7e5501000000000000000000a08df513a2170539b164931d8504abbf6fed3ff2985e65e421cec7ce03cf2b634639b53a150d5bd9f4a375b4744e631581051fa0f78316ce3ef08da22b2d91c50dadb808a626941c9f9f014c09afa563596c1854a0e9e8f7383d2eec619e361f26b7c95dfc7fa2af0d063217ced595be5ea04e4636a6ee74febe33b09a0cf3c4"
+	}
+	"Software"
+	{
+		"Valve"
+		{
+			"Steam"
+			{
+				"LastPlayedTimesSyncTime"		"10"
+				"SSAVersion"		"2"
+				"PrivacyPolicyVersion"		"2"
+			}
+		}
+	}
+	"streaming_v2"
+	{
+		"EnableStreaming"		"1"
+	}
+	"AppInfoChangeNumber"		"1068047"
+	"CloudKey"		"01009000a5406ac915642d3c302ae15gc86a1c2d39074ef96d5eb09919450387039a8301810b99c1"
+	"CloudKeyCRC"		"-111279821"
+}

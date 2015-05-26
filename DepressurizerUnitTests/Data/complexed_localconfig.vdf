@@ -1,0 +1,214 @@
+"UserLocalConfigStore"
+{
+	"friends"
+	{
+		"PersonaName"		"Rabscuttle"
+		"22202"
+		{
+			"name"		"Rabscuttle"
+			"NameHistory"
+			{
+				"0"		"Rabscuttle"
+			}
+			"avatar"		"c5d56249ee5d28a07db4ac9f7f60af961fab5426"
+		}
+		"67608078"
+		{
+			"name"		"Demilogic"
+			"NameHistory"
+			{
+				"0"		"Demilogic"
+				"1"		"Unknown"
+				"2"		"Redigit"
+			}
+			"avatar"		"640c1cc647bdb6c724ada7ff7d288d481481be4f"
+		}
+		"103582791435611752"
+		{
+			"name"		"depressurizer"
+			"avatar"		"8d29e48658653ff2c99bc4b710f2efb68d1d86ff"
+			"tag"		"dprssrzr"
+		}
+		"7439403"
+		{
+			"name"		"Siv <3"
+			"NameHistory"
+			{
+				"0"		"Siv <3"
+				"1"		"sivhd"
+			}
+			"avatar"		"69f946df74b97c31d4dbacd976184c4b22323b79"
+		}
+		"Notifications_ShowIngame"		"1"
+		"Sounds_PlayIngame"		"0"
+		"Notifications_ShowOnline"		"0"
+		"Sounds_PlayOnline"		"0"
+		"Notifications_ShowMessage"		"1"
+		"Sounds_PlayMessage"		"1"
+		"AutoSignIntoFriends"		"1"
+		"ShowTimeInChatLogCheck"		"0"
+		"AlwaysNewChatWindow"		"0"
+		"ChatFlashMode"		"0"
+		"ShowFriendsPanelInOverlay"		"1"
+	}
+	"apps"
+	{
+		"vbc"		"0"
+	}
+	"Licenses"
+	{
+		"0"		"010000002db86b249696e36a1e070315f3ce69b5953cc3f1150d1a8d95d7658b295c61090446ed3eb84bc877feb6d7fd46c4297d0e85160ad05e1215698caa7e7e70bc6706a73abd9c9b7ab761e1fcd98f2d1b82e15d4e3d76b9c90deb3a262b1de03b683c7f48c7def6ada35ab9e01c4299a75568a22e91e9ce44f16f191d9ec47f89faf943a1b2e0ae634176f35727e6b0be1111ce371b017f5383e7e69bba7f533ba18be55dee88fd482c4fd4c249ace1ac96deeaefc9eab85f1b1d29257be0fe32227057f913b001995bb4fb60a10816dce16a"
+	}
+	"apptickets"
+	{
+		"7"		"32000000040000000890191001001001070000005558f97a80f01eac000000004b2b6355cbda7e5501000000000000000000a08df513a2170539b164931d8504abbf6fed3ff2985e65e421cec7ce03cf2b634639b53a150d5bd9f4a375b4744e631581051fa0f78316ce3ef08da22b2d91c50dadb808a626941c9f9f014c09afa563596c1854a0e9e8f7383d2eec619e361f26b7c95dfc7fa2af0d063217ced595be5ea04e4636a6ee74febe33b09a0cf3c4"
+	}
+	"Software"
+	{
+		"Valve"
+		{
+			"Steam"
+			{
+				"apps"
+				{
+					"212680"
+					{
+						"LastPlayed"		"1432313048"
+						"BadgeData"		"02000000080a"
+					}
+					"244850"
+					{
+						"LastPlayed"		"1432431031"
+						"BadgeData"		"02000000080a"
+					}
+				}
+				"LastPlayedTimesSyncTime"		"10"
+				"SSAVersion"		"2"
+				"PlayerLevel"		"9001"
+			}
+		}
+	}
+	"Offline"
+	{
+		"Ticket"		"123"
+		"Signature"		"456"
+	}
+	"ParentalSettings"
+	{
+		"settings"		"789"
+		"Signature"		"012"
+	}
+	"AppInfoChangeNumber"		"1111"
+	"CloudKey"		"abcde"
+	"CloudKeyCRC"		"-1"
+	"streaming_v2"
+	{
+		"EnableStreaming"		"1"
+		"EnableHardwareEncodingV2"		"0"
+		"QualityPreference"		"2"
+	}
+	"News"
+	{
+		"Messages"
+		{
+			"4128710062361876057"		"1"
+			"7128232266874021740"		"1"
+			"4709446812327337679"		"1"
+			"8539385778114830087"		"1"
+			"8614479866496852463"		"1"
+			"78124515571482134"		"1"
+			"4174207001078881901"		"1"
+			"1473697755574709033"		"1"
+		}
+		"NotifyAvailableGames"		"1"
+	}
+	"LastInstallFolderIndex"		"0"
+	"depots"
+	{
+		"212681"
+		{
+			"CDN"
+			{
+				"cdn.akamai.cs.steampowered.com"
+				{
+					"token"		"?token=exp=0~acl=/depot/212681/*~hmac=0"
+					"expires"		"0"
+				}
+			}
+		}
+		"228990"
+		{
+			"CDN"
+			{
+				"cdn.akamai.cs.steampowered.com"
+				{
+					"token"		"?token=exp=0~acl=/depot/228990/*~hmac=0"
+					"expires"		"0"
+				}
+			}
+		}
+		"229002"
+		{
+			"CDN"
+			{
+				"cdn.highwinds.cs.steampowered.com"
+				{
+					"token"		"?l=14&e=0&h=0"
+					"expires"		"0"
+				}
+				"cdn.akamai.cs.steampowered.com"
+				{
+					"token"		"?token=exp=0~acl=/depot/229002/*~hmac=0"
+					"expires"		"0"
+				}
+			}
+		}
+		"244851"
+		{
+			"CDN"
+			{
+				"cdn.akamai.cs.steampowered.com"
+				{
+					"token"		"?token=exp=0~acl=/depot/244851/*~hmac=0"
+					"expires"		"0"
+				}
+				"cdn.highwinds.cs.steampowered.com"
+				{
+					"token"		"?l=14&e=0&h=0"
+					"expires"		"0"
+				}
+			}
+		}
+	}
+	"HideSharingNotifications"		"0"
+	"system"
+	{
+		"EnableGameOverlay"		"1"
+		"InGameOverlayShortcutKey"		"Shift	KEY_TAB"
+		"InGameOverlayScreenshotNotification"		"1"
+		"InGameOverlayScreenshotPlaySound"		"1"
+		"InGameOverlayScreenshotSaveUncompressed"		"0"
+		"InGameOverlayShowFPSContrast"		"0"
+		"InGameOverlayShowFPSCorner"		"0"
+		"InGameOverlayScreenshotHotKey"		"KEY_F12"
+		"NavUrlBar"		"0"
+		"UsePushToTalk"		"0"
+		"PushToTalkKey"		"0"
+		"GameOverlayHomePage"		"http://www.google.com"
+	}
+	"Broadcast"
+	{
+		"permissions"		"1"
+		"MaxKbps"		"2500"
+		"OutputWidth"		"1280"
+		"OutputHeight"		"720"
+		"EncoderSetting"		"0"
+		"IncludeDesktop"		"0"
+		"RecordSystemAudio"		"0"
+		"RecordMic"		"0"
+		"ShowDebugInfo"		"0"
+		"ShowReminder"		"1"
+		"ShowChat"		"0"
+	}
+	"StartupState.Friends"		"0"
+}
