@@ -163,16 +163,15 @@ namespace Depressurizer {
                 txtDefaultProfile.Text = dlg.FileName;
             }
         }
-        #endregion
-
-        private void cmbUpdtStyle_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            throw new System.NotImplementedException();
-        }
 
         private void chkCtrlUpdates_CheckedChanged(object sender, EventArgs e)
         {
-            throw new System.NotImplementedException();
+            if (this.chkCtrlUpdates.Checked == true){
+                this.grpUpdateRules.Enabled = true;
+            } else {
+                this.grpUpdateRules.Enabled = false;
+            }
         }
+        #endregion
     }
 }

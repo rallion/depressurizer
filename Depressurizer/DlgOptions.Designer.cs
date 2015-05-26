@@ -293,7 +293,6 @@ namespace Depressurizer {
             resources.GetString("cmbUpdtStyle.Items2"),
             resources.GetString("cmbUpdtStyle.Items3")});
             this.cmbUpdtStyle.Name = "cmbUpdtStyle";
-            this.cmbUpdtStyle.SelectedIndexChanged += new System.EventHandler(this.cmbUpdtStyle_SelectedIndexChanged);
             // 
             // chkCtrlUpdates
             // 
