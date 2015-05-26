@@ -135,6 +135,9 @@
   <data name="ShortCutsFilePath" xml:space="preserve">
     <value>{0}\userdata\{1}\config\shortcuts.vdf</value>
   </data>
+  <data name="GameConfigFilePath" xml:space="preserve">
+    <value>{0}\steamapps\appmanifest_{1}.acf</value>
+  </data>
   <data name="UrlCustomGameListHtml" xml:space="preserve">
     <value>http://steamcommunity.com/id/{0}/games?tab=all</value>
   </data>
