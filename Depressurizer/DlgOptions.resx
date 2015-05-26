@@ -201,9 +201,6 @@
   <data name="grpStartup.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
-  <data name="radNone.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="radNone.Location" type="System.Drawing.Point, System.Drawing">
     <value>11, 65</value>
   </data>
@@ -228,9 +225,6 @@
   <data name="&gt;&gt;radNone.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="radCreate.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="radCreate.Location" type="System.Drawing.Point, System.Drawing">
     <value>11, 42</value>
   </data>
@@ -254,9 +248,6 @@
   </data>
   <data name="&gt;&gt;radCreate.ZOrder" xml:space="preserve">
     <value>1</value>
-  </data>
-  <data name="radLoad.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="radLoad.Location" type="System.Drawing.Point, System.Drawing">
     <value>11, 19</value>
@@ -356,9 +347,6 @@
   </data>
   <data name="&gt;&gt;grpStartup.ZOrder" xml:space="preserve">
     <value>4</value>
-  </data>
-  <data name="chkRemoveExtraEntries.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="chkRemoveExtraEntries.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 19</value>
@@ -531,9 +519,6 @@
   <data name="grpDatabase.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
-  <data name="chkAutosaveDB.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="chkAutosaveDB.Location" type="System.Drawing.Point, System.Drawing">
     <value>11, 42</value>
   </data>
@@ -557,9 +542,6 @@
   </data>
   <data name="&gt;&gt;chkAutosaveDB.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="chkUpdateAppInfoOnStartup.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="chkUpdateAppInfoOnStartup.Location" type="System.Drawing.Point, System.Drawing">
     <value>11, 19</value>
@@ -762,9 +744,6 @@
   <data name="&gt;&gt;grpUpdateRules.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="chkCtrlUpdates.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="chkCtrlUpdates.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -885,9 +864,6 @@
   <data name="&gt;&gt;numLogSize.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 61</value>
   </data>
@@ -912,9 +888,6 @@
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 35</value>
   </data>
@@ -938,9 +911,6 @@
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>3</value>
-  </data>
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 9</value>
