@@ -59,6 +59,9 @@ namespace Depressurizer {
             this.cmbDatSrc = new System.Windows.Forms.ComboBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.grpDatabase = new System.Windows.Forms.GroupBox();
+            this.chkAutosaveDB = new System.Windows.Forms.CheckBox();
+            this.chkUpdateAppInfoOnStartup = new System.Windows.Forms.CheckBox();
             this.grpLanguage = new System.Windows.Forms.GroupBox();
             this.cmbLanguage = new System.Windows.Forms.ComboBox();
             this.tabUpdates = new System.Windows.Forms.TabPage();
@@ -73,15 +76,13 @@ namespace Depressurizer {
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbLogLevel = new System.Windows.Forms.ComboBox();
-            this.chkUpdateAppInfoOnStartup = new System.Windows.Forms.CheckBox();
-            this.grpDatabase = new System.Windows.Forms.GroupBox();
-            this.chkAutosaveDB = new System.Windows.Forms.CheckBox();
             this.grpSteamDir.SuspendLayout();
             this.grpStartup.SuspendLayout();
             this.grpSaving.SuspendLayout();
             this.grpDatSrc.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabGeneral.SuspendLayout();
+            this.grpDatabase.SuspendLayout();
             this.grpLanguage.SuspendLayout();
             this.tabUpdates.SuspendLayout();
             this.grpAutoUpdate.SuspendLayout();
@@ -89,7 +90,6 @@ namespace Depressurizer {
             this.tabLogging.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numLogBackup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numLogSize)).BeginInit();
-            this.grpDatabase.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpSteamDir
@@ -222,6 +222,26 @@ namespace Depressurizer {
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.UseVisualStyleBackColor = true;
             // 
+            // grpDatabase
+            // 
+            resources.ApplyResources(this.grpDatabase, "grpDatabase");
+            this.grpDatabase.Controls.Add(this.chkAutosaveDB);
+            this.grpDatabase.Controls.Add(this.chkUpdateAppInfoOnStartup);
+            this.grpDatabase.Name = "grpDatabase";
+            this.grpDatabase.TabStop = false;
+            // 
+            // chkAutosaveDB
+            // 
+            resources.ApplyResources(this.chkAutosaveDB, "chkAutosaveDB");
+            this.chkAutosaveDB.Name = "chkAutosaveDB";
+            this.chkAutosaveDB.UseVisualStyleBackColor = true;
+            // 
+            // chkUpdateAppInfoOnStartup
+            // 
+            resources.ApplyResources(this.chkUpdateAppInfoOnStartup, "chkUpdateAppInfoOnStartup");
+            this.chkUpdateAppInfoOnStartup.Name = "chkUpdateAppInfoOnStartup";
+            this.chkUpdateAppInfoOnStartup.UseVisualStyleBackColor = true;
+            // 
             // grpLanguage
             // 
             resources.ApplyResources(this.grpLanguage, "grpLanguage");
@@ -254,7 +274,6 @@ namespace Depressurizer {
             this.grpAutoUpdate.Controls.Add(this.chkCtrlUpdates);
             this.grpAutoUpdate.Name = "grpAutoUpdate";
             this.grpAutoUpdate.TabStop = false;
-            this.grpAutoUpdate.Enter += new System.EventHandler(this.grpAutoUpdate_Enter);
             // 
             // grpUpdateRules
             // 
@@ -281,6 +300,7 @@ namespace Depressurizer {
             resources.ApplyResources(this.chkCtrlUpdates, "chkCtrlUpdates");
             this.chkCtrlUpdates.Name = "chkCtrlUpdates";
             this.chkCtrlUpdates.UseVisualStyleBackColor = true;
+            this.chkCtrlUpdates.CheckedChanged += new System.EventHandler(this.chkCtrlUpdates_CheckedChanged);
             // 
             // tabLogging
             // 
@@ -346,30 +366,10 @@ namespace Depressurizer {
             this.cmbLogLevel.FormattingEnabled = true;
             this.cmbLogLevel.Name = "cmbLogLevel";
             // 
-            // chkUpdateAppInfoOnStartup
-            // 
-            resources.ApplyResources(this.chkUpdateAppInfoOnStartup, "chkUpdateAppInfoOnStartup");
-            this.chkUpdateAppInfoOnStartup.Name = "chkUpdateAppInfoOnStartup";
-            this.chkUpdateAppInfoOnStartup.UseVisualStyleBackColor = true;
-            // 
-            // grpDatabase
-            // 
-            resources.ApplyResources(this.grpDatabase, "grpDatabase");
-            this.grpDatabase.Controls.Add(this.chkAutosaveDB);
-            this.grpDatabase.Controls.Add(this.chkUpdateAppInfoOnStartup);
-            this.grpDatabase.Name = "grpDatabase";
-            this.grpDatabase.TabStop = false;
-            // 
-            // chkAutosaveDB
-            // 
-            resources.ApplyResources(this.chkAutosaveDB, "chkAutosaveDB");
-            this.chkAutosaveDB.Name = "chkAutosaveDB";
-            this.chkAutosaveDB.UseVisualStyleBackColor = true;
-            // 
             // DlgOptions
             // 
-            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
             this.ControlBox = false;
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.cmdCancel);
@@ -383,21 +383,17 @@ namespace Depressurizer {
             this.grpStartup.ResumeLayout(false);
             this.grpStartup.PerformLayout();
             this.grpSaving.ResumeLayout(false);
-            this.grpSaving.PerformLayout();
             this.grpDatSrc.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
+            this.grpDatabase.ResumeLayout(false);
             this.grpLanguage.ResumeLayout(false);
             this.tabUpdates.ResumeLayout(false);
             this.grpAutoUpdate.ResumeLayout(false);
-            this.grpAutoUpdate.PerformLayout();
             this.grpUpdateRules.ResumeLayout(false);
             this.tabLogging.ResumeLayout(false);
-            this.tabLogging.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numLogBackup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numLogSize)).EndInit();
-            this.grpDatabase.ResumeLayout(false);
-            this.grpDatabase.PerformLayout();
             this.ResumeLayout(false);
 
         }

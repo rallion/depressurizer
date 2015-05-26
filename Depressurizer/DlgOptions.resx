@@ -157,7 +157,7 @@
     <value>11, 22</value>
   </data>
   <data name="txtSteamPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>447, 20</value>
+    <value>447, 19</value>
   </data>
   <data name="txtSteamPath.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -307,7 +307,7 @@
     <value>101, 18</value>
   </data>
   <data name="txtDefaultProfile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>357, 20</value>
+    <value>357, 19</value>
   </data>
   <data name="txtDefaultProfile.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -472,7 +472,7 @@
     <value>11, 19</value>
   </data>
   <data name="cmbDatSrc.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 21</value>
+    <value>267, 20</value>
   </data>
   <data name="cmbDatSrc.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -607,7 +607,7 @@
     <value>11, 19</value>
   </data>
   <data name="cmbLanguage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>240, 21</value>
+    <value>240, 20</value>
   </data>
   <data name="cmbLanguage.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -799,7 +799,7 @@
     <value>4, 22</value>
   </data>
   <data name="tabUpdates.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 316</value>
+    <value>560, 344</value>
   </data>
   <data name="tabUpdates.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -823,7 +823,7 @@
     <value>130, 59</value>
   </data>
   <data name="numLogBackup.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 20</value>
+    <value>120, 19</value>
   </data>
   <data name="numLogBackup.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -844,7 +844,7 @@
     <value>130, 33</value>
   </data>
   <data name="numLogSize.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 20</value>
+    <value>120, 19</value>
   </data>
   <data name="numLogSize.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -943,7 +943,7 @@
     <value>130, 6</value>
   </data>
   <data name="cmbLogLevel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>144, 21</value>
+    <value>144, 20</value>
   </data>
   <data name="cmbLogLevel.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -985,7 +985,7 @@
     <value>tabControl</value>
   </data>
   <data name="&gt;&gt;tabLogging.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="tabControl.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 12</value>
@@ -1011,14 +1011,8 @@
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>592, 421</value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterParent</value>
