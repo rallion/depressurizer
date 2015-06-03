@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Depressurizer.Util
 {
-    class GamesAggregator
+    public static class GamesAggregator
     {
         public List<int> Matching(InstalledGames installedGames, GameList ownedGames)
         {
