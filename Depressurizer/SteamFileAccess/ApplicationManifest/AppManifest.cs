@@ -29,5 +29,7 @@ namespace Depressurizer.SteamFileAccess.ApplicationManifest
             get;
             set;
         }
+
+        VdfFileNode ExportToNode();
     }
 }

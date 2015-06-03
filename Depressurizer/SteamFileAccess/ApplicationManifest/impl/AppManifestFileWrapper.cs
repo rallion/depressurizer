@@ -63,6 +63,11 @@ namespace Depressurizer.SteamFileAccess.ApplicationManifest
             }
         }
 
+        public VdfFileNode ExportToNode()
+        {
+            return fileData;
+        }
+
         private void VerifyExists(string nodeName)
         {
 
