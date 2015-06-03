@@ -260,6 +260,7 @@
     <Compile Include="CDlgUpdateProfile.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Util\EnumUtils.cs" />
     <Compile Include="Util\GamesAggregator.cs" />
     <Compile Include="Util\InstalledGamesLoader.cs" />
     <Compile Include="VdfFile\VdfFileNode.cs" />
