@@ -144,6 +144,7 @@
     <Compile Include="DlgAutoCatCreate.Designer.cs">
       <DependentUpon>DlgAutoCatCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="SteamFileAccess\ApplicationManifest\InstalledGames.cs" />
     <Compile Include="Lib\ExtListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -151,6 +152,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PackageInfo.cs" />
+    <Compile Include="SteamFileAccess\ApplicationManifest\impl\AppManifestFileWrapper.cs" />
+    <Compile Include="SteamFileAccess\ApplicationManifest\AppManifest.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="GlobalStrings.es.Designer.cs">
       <DependentUpon>GlobalStrings.es.resx</DependentUpon>
@@ -255,6 +258,7 @@
     <Compile Include="CDlgUpdateProfile.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Util\InstalledGamesLoader.cs" />
     <Compile Include="VdfFile\VdfFileNode.cs" />
     <EmbeddedResource Include="AutoCat\AutoCatConfigPanel_Flags.resx">
       <DependentUpon>AutoCatConfigPanel_Flags.cs</DependentUpon>
@@ -411,6 +415,7 @@
     <None Include="app.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

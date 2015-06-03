@@ -151,20 +151,78 @@ namespace Depressurizer {
         /// <param name="index">Start index of the arg array</param>
         /// <returns>The FileNode at the given location, or null if the location was not found / created</returns>
         public VdfFileNode GetNodeAt( string[] args, bool create = true, int index = 0 ) {
+
             if( index >= args.Length ) {
                 return this;
             }
-            if( this.NodeType == ValueType.Array ) {
-                Dictionary<String, VdfFileNode> data = (Dictionary<String, VdfFileNode>)NodeData;
-                if( ContainsKey( args[index] ) ) {
-                    return data[args[index]].GetNodeAt( args, create, index + 1 );
-                } else if( create ) {
-                    VdfFileNode newNode = new VdfFileNode();
-                    data.Add( args[index], newNode );
-                    return newNode.GetNodeAt( args, create, index + 1 );
-                }
+
+            if (this.NodeType != ValueType.Array)
+            {
+                return null;
             }
+
+            Dictionary<String, VdfFileNode> data = (Dictionary<String, VdfFileNode>)NodeData;
+            if( ContainsKey( args[index] ) ) {
+                return data[args[index]].GetNodeAt( args, create, index + 1 );
+            } 
+                
+            if( create ) {
+                VdfFileNode newNode = new VdfFileNode();
+                data.Add( args[index], newNode );
+                return newNode.GetNodeAt( args, create, index + 1 );
+            }
+
             return null;
+        }
+
+        /// <summary>
+        /// Gets the node at the given address.
+        /// </summary>
+        /// <param name="nodeName">A single depth node lookup name</param>
+        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
+        public VdfFileNode GetNodeAt(string nodeName)
+        {
+            return GetNodeAt(new string[] { nodeName }, false, 0);
+        }
+
+        /// <summary>
+        /// Adds a node to current node.
+        /// </summary>
+        /// <param name="nodeName">New sub-node name</param>
+        /// <param name="nodeValue">New node to be added</param>
+        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
+        public void PutNodeAt(string nodeName, VdfFileNode nodeValue)
+        {
+            if (this.NodeType != ValueType.Array)
+            {
+                throw new InvalidOperationException("Cannot append " + nodeValue + " to " + this + ", because it's not an " + ValueType.Array);
+            }
+
+            Dictionary<String, VdfFileNode> data = (Dictionary<String, VdfFileNode>)NodeData;
+
+            data.Add(nodeName, nodeValue);
+        }
+
+        /// <summary>
+        /// Adds a string node to current node.
+        /// </summary>
+        /// <param name="nodeName">New sub-node name</param>
+        /// <param name="stringValue">String corresponding to sub-node</param>
+        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
+        public void PutNodeAt(string nodeName, string stringValue)
+        {
+            PutNodeAt(nodeName, new VdfFileNode(stringValue));
+        }
+
+        /// <summary>
+        /// Adds an int node to current node.
+        /// </summary>
+        /// <param name="nodeName">New sub-node name</param>
+        /// <param name="stringValue">Int corresponding to sub-node</param>
+        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
+        public void PutNodeAt(string nodeName, int stringValue)
+        {
+            PutNodeAt(nodeName, new VdfFileNode(stringValue));
         }
 
         /// <summary>
