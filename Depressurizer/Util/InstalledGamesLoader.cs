@@ -37,6 +37,16 @@ namespace Depressurizer.Util
             return new InstalledGames(unmodifiableGamesList);
         }
 
+        public static void Export(List<AppManifest> gamesManifestsToExport)
+        {
+            foreach(AppManifest manifest in gamesManifestsToExport)
+            {
+                SaveAppManifestToFile(manifest);
+            }
+            
+
+        }
+
         private static AppManifestFileWrapper GetAppManifestFromFile(string filePath)
         {
             VdfFileNode fileData = GetSteamFileNodeFromFile(filePath);
@@ -63,6 +73,21 @@ namespace Depressurizer.Util
                 .GetFiles(installedAppsPath, "*" + AppManifestFileExt)
                 .Where(path => appManifestRegex.IsMatch(path));
             return files;
+        }
+
+        private static void SaveAppManifestToFile(AppManifest manifest)
+        {
+            string appManifestFileName = string.Format(Properties.Resources.GameManifestFilePath, Settings.Instance.SteamPath, manifest.AppId);
+            SaveSteamFileNodeToFile(manifest, appManifestFileName);
+        }
+
+        private static void SaveSteamFileNodeToFile(AppManifest manifest, string fileName)
+        {
+            using (BinaryWriter writer = new BinaryWriter(File.Open(fileName, FileMode.Create)))
+            {
+                VdfFileNode node = manifest.ExportToNode();
+                node.SaveAsBinary(writer);
+            }
         }
 
 
