@@ -186,46 +186,6 @@ namespace Depressurizer {
         }
 
         /// <summary>
-        /// Adds a node to current node.
-        /// </summary>
-        /// <param name="nodeName">New sub-node name</param>
-        /// <param name="nodeValue">New node to be added</param>
-        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
-        public void PutNodeAt(string nodeName, VdfFileNode nodeValue)
-        {
-            if (this.NodeType != ValueType.Array)
-            {
-                throw new InvalidOperationException("Cannot append " + nodeValue + " to " + this + ", because it's not an " + ValueType.Array);
-            }
-
-            Dictionary<String, VdfFileNode> data = (Dictionary<String, VdfFileNode>)NodeData;
-
-            data.Add(nodeName, nodeValue);
-        }
-
-        /// <summary>
-        /// Adds a string node to current node.
-        /// </summary>
-        /// <param name="nodeName">New sub-node name</param>
-        /// <param name="stringValue">String corresponding to sub-node</param>
-        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
-        public void PutNodeAt(string nodeName, string stringValue)
-        {
-            PutNodeAt(nodeName, new VdfFileNode(stringValue));
-        }
-
-        /// <summary>
-        /// Adds an int node to current node.
-        /// </summary>
-        /// <param name="nodeName">New sub-node name</param>
-        /// <param name="stringValue">Int corresponding to sub-node</param>
-        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
-        public void PutNodeAt(string nodeName, int stringValue)
-        {
-            PutNodeAt(nodeName, new VdfFileNode(stringValue));
-        }
-
-        /// <summary>
         /// Checks whether the given key exists within an array-type node
         /// </summary>
         /// <param name="key">The key to look for</param>
@@ -273,6 +233,46 @@ namespace Depressurizer {
                 this.NodeType = ValueType.Array;
                 this.NodeData = new Dictionary<string, VdfFileNode>( StringComparer.OrdinalIgnoreCase );
             }
+        }
+
+        /// <summary>
+        /// Adds a node to current node.
+        /// </summary>
+        /// <param name="nodeName">New sub-node name</param>
+        /// <param name="nodeValue">New node to be added</param>
+        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
+        public void PutNodeAt(string nodeName, VdfFileNode nodeValue)
+        {
+            if (this.NodeType != ValueType.Array)
+            {
+                throw new InvalidOperationException("Cannot append " + nodeValue + " to " + this + ", because it's not an " + ValueType.Array);
+            }
+
+            Dictionary<String, VdfFileNode> data = (Dictionary<String, VdfFileNode>)NodeData;
+
+            data.Add(nodeName, nodeValue);
+        }
+
+        /// <summary>
+        /// Adds a string node to current node.
+        /// </summary>
+        /// <param name="nodeName">New sub-node name</param>
+        /// <param name="stringValue">String corresponding to sub-node</param>
+        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
+        public void PutNodeAt(string nodeName, string stringValue)
+        {
+            PutNodeAt(nodeName, new VdfFileNode(stringValue));
+        }
+
+        /// <summary>
+        /// Adds an int node to current node.
+        /// </summary>
+        /// <param name="nodeName">New sub-node name</param>
+        /// <param name="stringValue">Int corresponding to sub-node</param>
+        /// <returns>The FileNode at the given location, or null if the location was not found</returns>
+        public void PutNodeAt(string nodeName, int stringValue)
+        {
+            PutNodeAt(nodeName, new VdfFileNode(stringValue));
         }
         #endregion
 
