@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Depressurizer.Service
 {
-    class InstanceContainer
+    public static class InstanceContainer
     {
-        public InstalledGames InstalledGames { get; set; }
+        public static InstalledGames InstalledGames { get; set; }
     }
 }

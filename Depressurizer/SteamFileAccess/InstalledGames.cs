@@ -26,16 +26,17 @@ namespace Depressurizer.Games
             return UnmodifiableGamesList.Keys;
         }
 
-        public List<AppManifest> GetMatchingGames(int[] gameIds)
+        public Dictionary<int, AppManifest> GetMatchingGames(List<int> gameIds)
         {
-            List<AppManifest> matchingGames = new List<AppManifest>();
+
+            Dictionary<int, AppManifest> matchingGames = new Dictionary<int, AppManifest>();
 
             foreach(int gameId in gameIds)
             {
                 AppManifest gameManifest = null;
                 if (UnmodifiableGamesList.TryGetValue(gameId, out gameManifest))
                 {
-                    matchingGames.Add(gameManifest);
+                    matchingGames[gameManifest.AppId] = gameManifest;
                 }
             }
 

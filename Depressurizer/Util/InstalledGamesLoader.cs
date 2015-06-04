@@ -16,7 +16,7 @@ namespace Depressurizer.Util
 
         private const string InstalledAppsSubPath = "\\steamapps\\";
         private const string AppManifestFileExt = ".acf";
-        private const string RegexString = "^appmanifest_(\\d+)\\" + AppManifestFileExt + "$";
+        private const string RegexString = "^c:\\\\program files \\(x86\\)\\\\steam\\\\steamapps\\\\appmanifest_(\\d+)\\.acf$";
 
         public static InstalledGames GetGames()
         {
@@ -37,9 +37,9 @@ namespace Depressurizer.Util
             return new InstalledGames(unmodifiableGamesList);
         }
 
-        public static void Export(List<AppManifest> gamesManifestsToExport)
+        public static void Export(Dictionary<int, AppManifest> gamesManifestsToExport)
         {
-            foreach(AppManifest manifest in gamesManifestsToExport)
+            foreach(AppManifest manifest in gamesManifestsToExport.Values)
             {
                 SaveAppManifestToFile(manifest);
             }
@@ -60,7 +60,7 @@ namespace Depressurizer.Util
             VdfFileNode fileData;
             using (StreamReader reader = new StreamReader(filePath, false))
             {
-                fileData = VdfFileNode.LoadFromText(reader, true);
+                fileData = VdfFileNode.LoadFromText(reader, false);
             }
             return fileData;
         }
@@ -69,8 +69,10 @@ namespace Depressurizer.Util
         {
             Regex appManifestRegex = new Regex(@RegexString);
 
-            IEnumerable<string> files = Directory
-                .GetFiles(installedAppsPath, "*" + AppManifestFileExt)
+            string[] filesInDir = Directory
+                .GetFiles(installedAppsPath, "*" + AppManifestFileExt);
+
+            IEnumerable<string> files = filesInDir
                 .Where(path => appManifestRegex.IsMatch(path));
             return files;
         }
@@ -83,13 +85,11 @@ namespace Depressurizer.Util
 
         private static void SaveSteamFileNodeToFile(AppManifest manifest, string fileName)
         {
-            using (BinaryWriter writer = new BinaryWriter(File.Open(fileName, FileMode.Create)))
+            using (StreamWriter writer = new StreamWriter(File.Open(fileName, FileMode.Create)))
             {
                 VdfFileNode node = manifest.ExportToNode();
-                node.SaveAsBinary(writer);
+                node.SaveAsText(writer, 0);
             }
         }
-
-
     }
 }

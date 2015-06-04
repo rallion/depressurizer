@@ -8,6 +8,7 @@ namespace Depressurizer.SteamFileAccess.ApplicationManifest
 {
     class AppManifestFileWrapper : AppManifest
     {
+        private const string AppBaseContainer = "AppState";
         private const string AppIdKey = "appid";
         private const string AppNameKey = "name";
         private const string AutoUpdateBehaviorKey = "AutoUpdateBehavior";
@@ -19,12 +20,17 @@ namespace Depressurizer.SteamFileAccess.ApplicationManifest
             this.fileData = fileData;
         }
 
+        private VdfFileNode GetGameData()
+        {
+            return fileData.GetNodeAt(AppBaseContainer);
+        }
+
         public int AppId
         {
             get
             {
                 VerifyExists(AppIdKey);
-                return fileData.GetNodeAt(AppIdKey).NodeInt;
+                return GetGameData().GetNodeAt(AppIdKey).NodeInt;
             }
         }
 
@@ -33,7 +39,7 @@ namespace Depressurizer.SteamFileAccess.ApplicationManifest
             get
             {
                 VerifyExists(AppNameKey);
-                return fileData.GetNodeAt(AppNameKey).NodeString;
+                return GetGameData().GetNodeAt(AppNameKey).NodeString;
             }
         }
 
@@ -42,11 +48,11 @@ namespace Depressurizer.SteamFileAccess.ApplicationManifest
             get
             {
                 VerifyExists(AutoUpdateBehaviorKey);
-                return fileData.GetNodeAt(AutoUpdateBehaviorKey).NodeInt;
+                return GetGameData().GetNodeAt(AutoUpdateBehaviorKey).NodeInt;
             }
             set
             {
-                fileData.PutNodeAt(AutoUpdateBehaviorKey, AutoUpdateBehavior);
+                GetGameData().PutNodeAt(AutoUpdateBehaviorKey, value);
             }
         }
 
@@ -55,23 +61,23 @@ namespace Depressurizer.SteamFileAccess.ApplicationManifest
             get
             {
                 VerifyExists(AllowOtherDownloadsWhileRunningKey);
-                return fileData.GetNodeAt(AllowOtherDownloadsWhileRunningKey).NodeInt;
+                return GetGameData().GetNodeAt(AllowOtherDownloadsWhileRunningKey).NodeInt;
             }
             set
             {
-                fileData.PutNodeAt(AllowOtherDownloadsWhileRunningKey, AllowOtherDownloadsWhileRunning);
+                GetGameData().PutNodeAt(AllowOtherDownloadsWhileRunningKey, value);
             }
         }
 
         public VdfFileNode ExportToNode()
         {
-            return fileData;
+            return GetGameData();
         }
 
         private void VerifyExists(string nodeName)
         {
 
-            if (!fileData.ContainsKey(nodeName))
+            if (!GetGameData().ContainsKey(nodeName))
             {
                 throw new ContextMarshalException("Failed to find " + nodeName + " in App Manifest file");
             }

@@ -10,7 +10,7 @@ namespace Depressurizer.Util
 {
     public static class GamesAggregator
     {
-        public List<int> Matching(InstalledGames installedGames, GameList ownedGames)
+        public static List<int> Matching(InstalledGames installedGames, Dictionary<int, GameInfo> ownedGames)
         {
             List<int> ownedAndInstalled = new List<int>();
 
@@ -18,7 +18,7 @@ namespace Depressurizer.Util
 
             foreach(int installedGameId in installedGamesList)
             {
-                if (ownedGames.Games.ContainsKey(installedGameId))
+                if (ownedGames.ContainsKey(installedGameId))
                 {
                     ownedAndInstalled.Add(installedGameId);
                 }
@@ -26,6 +26,5 @@ namespace Depressurizer.Util
 
             return ownedAndInstalled;
         }
-
     }
 }

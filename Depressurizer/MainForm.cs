@@ -1,4 +1,7 @@
-﻿/*
+﻿using Depressurizer.Service;
+using Depressurizer.SteamFileAccess.ApplicationManifest;
+using Depressurizer.Util;
+/*
 This file is part of Depressurizer.
 Copyright 2011, 2012, 2013 Steve Labbe.
 
@@ -342,6 +345,7 @@ namespace Depressurizer {
         /// <param name="path">Path to save to. If null, just saves profile to its current path.</param>
         /// <returns>True if successful, false if there is a failure</returns>
         bool SaveProfile( string path = null ) {
+            ExportGameUpdateSettings();
             if( !ProfileLoaded ) return false;
             if( currentProfile.AutoExport ) {
                 ExportConfig();
@@ -368,6 +372,7 @@ namespace Depressurizer {
         /// Updates the game list for the loaded profile.
         /// </summary>
         void UpdateLibrary() {
+            ImportGameUpdateSettings();
             if( currentProfile == null ) return;
 
             Cursor = Cursors.WaitCursor;
@@ -1464,6 +1469,7 @@ namespace Depressurizer {
 
         private void menu_Profile_Export_Click( object sender, EventArgs e ) {
             ClearStatus();
+            ExportGameUpdateSettings();
             ExportConfig();
             FlushStatus();
         }
@@ -2110,6 +2116,47 @@ namespace Depressurizer {
             } else {
                 return true;
             }
+        }
+
+        private void ImportGameUpdateSettings()
+        {
+            InstanceContainer.InstalledGames = InstalledGamesLoader.GetGames();
+        }
+
+        private void ExportGameUpdateSettings()
+        {
+            if (Settings.Instance.CtrlUpdates == false)
+            {
+                return;
+            }
+
+            if (GameAutoUpdateStyle.DEFAULT.Equals(Settings.Instance.GameAutoUpdateStyle))
+            {
+                return;
+            }
+
+            Dictionary<int, GameInfo>  ownedGames = currentProfile.GameData.Games;
+
+            List<int> gamesInstalledAndOwned = GamesAggregator.Matching(
+                InstanceContainer.InstalledGames, ownedGames);
+
+            Dictionary<int, AppManifest> installedOwnedGamesManifests = 
+                InstanceContainer.InstalledGames.GetMatchingGames(gamesInstalledAndOwned);
+
+            foreach (AppManifest gameManifest in installedOwnedGamesManifests.Values)
+            {
+
+                GameInfo gameInfo = null;
+                ownedGames.TryGetValue(gameManifest.AppId, out gameInfo);
+
+                int intCastOfAutoUpdateBehaviour = (int) EnumUtils.GetUpdateSettingForStyleAndFavourite(
+                    Settings.Instance.GameAutoUpdateStyle,
+                    gameInfo.IsFavorite());
+
+                gameManifest.AutoUpdateBehavior = intCastOfAutoUpdateBehaviour;
+            }
+
+            InstalledGamesLoader.Export(installedOwnedGamesManifests);
         }
 
         #endregion

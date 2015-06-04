@@ -1,5 +1,4 @@
 ﻿using Depressurizer.SteamFileAccess;
-using Depressurizer.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,7 @@ namespace Depressurizer.Util
 {
     public static class EnumUtils
     {
-        public Enums.GameAutoUpdateSetting GetUpdateSettingForStyleAndFavourite(
+        public static Enums.GameAutoUpdateSetting GetUpdateSettingForStyleAndFavourite(
             GameAutoUpdateStyle style, bool favouriteGame)
         {
             if(GameAutoUpdateStyle.DEFAULT.Equals(style))
@@ -44,6 +43,5 @@ namespace Depressurizer.Util
             throw new ArgumentException("No valid result found");
 
         }
-
     }
 }

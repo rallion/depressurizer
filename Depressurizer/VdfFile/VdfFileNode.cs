@@ -250,7 +250,7 @@ namespace Depressurizer {
 
             Dictionary<String, VdfFileNode> data = (Dictionary<String, VdfFileNode>)NodeData;
 
-            data.Add(nodeName, nodeValue);
+            data[nodeName] = nodeValue;
         }
 
         /// <summary>
