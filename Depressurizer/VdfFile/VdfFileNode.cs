@@ -125,6 +125,59 @@ namespace Depressurizer {
             NodeData = (Int32)( value );
         }
 
+        #region Equals and HashCode
+
+        public override bool Equals(System.Object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+
+            if (obj.GetType() != typeof(VdfFileNode))
+            {
+                return false;
+            }
+
+            VdfFileNode otherVdfFileNode = (VdfFileNode)obj;
+
+            if (NodeType != otherVdfFileNode.NodeType)
+            {
+                return false;
+            }
+
+            if (NodeData == null && otherVdfFileNode.NodeData == null)
+            {
+                return true;
+            }
+
+            if (NodeData == null || otherVdfFileNode.NodeData == null)
+            {
+                return false;
+            }
+
+            if (NodeType != ValueType.Array)
+            {
+                return NodeData.Equals(otherVdfFileNode.NodeData);
+            }
+
+            Dictionary<String, VdfFileNode> data = (Dictionary<String, VdfFileNode>) NodeData;
+            Dictionary<String, VdfFileNode> otherData = (Dictionary<String, VdfFileNode>) otherVdfFileNode.NodeData;
+
+            return data.SequenceEqual(otherData);
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 13;
+            hash = (hash * 7) + NodeType.GetHashCode();
+            hash = (hash * 7) + NodeData.GetHashCode();
+            return hash;
+        }
+
+        #endregion
+
         #region Utility
 
         /// <summary>

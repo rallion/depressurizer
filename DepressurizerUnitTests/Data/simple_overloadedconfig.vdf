@@ -1,0 +1,15 @@
+"UserRoamingConfigStore"
+{
+	"Software"
+	{
+		"Valve"
+		{
+			"Steam"
+			{
+				"SSAVersion"		"2"
+				"PrivacyPolicyVersion"		"2"
+			}
+		}
+	}
+}
+"NewNode"		"Hello"

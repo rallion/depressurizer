@@ -131,15 +131,14 @@ namespace Depressurizer.Util
         private static void SaveAppManifestToFile(AppManifest manifest)
         {
             string appManifestFileName = string.Format(Properties.Resources.GameManifestFilePath, Settings.Instance.SteamPath, manifest.AppId);
-            SaveSteamFileNodeToFile(manifest, appManifestFileName);
+            SaveSteamFileNodeToFile(manifest.ExportToNode(), appManifestFileName);
         }
 
-        private static void SaveSteamFileNodeToFile(AppManifest manifest, string fileName)
+        private static void SaveSteamFileNodeToFile(VdfFileNode manifestNode, string fileName)
         {
             using (StreamWriter writer = new StreamWriter(File.Open(fileName, FileMode.Create)))
             {
-                VdfFileNode node = manifest.ExportToNode();
-                node.SaveAsText(writer, 0);
+                manifestNode.SaveAsText(writer, 0);
             }
         }
     }

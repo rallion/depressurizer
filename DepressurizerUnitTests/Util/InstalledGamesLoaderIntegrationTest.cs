@@ -29,6 +29,7 @@ using Depressurizer.Service;
 
 using System.Linq;
 using Rallion;
+using DepressurizerUnitTests.TestUtils;
 
 
 namespace DepressurizerUnitTests.Util
@@ -42,6 +43,14 @@ namespace DepressurizerUnitTests.Util
         {
             Settings.Instance.SteamPath = "./Data";
             InstanceContainer.Logger = new AppLogger(); //TODO: Extract this as a form of injection? / mocking / assert recieves a message
+
+            TestIO.setUpTempFolder();
+        }
+
+        [TestCleanup()]
+        public void Cleanup()
+        {
+            TestIO.tearDownTempFolder();
         }
 
         [TestMethod]
@@ -145,9 +154,7 @@ namespace DepressurizerUnitTests.Util
             InstalledGames installedGames = InstalledGamesLoader.Import();
             Dictionary<int, AppManifest> allGames = getAll(installedGames);
 
-            setUpTempFolder();
-
-            Settings.Instance.SteamPath = getTempFolderPath();
+            Settings.Instance.SteamPath = TestIO.getTempFolderPath();
 
             // when 
             InstalledGamesLoader.Export(allGames);
@@ -166,54 +173,11 @@ namespace DepressurizerUnitTests.Util
             Assert.IsTrue(gamesList.Contains(212680));
             Assert.IsTrue(gamesList.Contains(244850));
 
-            tearDownTempFolder();
         }
 
         private static Dictionary<int, AppManifest> getAll(InstalledGames installedGames)
         {
             return installedGames.GetMatchingGames(installedGames.getInstalledGamesList().ToList());
-        }
-
-        private static void setUpTempFolder()
-        {
-
-            string fullPath = getTempFolderAppsFullPath();
-
-            bool exists = System.IO.Directory.Exists(fullPath);
-
-            if (!exists)
-            {
-                System.IO.Directory.CreateDirectory(fullPath);
-            }
-        }
-
-        private static void tearDownTempFolder()
-        {
-            System.IO.DirectoryInfo tempSteamFolder = new System.IO.DirectoryInfo(getTempFolderAppsFullPath());
-
-            foreach (System.IO.FileInfo file in tempSteamFolder.GetFiles())
-            {
-                file.Delete();
-            }
-            foreach (System.IO.DirectoryInfo dir in tempSteamFolder.GetDirectories())
-            {
-                dir.Delete(true);
-            }
-        }
-
-        private static string getTempFolderAppsFullPath()
-        {
-            string tmpPath = getTempFolderPath();
-
-            string subPath = InstalledGamesLoader.InstalledAppsSubPath;
-
-            string fullPath = tmpPath + subPath;
-            return fullPath;
-        }
-
-        private static string getTempFolderPath()
-        {
-            return System.IO.Path.GetTempPath();
         }
     }
 }

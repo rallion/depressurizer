@@ -22,21 +22,36 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Depressurizer;
 using System.IO;
 using Rallion;
+using DepressurizerUnitTests.TestUtils;
 
 namespace DepressurizerUnitTests
 {
     class VdfFileTest{
 
-        private const string SimpleConfig = "Data/simple_sharedconfig.vdf";
-        private const string SimpleLocalConfig = "Data/simple_localconfig.vdf";
-        private const string ComplexedConfig = "Data/complexed_sharedconfig.vdf";
-        private const string ComplexedLocalConfig = "Data/complexed_localconfig.vdf";
-        private const string AppOneConfig = "Data/steamapps/appmanifest_212680.acf";
-        private const string AppTwoConfig = "Data/steamapps/appmanifest_244850.acf";
+        private const string SimpleConfigPath = "Data/simple_sharedconfig.vdf";
+        private const string SimpleLocalConfigPath = "Data/simple_localconfig.vdf";
+        private const string ComplexedConfigPath = "Data/complexed_sharedconfig.vdf";
+        private const string ComplexedLocalConfigPath = "Data/complexed_localconfig.vdf";
+        private const string OverloadedConfigPath = "Data/simple_overloadedconfig.vdf";
+        private const string AppOneConfigPath = "Data/steamapps/appmanifest_212680.acf";
+        private const string AppTwoConfigPath = "Data/steamapps/appmanifest_244850.acf";
 
         [TestClass]
         public class VdfFileNodeTest
         {
+
+            [TestInitialize()]
+            public void Initialize()
+            {
+                TestIO.setUpTempFolder();
+            }
+
+            [TestCleanup()]
+            public void Cleanup()
+            {
+                TestIO.tearDownTempFolder();
+            }
+
             [TestMethod]
             public void Constructor_WithBlankInput_CreatesBlankArray()
             {
@@ -44,7 +59,7 @@ namespace DepressurizerUnitTests
                 // given
 
                 // when
-                VdfFileNode vdfNode = new VdfFileNode() { };
+                VdfFileNode vdfNode = new VdfFileNode();
 
                 // then
                 Assert.AreEqual(vdfNode.NodeType, Depressurizer.ValueType.Array);
@@ -55,14 +70,9 @@ namespace DepressurizerUnitTests
             {
 
                 // given
-                string filePath = SimpleLocalConfig;
 
                 // when
-                VdfFileNode fileData;
-                using (StreamReader reader = new StreamReader(filePath, false))
-                {
-                    fileData = VdfFileNode.LoadFromText(reader, true);
-                }
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(SimpleLocalConfigPath);
 
                 // then
                 Assert.AreEqual(fileData.NodeType, Depressurizer.ValueType.Array);
@@ -73,18 +83,13 @@ namespace DepressurizerUnitTests
             {
 
                 // given
-                string filePath = SimpleConfig;
 
                 // when
-                VdfFileNode fileData;
-                using (StreamReader reader = new StreamReader(filePath, false))
-                {
-                    fileData = VdfFileNode.LoadFromText(reader, true);
-                }
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(SimpleConfigPath);
 
                 // then
                 Assert.AreEqual(fileData.NodeType, Depressurizer.ValueType.Array);
-                Assert.IsTrue(fileData.ContainsKey("Software"));
+                Assert.IsTrue(fileData.ContainsKey("UserRoamingConfigStore"));
             }
 
             [TestMethod]
@@ -92,14 +97,9 @@ namespace DepressurizerUnitTests
             {
 
                 // given
-                string filePath = ComplexedConfig;
 
                 // when
-                VdfFileNode fileData;
-                using (StreamReader reader = new StreamReader(filePath, false))
-                {
-                    fileData = VdfFileNode.LoadFromText(reader, true);
-                }
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(ComplexedConfigPath);
 
                 // then
                 Assert.AreEqual(fileData.NodeType, Depressurizer.ValueType.Array);
@@ -110,18 +110,13 @@ namespace DepressurizerUnitTests
             {
 
                 // given
-                string filePath = ComplexedLocalConfig;
 
                 // when
-                VdfFileNode fileData;
-                using (StreamReader reader = new StreamReader(filePath, false))
-                {
-                    fileData = VdfFileNode.LoadFromText(reader, true);
-                }
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(ComplexedLocalConfigPath);
 
                 // then
                 Assert.AreEqual(fileData.NodeType, Depressurizer.ValueType.Array);
-                Assert.IsTrue(fileData.ContainsKey("friends"));
+                Assert.IsTrue(fileData.ContainsKey("UserLocalConfigStore"));
             }
 
             [TestMethod]
@@ -129,19 +124,17 @@ namespace DepressurizerUnitTests
             {
 
                 // given
-                string filePath = AppOneConfig;
 
                 // when
-                VdfFileNode fileData;
-                using (StreamReader reader = new StreamReader(filePath, false))
-                {
-                    fileData = VdfFileNode.LoadFromText(reader, true);
-                }
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(AppOneConfigPath);
 
                 // then
                 Assert.AreEqual(fileData.NodeType, Depressurizer.ValueType.Array);
-                Assert.IsFalse(fileData.ContainsKey("friends"));
-                Assert.IsTrue(fileData.ContainsKey("AutoUpdateBehavior"));
+                Assert.IsTrue(fileData.ContainsKey("AppState"));
+
+                VdfFileNode topLevel = fileData.GetNodeAt("AppState");
+                Assert.IsFalse(topLevel.ContainsKey("friends"));
+                Assert.IsTrue(topLevel.ContainsKey("AutoUpdateBehavior"));
             }
 
             [TestMethod]
@@ -149,19 +142,113 @@ namespace DepressurizerUnitTests
             {
 
                 // given
-                string filePath = AppTwoConfig;
 
                 // when
-                VdfFileNode fileData;
-                using (StreamReader reader = new StreamReader(filePath, false))
-                {
-                    fileData = VdfFileNode.LoadFromText(reader, true);
-                }
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(AppTwoConfigPath);
+
+                // then
+                Assert.AreEqual(fileData.NodeType, Depressurizer.ValueType.Array);
+                Assert.IsTrue(fileData.ContainsKey("AppState"));
+
+                VdfFileNode topLevel = fileData.GetNodeAt("AppState");
+                Assert.IsFalse(topLevel.ContainsKey("friends"));
+                Assert.IsTrue(topLevel.ContainsKey("AutoUpdateBehavior"));
+            }
+
+            [TestMethod]
+            public void Constructor_MoreThanOneBase_IncludesAll()
+            {
+
+                // given
+
+                // when
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(OverloadedConfigPath);
 
                 // then
                 Assert.AreEqual(fileData.NodeType, Depressurizer.ValueType.Array);
                 Assert.IsFalse(fileData.ContainsKey("friends"));
-                Assert.IsTrue(fileData.ContainsKey("AutoUpdateBehavior"));
+                Assert.IsTrue(fileData.ContainsKey("UserRoamingConfigStore"));
+                Assert.IsTrue(fileData.ContainsKey("NewNode"));
+            }
+
+            [TestMethod]
+            public void Constructor_IntSavedAndLoaded_LoadsAsStringNotInt()
+            {
+
+                // given
+                VdfFileNode fileData = new VdfFileNode();
+                fileData.PutNodeAt("number", 2);
+                string testFilePath = TestIO.getTempFolderPath() + "testFileName.vdf";
+
+                // when
+                SaveSteamFileNodeToFile(fileData, testFilePath);
+                VdfFileNode retrieved = CreateVdfNodeFromFilePath(testFilePath);
+
+                // then
+                Assert.IsTrue(fileData.ContainsKey("number"));
+                Assert.IsTrue(retrieved.ContainsKey("number"));
+                Assert.AreEqual(fileData.GetNodeAt("number").NodeType, Depressurizer.ValueType.Int); // System actually has a ValueType
+                Assert.AreEqual(retrieved.GetNodeAt("number").NodeType, Depressurizer.ValueType.String);
+                Assert.AreNotEqual(retrieved, fileData);
+            }
+
+            [TestMethod]
+            public void PutNodeAt_NewNode_AddsNewNode()
+            {
+
+                // given
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(SimpleConfigPath);
+                string testFileName = TestIO.getTempFolderPath() + "testFileName.vdf";
+
+                // when
+                fileData.PutNodeAt("NewNode", "Hello");
+
+                // then
+                Assert.AreEqual(fileData.NodeType, Depressurizer.ValueType.Array);
+                Assert.IsFalse(fileData.ContainsKey("friends"));
+                Assert.IsTrue(fileData.ContainsKey("UserRoamingConfigStore"));
+                Assert.IsTrue(fileData.ContainsKey("NewNode"));
+            }
+
+            [TestMethod]
+            public void PutNodeAt_Base_SavesAndLoads()
+            {
+
+                // given
+                VdfFileNode fileData = CreateVdfNodeFromFilePath(SimpleConfigPath);
+                string testFilePath = TestIO.getTempFolderPath() + "testFileName.vdf";
+                fileData.PutNodeAt("NewNode", "Hello");
+
+                // when
+                SaveSteamFileNodeToFile(fileData, testFilePath);
+                VdfFileNode retrieved = CreateVdfNodeFromFilePath(testFilePath);
+
+                // then
+                Assert.IsFalse(fileData.ContainsKey("friends"));
+                Assert.IsFalse(retrieved.ContainsKey("friends"));
+                Assert.IsTrue(fileData.ContainsKey("UserRoamingConfigStore"));
+                Assert.IsTrue(retrieved.ContainsKey("UserRoamingConfigStore"));
+                Assert.IsTrue(fileData.ContainsKey("NewNode"));
+                Assert.IsTrue(retrieved.ContainsKey("NewNode"));
+                Assert.AreEqual(retrieved, fileData);
+            }
+
+            private static VdfFileNode CreateVdfNodeFromFilePath(string filePath)
+            {
+                VdfFileNode fileData;
+                using (StreamReader reader = new StreamReader(filePath, false))
+                {
+                    fileData = VdfFileNode.LoadFromText(reader, false);
+                }
+                return fileData;
+            }
+
+            private static void SaveSteamFileNodeToFile(VdfFileNode manifestNode, string fileName)
+            {
+                using (StreamWriter writer = new StreamWriter(File.Open(fileName, FileMode.Create)))
+                {
+                    manifestNode.SaveAsText(writer, 0);
+                }
             }
         }
     }
