@@ -146,7 +146,7 @@
     </Compile>
     <Compile Include="Service\InstanceContainer.cs" />
     <Compile Include="SteamFileAccess\Enums.cs" />
-    <Compile Include="SteamFileAccess\InstalledGames.cs" />
+    <Compile Include="Games\InstalledGames.cs" />
     <Compile Include="Lib\ExtListView.cs">
       <SubType>Component</SubType>
     </Compile>

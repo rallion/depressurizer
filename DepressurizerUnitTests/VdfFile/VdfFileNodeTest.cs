@@ -25,7 +25,7 @@ using Rallion;
 
 namespace DepressurizerUnitTests
 {
-    class VdfFileTests{
+    class VdfFileTest{
 
         private const string SimpleConfig = "Data/simple_sharedconfig.vdf";
         private const string SimpleLocalConfig = "Data/simple_localconfig.vdf";
@@ -35,7 +35,7 @@ namespace DepressurizerUnitTests
         private const string AppTwoConfig = "Data/appmanifest_244850.acf";
 
         [TestClass]
-        public class VdfFileNodeTests
+        public class VdfFileNodeTest
         {
             [TestMethod]
             public void Constructor_WithBlankInput_CreatesBlankArray()

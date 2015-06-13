@@ -30,11 +30,6 @@ namespace Depressurizer.Games
     {
         private readonly IReadOnlyDictionary<int, AppManifest> UnmodifiableGamesList;
 
-        public InstalledGames()
-        {
-            UnmodifiableGamesList = new Dictionary<int, AppManifest>();
-        }
-
         public InstalledGames(IReadOnlyDictionary<int, AppManifest> UnmodifiableGamesList)
         {
             this.UnmodifiableGamesList = UnmodifiableGamesList;

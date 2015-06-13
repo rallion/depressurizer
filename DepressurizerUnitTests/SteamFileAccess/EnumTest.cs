@@ -24,7 +24,7 @@ using Depressurizer.SteamFileAccess;
 namespace DepressurizerUnitTests.SteamFileAccess
 {
     [TestClass]
-    public class EnumTests
+    public class EnumTest
     {
         [TestMethod]
         public void AssertEnumsCastCorrectly()

@@ -53,8 +53,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SteamFileAccess\EnumTests.cs" />
-    <Compile Include="VdfFile\VdfFileNodeTests.cs" />
+    <Compile Include="Games\InstalledGamesTest.cs" />
+    <Compile Include="SteamFileAccess\EnumTest.cs" />
+    <Compile Include="Util\InstalledGamesTest.cs" />
+    <Compile Include="VdfFile\VdfFileNodeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\appmanifest_212680.acf">
