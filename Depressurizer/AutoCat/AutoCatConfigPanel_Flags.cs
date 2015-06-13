@@ -1,4 +1,5 @@
-﻿/*
+﻿using Depressurizer.Service;
+/*
 This file is part of Depressurizer.
 Copyright 2011, 2012, 2013 Steve Labbe.
 
@@ -33,8 +34,8 @@ namespace Depressurizer {
         public void FillFlagsList() {
             lstIncluded.Items.Clear();
 
-            if( Program.GameDB != null ) {
-                SortedSet<string> flagsList = Program.GameDB.GetAllStoreFlags();
+            if( InstanceContainer.GameDB != null ) {
+                SortedSet<string> flagsList = InstanceContainer.GameDB.GetAllStoreFlags();
 
                 foreach( string s in flagsList ) {
                     lstIncluded.Items.Add( s );

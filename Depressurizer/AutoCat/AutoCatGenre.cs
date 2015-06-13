@@ -1,4 +1,5 @@
-﻿/*
+﻿using Depressurizer.Service;
+/*
 This file is part of Depressurizer.
 Copyright 2011, 2012, 2013 Steve Labbe.
 
@@ -108,15 +109,15 @@ namespace Depressurizer {
 
         public override AutoCatResult CategorizeGame( GameInfo game ) {
             if( games == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GamelistNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GamelistNull );
                 throw new ApplicationException( GlobalStrings.AutoCatGenre_Exception_NoGameList );
             }
             if( db == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_DBNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_DBNull );
                 throw new ApplicationException( GlobalStrings.AutoCatGenre_Exception_NoGameDB );
             }
             if( game == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GameNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GameNull );
                 return AutoCatResult.Failure;
             }
 

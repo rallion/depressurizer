@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using Depressurizer.Service;
 using Rallion;
 using System;
 using System.Collections.Generic;
@@ -88,15 +89,15 @@ namespace Depressurizer {
         #region Autocategorization
         public override AutoCatResult CategorizeGame( GameInfo game ) {
             if( games == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GamelistNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GamelistNull );
                 throw new ApplicationException( GlobalStrings.AutoCatGenre_Exception_NoGameList );
             }
             if( db == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_DBNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_DBNull );
                 throw new ApplicationException( GlobalStrings.AutoCatGenre_Exception_NoGameDB );
             }
             if( game == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GameNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GameNull );
                 return AutoCatResult.Failure;
             }
 

@@ -1,0 +1,32 @@
+"AppState"
+{
+	"appid"		"244850"
+	"Universe"		"1"
+	"name"		"Space Engineers"
+	"StateFlags"		"4"
+	"installdir"		"SpaceEngineers"
+	"LastUpdated"		"1432395729"
+	"UpdateResult"		"0"
+	"SizeOnDisk"		"2090556837"
+	"buildid"		"632003"
+	"LastOwner"		"76561197963625792"
+	"BytesToDownload"		"926270560"
+	"BytesDownloaded"		"926270560"
+	"AutoUpdateBehavior"		"0"
+	"AllowOtherDownloadsWhileRunning"		"0"
+	"UserConfig"
+	{
+		"language"		"english"
+	}
+	"MountedDepots"
+	{
+		"228990"		"1829726630299308803"
+		"229002"		"7260605429366465749"
+		"244851"		"7405645620722380975"
+	}
+	"InstallScripts"
+	{
+		"0"		"_CommonRedist\\DirectX\\Jun2010\\installscript.vdf"
+		"1"		"_CommonRedist\\DotNet\\4.0\\installscript.vdf"
+	}
+}

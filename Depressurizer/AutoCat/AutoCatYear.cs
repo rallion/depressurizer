@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
+using Depressurizer.Service;
 
 namespace Depressurizer {
 
@@ -77,15 +78,15 @@ namespace Depressurizer {
         #region Autocategorization Methods
         public override AutoCatResult CategorizeGame( GameInfo game ) {
             if( games == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GamelistNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GamelistNull );
                 throw new ApplicationException( GlobalStrings.AutoCatGenre_Exception_NoGameList );
             }
             if( db == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_DBNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_DBNull );
                 throw new ApplicationException( GlobalStrings.AutoCatGenre_Exception_NoGameDB );
             }
             if( game == null ) {
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GameNull );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.Log_AutoCat_GameNull );
                 return AutoCatResult.Failure;
             }
 

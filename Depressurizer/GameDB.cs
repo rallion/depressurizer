@@ -25,6 +25,7 @@ using Rallion;
 using System.IO.Compression;
 using System.Globalization;
 using System.Linq;
+using Depressurizer.Service;
 
 namespace Depressurizer {
 
@@ -89,7 +90,7 @@ namespace Depressurizer {
         /// <param name="id">The id of the store page to scrape</param>
         /// <returns>The type determined during the scrape</returns>
         private AppTypes ScrapeStoreHelper( int id ) {
-            Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_InitiatingStoreScrapeForGame, id );
+            InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_InitiatingStoreScrapeForGame, id );
 
             string page = "";
 
@@ -107,29 +108,29 @@ namespace Depressurizer {
                 using( WebResponse resp = req.GetResponse() ) {
                     LastStoreScrape = Utility.GetCurrentUTime();
                     if( resp.ResponseUri.Segments.Length < 2 ) { // If we were redirected to the store front page
-                        Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingRedirectedToMainStorePage, id );
+                        InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingRedirectedToMainStorePage, id );
                         SetTypeFromStoreScrape( AppTypes.Unknown );
                         return AppTypes.Unknown;
 
                     } else if( resp.ResponseUri.Segments[1] == "agecheck/" ) { // If we encountered an age gate (cookies should bypass this, but sometimes they don't seem to)
                         if( resp.ResponseUri.Segments.Length >= 4 && resp.ResponseUri.Segments[3].TrimEnd( '/' ) != id.ToString() ) { // Age check + redirect
-                            Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingHitAgeCheck, id, resp.ResponseUri.Segments[3].TrimEnd( '/' ) );
+                            InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingHitAgeCheck, id, resp.ResponseUri.Segments[3].TrimEnd( '/' ) );
                             if( int.TryParse( resp.ResponseUri.Segments[3].TrimEnd( '/' ), out redirectTarget ) ) {
                             } else { // If we got an age check without numeric id (shouldn't happen)
                                 return AppTypes.Unknown;
                             }
                         } else { // If we got an age check with no redirect
-                            Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingAgeCheckNoRedirect, id );
+                            InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingAgeCheckNoRedirect, id );
                             return AppTypes.Unknown;
                         }
                     } else if( resp.ResponseUri.Segments[1] != "app/" ) { // Redirected outside of the app path
-                        Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingRedirectedToNonApp, id );
+                        InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingRedirectedToNonApp, id );
                         return AppTypes.Other;
                     } else if( resp.ResponseUri.Segments.Length < 3 ) { // The URI ends with "/app/" ?
-                        Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_Log_ScrapingNoAppId, id );
+                        InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_Log_ScrapingNoAppId, id );
                         return AppTypes.Unknown;
                     } else if( resp.ResponseUri.Segments[2].TrimEnd( '/' ) != id.ToString() ) { // Redirected to a different app id
-                        Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingRedirectedToOtherApp, id, resp.ResponseUri.Segments[2].TrimEnd( '/' ) );
+                        InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingRedirectedToOtherApp, id, resp.ResponseUri.Segments[2].TrimEnd( '/' ) );
                         if( !int.TryParse( resp.ResponseUri.Segments[2].TrimEnd( '/' ), out redirectTarget ) ) { // if new app id is an actual number
                             return AppTypes.Unknown;
                         }
@@ -137,11 +138,11 @@ namespace Depressurizer {
 
                     StreamReader sr = new StreamReader( resp.GetResponseStream() );
                     page = sr.ReadToEnd();
-                    Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingPageRead, id );
+                    InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingPageRead, id );
                 }
             } catch( Exception e ) {
                 // Something went wrong with the download.
-                Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingPageReadFailed, id, e.Message );
+                InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingPageReadFailed, id, e.Message );
                 LastStoreScrape = oldTime;
                 return AppTypes.Unknown;
             }
@@ -149,7 +150,7 @@ namespace Depressurizer {
             AppTypes result = AppTypes.Unknown;
 
             if( page.Contains( "<title>Site Error</title>" ) ) {
-                Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingReceivedSiteError, id );
+                InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingReceivedSiteError, id );
                 result = AppTypes.Unknown;
             } else if( regGamecheck.IsMatch( page ) ) { // Here we should have an app, but make sure.
 
@@ -157,14 +158,14 @@ namespace Depressurizer {
 
                 // Check whether it's DLC and return appropriately
                 if( Flags.Contains( "Downloadable Content" ) ) {
-                    Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingParsedDLC, id, string.Join( ",", Genres ) );
+                    InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingParsedDLC, id, string.Join( ",", Genres ) );
                     result = AppTypes.DLC;
                 } else {
-                    Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingParsed, id, string.Join( ",", Genres ) );
+                    InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingParsed, id, string.Join( ",", Genres ) );
                     result = AppTypes.Game;
                 }
             } else { // The URI is right, but it didn't pass the regex check
-                Program.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingCouldNotParse, id );
+                InstanceContainer.Logger.Write( LoggerLevel.Verbose, GlobalStrings.GameDB_ScrapingCouldNotParse, id );
                 result = AppTypes.Unknown;
             }
 
@@ -568,12 +569,12 @@ namespace Depressurizer {
 
         public static XmlDocument FetchAppListFromWeb() {
             XmlDocument doc = new XmlDocument();
-            Program.Logger.Write( Rallion.LoggerLevel.Info, GlobalStrings.GameDB_DownloadingSteamAppList );
+            InstanceContainer.Logger.Write( Rallion.LoggerLevel.Info, GlobalStrings.GameDB_DownloadingSteamAppList );
             WebRequest req = WebRequest.Create( @"http://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=xml" );
             using( WebResponse resp = req.GetResponse() ) {
                 doc.Load( resp.GetResponseStream() );
             }
-            Program.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_XMLAppListDownloaded );
+            InstanceContainer.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_XMLAppListDownloaded );
             return doc;
         }
 
@@ -598,7 +599,7 @@ namespace Depressurizer {
                     }
                 }
             }
-            Program.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_LoadedNewItemsFromAppList, added );
+            InstanceContainer.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_LoadedNewItemsFromAppList, added );
             return added;
         }
 
@@ -642,7 +643,7 @@ namespace Depressurizer {
         }
 
         public void Save( string path, bool compress ) {
-            Program.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_SavingGameDBTo, path );
+            InstanceContainer.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_SavingGameDBTo, path );
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.CloseOutput = true;
@@ -735,7 +736,7 @@ namespace Depressurizer {
                     stream.Close();
                 }
             }
-            Program.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_GameDBSaved );
+            InstanceContainer.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_GameDBSaved );
         }
 
         public void Load( string path ) {
@@ -743,7 +744,7 @@ namespace Depressurizer {
         }
 
         public void Load( string path, bool compress ) {
-            Program.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_LoadingGameDBFrom, path );
+            InstanceContainer.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_LoadingGameDBFrom, path );
             XmlDocument doc = new XmlDocument();
 
             Stream stream = null;
@@ -755,7 +756,7 @@ namespace Depressurizer {
 
                 doc.Load( stream );
 
-                Program.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_GameDBXMLParsed );
+                InstanceContainer.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_GameDBXMLParsed );
                 Games.Clear();
                 ClearAggregates();
 
@@ -848,7 +849,7 @@ namespace Depressurizer {
 
                     Games.Add( id, g );
                 }
-                Program.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_GameDBXMLProcessed );
+                InstanceContainer.Logger.Write( LoggerLevel.Info, GlobalStrings.GameDB_GameDBXMLProcessed );
             } catch( Exception e ) {
                 throw e;
             } finally {

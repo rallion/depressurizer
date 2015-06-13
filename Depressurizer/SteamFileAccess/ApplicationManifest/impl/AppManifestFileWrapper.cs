@@ -90,7 +90,7 @@ namespace Depressurizer.SteamFileAccess.ApplicationManifest
 
         public VdfFileNode ExportToNode()
         {
-            return GetGameData();
+            return fileData;
         }
 
         private void VerifyExists(string nodeName)

@@ -18,6 +18,7 @@ along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Xml;
 using Rallion;
+using Depressurizer.Service;
 
 namespace Depressurizer {
     class FetchPrcDlg : CancelableDlg {
@@ -40,7 +41,7 @@ namespace Depressurizer {
         protected override void Finish() {
             if( !this.Canceled && doc != null && Error == null ) {
                 SetText(GlobalStrings.CDlgFetch_FinishingDownload);
-                Added = Program.GameDB.IntegrateAppList( doc );
+                Added = InstanceContainer.GameDB.IntegrateAppList( doc );
                 OnJobCompletion();
             }
         }

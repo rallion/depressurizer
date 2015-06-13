@@ -1,0 +1,25 @@
+"AppState"
+{
+	"appid"		"212680"
+	"Universe"		"1"
+	"name"		"FTL: Faster Than Light"
+	"StateFlags"		"4"
+	"installdir"		"FTL Faster Than Light"
+	"LastUpdated"		"1432305183"
+	"UpdateResult"		"0"
+	"SizeOnDisk"		"208348540"
+	"buildid"		"398072"
+	"LastOwner"		"76561197963625792"
+	"BytesToDownload"		"192474576"
+	"BytesDownloaded"		"192474576"
+	"AutoUpdateBehavior"		"1"
+	"AllowOtherDownloadsWhileRunning"		"0"
+	"UserConfig"
+	{
+		"language"		"english"
+	}
+	"MountedDepots"
+	{
+		"212681"		"3032798599689269105"
+	}
+}

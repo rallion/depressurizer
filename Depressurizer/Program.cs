@@ -18,12 +18,11 @@ along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Windows.Forms;
 using Rallion;
+using Depressurizer.Service;
 
 namespace Depressurizer {
     static class Program {
 
-        public static AppLogger Logger;
-        public static GameDB GameDB;
 
         /// <summary>
         /// The main entry point for the application.
@@ -32,17 +31,11 @@ namespace Depressurizer {
         static void Main() {
             FatalError.InitializeHandler();
 
-            Logger = new AppLogger();
-            Logger.Level = LoggerLevel.None;
-            Logger.DateFormat = "HH:mm:ss'.'ffffff";
-
-            Logger.MaxFileSize = 2000000;
-            Logger.MaxBackup = 1;
-            Logger.FileNameTemplate = "Depressurizer.log";
+            SetupLogger();
 
             Settings.Instance.Load();
 
-            Logger.Write(LoggerLevel.Info, GlobalStrings.Program_ProgramInitialized, Logger.Level);
+            InstanceContainer.Logger.Write(LoggerLevel.Info, GlobalStrings.Program_ProgramInitialized, InstanceContainer.Logger.Level);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
@@ -50,8 +43,20 @@ namespace Depressurizer {
 
             Settings.Instance.Save();
 
-            Logger.Write(LoggerLevel.Info, GlobalStrings.Program_ProgramClosing);
-            Logger.EndSession();
+            InstanceContainer.Logger.Write(LoggerLevel.Info, GlobalStrings.Program_ProgramClosing);
+            InstanceContainer.Logger.EndSession();
+        }
+
+        private static void SetupLogger()
+        {
+            InstanceContainer.Logger = new AppLogger();
+
+            InstanceContainer.Logger.Level = LoggerLevel.None;
+            InstanceContainer.Logger.DateFormat = "HH:mm:ss'.'ffffff";
+
+            InstanceContainer.Logger.MaxFileSize = 2000000;
+            InstanceContainer.Logger.MaxBackup = 1;
+            InstanceContainer.Logger.FileNameTemplate = "Depressurizer.log";
         }
     }
 }

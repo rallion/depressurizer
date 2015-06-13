@@ -21,22 +21,23 @@ using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
 using Rallion;
+using Depressurizer.Service;
 
 namespace Depressurizer {
 
-    enum StartupAction {
+    public enum StartupAction {
         None,
         Load,
         Create
     }
 
-    enum GameListSource {
+    public enum GameListSource {
         XmlPreferred,
         XmlOnly,
         WebsiteOnly
     }
 
-    enum UserLanguage
+    public enum UserLanguage
     {
         windows,
         en,
@@ -51,7 +52,7 @@ namespace Depressurizer {
         FAV_PRIORITY
     }
 
-    class Settings : AppSettings {
+    public class Settings : AppSettings {
 
         private static Settings instance;
 
@@ -180,7 +181,7 @@ namespace Depressurizer {
                 return _logLevel;
             }
             set {
-                Program.Logger.Level = value;
+                InstanceContainer.Logger.Level = value;
                 if( _logLevel != value ) {
                     _logLevel = value;
                     outOfDate = true;
@@ -194,7 +195,7 @@ namespace Depressurizer {
                 return _logSize;
             }
             set {
-                Program.Logger.MaxFileSize = value;
+                InstanceContainer.Logger.MaxFileSize = value;
                 if( _logSize != value ) {
                     _logSize = value;
                     outOfDate = true;
@@ -208,7 +209,7 @@ namespace Depressurizer {
                 return _logBackups;
             }
             set {
-                Program.Logger.MaxBackup = value;
+                InstanceContainer.Logger.MaxBackup = value;
                 if( _logBackups != value ) {
                     _logBackups = value;
                     outOfDate = true;
@@ -308,7 +309,7 @@ namespace Depressurizer {
 
         public override void Load() {
             base.Load();
-         //   Program.Logger.Level = LogLevel;
+         //   InstanceContainer.Logger.Level = LogLevel;
         }
     }
 }

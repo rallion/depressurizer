@@ -1,4 +1,5 @@
-﻿/*
+﻿using Depressurizer.Service;
+/*
 This file is part of Depressurizer.
 Copyright 2011, 2012, 2013 Steve Labbe.
 
@@ -40,7 +41,7 @@ namespace Depressurizer {
 
         public void FillTagsList( ICollection<string> preChecked = null ) {
             IEnumerable<Tuple<string, float>> tagList =
-                Program.GameDB.CalculateSortedTagList(
+                InstanceContainer.GameDB.CalculateSortedTagList(
                     list_chkOwnedOnly.Checked ? ownedGames : null,
                     (float)list_numWeightFactor.Value,
                     (int)list_numMinScore.Value, (int)list_numTagsPerGame.Value, list_chkExcludeGenres.Checked, list_chkScoreSort.Checked );

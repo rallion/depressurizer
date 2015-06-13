@@ -18,6 +18,7 @@ along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 using Depressurizer.Games;
+using Rallion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +27,10 @@ using System.Threading.Tasks;
 
 namespace Depressurizer.Service
 {
-    public static class InstanceContainer
+    public static class InstanceContainer // TODO: would be nicer as dependency injection
     {
+        public static AppLogger Logger;
+        public static GameDB GameDB;
         public static InstalledGames InstalledGames { get; set; }
     }
 }

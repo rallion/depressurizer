@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Rallion;
+using Depressurizer.Service;
 
 namespace Depressurizer {
     class DbScrapeDlg : CancelableDlg {
@@ -93,10 +94,10 @@ namespace Depressurizer {
 
                 if( results != null ) {
                     foreach( GameDBEntry g in results ) {
-                        if( Program.GameDB.Contains( g.Id ) ) {
-                            Program.GameDB.Games[g.Id].MergeIn( g );
+                        if( InstanceContainer.GameDB.Contains( g.Id ) ) {
+                            InstanceContainer.GameDB.Games[g.Id].MergeIn( g );
                         } else {
-                            Program.GameDB.Games.Add( g.Id, g );
+                            InstanceContainer.GameDB.Games.Add( g.Id, g );
                         }
                     }
                 }

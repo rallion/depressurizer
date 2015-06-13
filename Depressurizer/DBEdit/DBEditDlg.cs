@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using Rallion;
+using Depressurizer.Service;
 
 namespace Depressurizer {
     public partial class DBEditDlg : Form {
@@ -99,7 +100,7 @@ namespace Depressurizer {
             Cursor c = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
             try {
-                Program.GameDB.Save( filename );
+                InstanceContainer.GameDB.Save( filename );
             } catch( Exception e ) {
                 MessageBox.Show( string.Format( GlobalStrings.DBEditDlg_ErrorSavingFile, e.Message ) );
                 this.Cursor = Cursors.Default;
@@ -122,7 +123,7 @@ namespace Depressurizer {
                 DialogResult res = dlg.ShowDialog();
                 if( res == System.Windows.Forms.DialogResult.OK ) {
                     this.Cursor = Cursors.WaitCursor;
-                    Program.GameDB.Load( dlg.FileName );
+                    InstanceContainer.GameDB.Load( dlg.FileName );
                     RebuildDisplayList();
                     AddStatusMsg( GlobalStrings.DBEditDlg_FileLoaded );
                     UnsavedChanges = true;
@@ -137,9 +138,9 @@ namespace Depressurizer {
         void ClearDB() {
             if( MessageBox.Show( GlobalStrings.DBEditDlg_AreYouSureToClear, GlobalStrings.DBEditDlg_Confirm, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1 )
                 == DialogResult.Yes ) {
-                if( Program.GameDB.Games.Count > 0 ) {
+                if( InstanceContainer.GameDB.Games.Count > 0 ) {
                     UnsavedChanges = true;
-                    Program.GameDB.Games.Clear();
+                    InstanceContainer.GameDB.Games.Clear();
                     AddStatusMsg( GlobalStrings.DBEditDlg_ClearedAllData );
                 }
                 RebuildDisplayList();
@@ -174,13 +175,13 @@ namespace Depressurizer {
         private void UpdateFromAppInfo() {
             try {
                 string path = string.Format( Properties.Resources.AppInfoPath, Settings.Instance.SteamPath );
-                int updated = Program.GameDB.UpdateFromAppInfo( path );
+                int updated = InstanceContainer.GameDB.UpdateFromAppInfo( path );
                 if( updated > 0 ) UnsavedChanges = true;
                 RebuildDisplayList();
                 AddStatusMsg( string.Format( GlobalStrings.DBEditDlg_Status_UpdatedAppInfo, updated ) );
             } catch( Exception e ) {
                 MessageBox.Show( string.Format( GlobalStrings.DBEditDlg_AppInfoUpdateFailed, e.Message ), GlobalStrings.DBEditDlg_Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
-                Program.Logger.Write( LoggerLevel.Error, GlobalStrings.DBEditDlg_Log_ExceptionAppInfo, e.ToString() );
+                InstanceContainer.Logger.Write( LoggerLevel.Error, GlobalStrings.DBEditDlg_Log_ExceptionAppInfo, e.ToString() );
             }
         }
 
@@ -190,11 +191,11 @@ namespace Depressurizer {
         void AddNewGame() {
             GameDBEntryDialog dlg = new GameDBEntryDialog();
             if( dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK && dlg.Game != null ) {
-                if( Program.GameDB.Games.ContainsKey( dlg.Game.Id ) ) {
+                if( InstanceContainer.GameDB.Games.ContainsKey( dlg.Game.Id ) ) {
                     MessageBox.Show( GlobalStrings.DBEditDlg_GameIdAlreadyExists, GlobalStrings.Gen_Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning );
                     AddStatusMsg( string.Format( GlobalStrings.DBEditDlg_FailedToAddGame, dlg.Game.Id ) );
                 } else {
-                    Program.GameDB.Games.Add( dlg.Game.Id, dlg.Game );
+                    InstanceContainer.GameDB.Games.Add( dlg.Game.Id, dlg.Game );
 
                     if( ShouldDisplayGame( dlg.Game ) ) {
                         displayedGames.Add( dlg.Game );
@@ -240,7 +241,7 @@ namespace Depressurizer {
                     foreach( int index in lstGames.SelectedIndices ) {
                         GameDBEntry game = displayedGames[index];
                         if( game != null ) {
-                            Program.GameDB.Games.Remove( game.Id );
+                            InstanceContainer.GameDB.Games.Remove( game.Id );
                             deleted++;
                         }
                     }
@@ -262,7 +263,7 @@ namespace Depressurizer {
 
             Queue<int> gamesToScrape = new Queue<int>();
 
-            foreach( GameDBEntry g in Program.GameDB.Games.Values ) {
+            foreach( GameDBEntry g in InstanceContainer.GameDB.Games.Values ) {
                 if( g.LastStoreScrape == 0 ) {
                     gamesToScrape.Enqueue( g.Id );
                 }
@@ -338,7 +339,7 @@ namespace Depressurizer {
         void RebuildDisplayList() {
             lstGames.SelectedIndices.Clear();
             displayedGames.Clear();
-            foreach( GameDBEntry g in Program.GameDB.Games.Values ) {
+            foreach( GameDBEntry g in InstanceContainer.GameDB.Games.Values ) {
                 if( ShouldDisplayGame( g ) ) displayedGames.Add( g );
             }
             displayedGames.Sort( dbEntrySorter );
@@ -369,7 +370,7 @@ namespace Depressurizer {
         bool ShouldDisplayGame( GameDBEntry g ) {
             if( g == null ) return false;
 
-            if( !Program.GameDB.Contains( g.Id ) ) return false;
+            if( !InstanceContainer.GameDB.Contains( g.Id ) ) return false;
             if( chkIdRange.Checked && ( g.Id < currentMinId || g.Id > currentMaxId ) ) return false;
 
             if( ownedList != null && chkOwned.Checked == true && !ownedList.Games.ContainsKey( g.Id ) ) return false;
@@ -463,7 +464,7 @@ namespace Depressurizer {
         /// Update form elements after the selection status in the game list is modified.
         /// </summary>
         void UpdateStatusCount() {
-            statSelected.Text = string.Format( GlobalStrings.DBEditDlg_SelectedDisplayedTotal, lstGames.SelectedIndices.Count, lstGames.VirtualListSize, Program.GameDB.Games.Count );
+            statSelected.Text = string.Format( GlobalStrings.DBEditDlg_SelectedDisplayedTotal, lstGames.SelectedIndices.Count, lstGames.VirtualListSize, InstanceContainer.GameDB.Games.Count );
             cmdDeleteGame.Enabled = cmdEditGame.Enabled = cmdStore.Enabled = cmdUpdateSelected.Enabled = ( lstGames.SelectedIndices.Count >= 1 );
         }
 

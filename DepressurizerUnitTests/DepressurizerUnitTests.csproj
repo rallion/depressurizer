@@ -55,14 +55,57 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Games\InstalledGamesTest.cs" />
     <Compile Include="SteamFileAccess\EnumTest.cs" />
+    <Compile Include="Util\InstalledGamesLoaderIntegrationTest.cs" />
     <Compile Include="Util\EnumUtilsTest.cs" />
     <Compile Include="VdfFile\VdfFileNodeTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\appmanifest_212680.acf">
+    <None Include="Data\TestForInvalidManifest_Blank\steamapps\appmanifest_12345.acf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\appmanifest_244850.acf">
+    <None Include="Data\TestForInvalidManifest_MixedError\steamapps\appmanifest_1234.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForInvalidManifest_MixedError\steamapps\appmanifest_123456.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForInvalidManifest_MixedError\steamapps\appmanifest_212680.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForInvalidManifest_MixedError\steamapps\appmanifest_244850.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForInvalidManifest_Shell\steamapps\appmanifest_12345.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForInvalidManifest_NotMatching\steamapps\appmanifest_12345.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForBlankManifest\steamapps\appmanifest_12345.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Data\TestForInvalidManifest_MixedError\steamapps\appmanifest_212680.acf.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\TestForInvalidManifest_WrongName\steamapps\appmanifest_212680.acf.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Data\TestForInvalidManifest_MixedError\steamapps\appmanifest_212680 - Copy.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForInvalidManifest_MixedError\steamapps\appmanifest_212b680.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForInvalidManifest_WrongName\steamapps\appmanifest_212b680.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\TestForInvalidManifest_WrongName\steamapps\appmanifest_212680 - Copy.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\steamapps\appmanifest_212680.acf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\steamapps\appmanifest_244850.acf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\complexed_localconfig.vdf">

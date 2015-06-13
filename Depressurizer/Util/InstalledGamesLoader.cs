@@ -18,6 +18,7 @@ along with Depressurizer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 using Depressurizer.Games;
+using Depressurizer.Service;
 using Depressurizer.SteamFileAccess.ApplicationManifest;
 using System;
 using System.Collections.Generic;
@@ -33,22 +34,32 @@ namespace Depressurizer.Util
     public static class InstalledGamesLoader
     {
 
-        private const string InstalledAppsSubPath = "\\steamapps\\";
+        public const string InstalledAppsSubPath = "/steamapps/";
         private const string AppManifestFileExt = ".acf";
-        private const string RegexString = "^c:\\\\program files \\(x86\\)\\\\steam\\\\steamapps\\\\appmanifest_(\\d+)\\.acf$";
+        private const string RegexString = ".*appmanifest_(\\d+)\\" + AppManifestFileExt +"$";
 
-        public static InstalledGames GetGames()
+        public static InstalledGames Import()
         {
             string installedAppsPath = Settings.Instance.SteamPath + InstalledAppsSubPath;
 
-            IEnumerable<string> files = GetAppManifestFilesInLocation(installedAppsPath);
+            Dictionary<int, string> files = GetAppManifestFilesInLocation(installedAppsPath);
 
             Dictionary<int, AppManifest> games = new Dictionary<int, AppManifest>();
 
-            foreach (string filePath in files)
+            foreach (KeyValuePair<int, string> installedGameIdAndLoc in files)
             {
-                AppManifestFileWrapper wrapper = GetAppManifestFromFile(filePath);
-                games.Add(wrapper.AppId, wrapper);
+                try
+                {
+                    AppManifestFileWrapper wrapper = GetAppManifestFromFile(installedGameIdAndLoc);
+                    games.Add(wrapper.AppId, wrapper);
+                }
+                catch (Exception e)
+                {
+                    InstanceContainer.Logger.Write(
+                        Rallion.LoggerLevel.Warning, 
+                        "Error loading file: %s. Exception: %s.", 
+                        new Object[] { installedGameIdAndLoc, e });
+                }
             }
 
             IReadOnlyDictionary<int, AppManifest> unmodifiableGamesList = games;
@@ -58,18 +69,51 @@ namespace Depressurizer.Util
 
         public static void Export(Dictionary<int, AppManifest> gamesManifestsToExport)
         {
-            foreach(AppManifest manifest in gamesManifestsToExport.Values)
+            foreach (AppManifest manifest in gamesManifestsToExport.Values)
             {
                 SaveAppManifestToFile(manifest);
             }
-            
+
 
         }
 
-        private static AppManifestFileWrapper GetAppManifestFromFile(string filePath)
+        private static Dictionary<int, string> GetAppManifestFilesInLocation(string installedAppsPath)
         {
-            VdfFileNode fileData = GetSteamFileNodeFromFile(filePath);
+            Regex appManifestRegex = new Regex(@RegexString);
+
+            Dictionary<int, string> gameFiles = new Dictionary<int, string>();
+
+            string[] filesInDir = Directory
+                .GetFiles(installedAppsPath, "*" + AppManifestFileExt);
+
+            foreach (string filePath in filesInDir)
+            {
+                if (appManifestRegex.IsMatch(filePath))
+                {
+                    MatchCollection mc = appManifestRegex.Matches(filePath);
+
+                    Match match = mc[0];
+
+                    string filename = match.Groups[0].Value;
+                    int appId = Convert.ToInt32(match.Groups[1].Value);
+
+                    gameFiles.Add(appId, filename);
+                }
+            }
+
+            return gameFiles;
+        }
+
+        private static AppManifestFileWrapper GetAppManifestFromFile(KeyValuePair<int, string> installedGameIdAndLoc)
+        {
+            VdfFileNode fileData = GetSteamFileNodeFromFile(installedGameIdAndLoc.Value);
             AppManifestFileWrapper wrapper = new AppManifestFileWrapper(fileData);
+
+            if (installedGameIdAndLoc.Key != wrapper.AppId)
+            {
+                throw new FileLoadException("Invalid app manifest file. File name doesn't match contained appId");
+            }
+
             return wrapper;
         }
 
@@ -82,18 +126,6 @@ namespace Depressurizer.Util
                 fileData = VdfFileNode.LoadFromText(reader, false);
             }
             return fileData;
-        }
-
-        private static IEnumerable<string> GetAppManifestFilesInLocation(string installedAppsPath)
-        {
-            Regex appManifestRegex = new Regex(@RegexString);
-
-            string[] filesInDir = Directory
-                .GetFiles(installedAppsPath, "*" + AppManifestFileExt);
-
-            IEnumerable<string> files = filesInDir
-                .Where(path => appManifestRegex.IsMatch(path));
-            return files;
         }
 
         private static void SaveAppManifestToFile(AppManifest manifest)

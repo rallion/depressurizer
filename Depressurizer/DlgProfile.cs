@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Net;
 using System.Xml;
+using Depressurizer.Service;
 
 namespace Depressurizer {
 
@@ -396,8 +397,8 @@ namespace Depressurizer {
                     return nameNode.InnerText;
                 }
             } catch( Exception e ) {
-                Program.Logger.Write( Rallion.LoggerLevel.Warning, GlobalStrings.DlgProfile_ExceptionRaisedWhenTryingScrapeProfileName, accountId );
-                Program.Logger.Write( Rallion.LoggerLevel.Warning, e.Message );
+                InstanceContainer.Logger.Write( Rallion.LoggerLevel.Warning, GlobalStrings.DlgProfile_ExceptionRaisedWhenTryingScrapeProfileName, accountId );
+                InstanceContainer.Logger.Write( Rallion.LoggerLevel.Warning, e.Message );
             }
             return null;
         }

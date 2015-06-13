@@ -1,4 +1,5 @@
-﻿/*
+﻿using Depressurizer.Service;
+/*
 This file is part of Depressurizer.
 Copyright 2011, 2012, 2013 Steve Labbe.
 
@@ -35,8 +36,8 @@ namespace Depressurizer {
         public void FillGenreList() {
             lstIgnore.Items.Clear();
 
-            if( Program.GameDB != null ) {
-                SortedSet<string> genreList = Program.GameDB.GetAllGenres();
+            if( InstanceContainer.GameDB != null ) {
+                SortedSet<string> genreList = InstanceContainer.GameDB.GetAllGenres();
             
                 foreach( string s in genreList ) {
                     lstIgnore.Items.Add( s );

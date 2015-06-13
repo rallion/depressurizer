@@ -160,19 +160,19 @@ namespace Depressurizer {
         /// </summary>
         private void LoadGameDB() {
             try {
-                Program.GameDB = new GameDB();
+                InstanceContainer.GameDB = new GameDB();
                 if( File.Exists( "GameDB.xml.gz" ) ) {
-                    Program.GameDB.Load( "GameDB.xml.gz" );
+                    InstanceContainer.GameDB.Load( "GameDB.xml.gz" );
                 } else if( File.Exists( "GameDB.xml" ) ) {
-                    Program.GameDB.Load( "GameDB.xml" );
+                    InstanceContainer.GameDB.Load( "GameDB.xml" );
                 } else {
                     MessageBox.Show( GlobalStrings.MainForm_ErrorLoadingGameDB + GlobalStrings.MainForm_GameDBFileNotExist );
-                    Program.Logger.Write( LoggerLevel.Warning, GlobalStrings.MainForm_GameDBFileNotExist );
+                    InstanceContainer.Logger.Write( LoggerLevel.Warning, GlobalStrings.MainForm_GameDBFileNotExist );
                 }
             } catch( Exception ex ) {
                 MessageBox.Show( GlobalStrings.MainForm_ErrorLoadingGameDB + ex.Message );
-                Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionOnDBLoad, ex );
-                Program.GameDB = new GameDB();
+                InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionOnDBLoad, ex );
+                InstanceContainer.GameDB = new GameDB();
             }
         }
 
@@ -181,10 +181,10 @@ namespace Depressurizer {
         /// </summary>
         private void SaveGameDB() {
             try {
-                Program.GameDB.Save( "GameDB.xml.gz" );
+                InstanceContainer.GameDB.Save( "GameDB.xml.gz" );
                 AddStatus( GlobalStrings.MainForm_Status_SavedDB );
             } catch( Exception e ) {
-                Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionAutosavingDB, e );
+                InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionAutosavingDB, e );
                 MessageBox.Show( string.Format( GlobalStrings.MainForm_Msg_ErrorAutosavingDB, e.Message ), GlobalStrings.Gen_Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
             }
         }
@@ -194,13 +194,13 @@ namespace Depressurizer {
         /// </summary>
         private void UpdateGameDBFromAppInfo() {
             try {
-                int num = Program.GameDB.UpdateFromAppInfo( string.Format( Properties.Resources.AppInfoPath, Settings.Instance.SteamPath ) );
+                int num = InstanceContainer.GameDB.UpdateFromAppInfo( string.Format( Properties.Resources.AppInfoPath, Settings.Instance.SteamPath ) );
                 AddStatus( string.Format( GlobalStrings.MainForm_Status_AppInfoAutoupdate, num ) );
                 if( num > 0 && Settings.Instance.AutosaveDB ) {
                     SaveGameDB();
                 }
             } catch( Exception e ) {
-                Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionAppInfo, e );
+                InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionAppInfo, e );
                 MessageBox.Show( GlobalStrings.MainForm_Msg_ErrorAppInfo, e.Message );
             }
         }
@@ -305,7 +305,7 @@ namespace Depressurizer {
                 AddStatus( GlobalStrings.MainForm_ProfileLoaded );
             } catch( ApplicationException e ) {
                 MessageBox.Show( string.Format( GlobalStrings.MainForm_Msg_ErrorLoadingProfile, e.Message ), GlobalStrings.Gen_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning );
-                Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionLoadingProfile, e );
+                InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionLoadingProfile, e );
                 OnProfileChange();
                 AddStatus( GlobalStrings.MainForm_FailedLoadProfile );
                 return;
@@ -361,7 +361,7 @@ namespace Depressurizer {
                 return true;
             } catch( ApplicationException e ) {
                 MessageBox.Show( string.Format( GlobalStrings.MainForm_Msg_ErrorSavingProfile, e.Message ), GlobalStrings.Gen_Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
-                Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionSavingProfile, e );
+                InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionSavingProfile, e );
                 AddStatus( GlobalStrings.MainForm_FailedSaveProfile );
                 return false;
             }
@@ -389,7 +389,7 @@ namespace Depressurizer {
                     success = true;
                 } catch( Exception e ) {
                     MessageBox.Show( string.Format( GlobalStrings.MainForm_Msg_LocalUpdateError, e.Message ), GlobalStrings.Gen_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning );
-                    Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionLocalUpdate, e );
+                    InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionLocalUpdate, e );
                     AddStatus( GlobalStrings.MainForm_Status_LocalUpdateFailed );
                     success = false;
                 }
@@ -403,7 +403,7 @@ namespace Depressurizer {
                     DialogResult res = updateDlg.ShowDialog();
 
                     if( updateDlg.Error != null ) {
-                        Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionWebUpdateDialog, updateDlg.Error );
+                        InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionWebUpdateDialog, updateDlg.Error );
                         AddStatus( string.Format( GlobalStrings.MainForm_ErrorDownloadingProfileData, updateDlg.UseHtml ? "HTML" : "XML" ) );
                         MessageBox.Show( string.Format( GlobalStrings.MainForm_ErrorDowloadingProfile, updateDlg.Error.Message ), GlobalStrings.DBEditDlg_Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
                     } else {
@@ -424,7 +424,7 @@ namespace Depressurizer {
                         }
                     }
                 } catch( Exception e ) {
-                    Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionWebUpdate, e );
+                    InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionWebUpdate, e );
                     MessageBox.Show( string.Format( GlobalStrings.MainForm_ErrorDowloadingProfile, e.Message ), GlobalStrings.DBEditDlg_Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
                     AddStatus( GlobalStrings.MainForm_DownloadFailed );
                 }
@@ -449,7 +449,7 @@ namespace Depressurizer {
                 }
             } catch( Exception e ) {
                 MessageBox.Show( string.Format( GlobalStrings.MainForm_ErrorImportingSteamDataList, e.Message ), GlobalStrings.Gen_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning );
-                Program.Logger.WriteException( "Exception encountered while importing the remoteconfig file.", e );
+                InstanceContainer.Logger.WriteException( "Exception encountered while importing the remoteconfig file.", e );
                 AddStatus( GlobalStrings.MainForm_ImportFailed );
 
             }
@@ -466,7 +466,7 @@ namespace Depressurizer {
                     AddStatus( GlobalStrings.MainForm_ExportedCategories );
                 } catch( Exception e ) {
                     MessageBox.Show( string.Format( GlobalStrings.MainForm_Msg_ErrorExportingToSteam, e.Message ), GlobalStrings.Gen_Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
-                    Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionExport, e );
+                    InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionExport, e );
                     AddStatus( GlobalStrings.MainForm_ExportFailed );
                 }
             }
@@ -488,7 +488,7 @@ namespace Depressurizer {
                     AddStatus( GlobalStrings.MainForm_DataExported );
                 } catch( Exception e ) {
                     MessageBox.Show( string.Format( GlobalStrings.MainForm_Msg_ErrorManualExport, e.Message ), GlobalStrings.Gen_Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
-                    Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionExport, e );
+                    InstanceContainer.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionExport, e );
                     AddStatus( GlobalStrings.MainForm_ExportFailed );
                 }
                 Cursor = Cursors.Default;
@@ -790,7 +790,7 @@ namespace Depressurizer {
             // List of games not found in database, so we can try to scrape data for them
             List<GameInfo> notFound = new List<GameInfo>();
 
-            autoCat.PreProcess( currentProfile.GameData, Program.GameDB );
+            autoCat.PreProcess( currentProfile.GameData, InstanceContainer.GameDB );
 
             foreach( GameInfo g in gamesToUpdate ) {
                 AutoCatResult res = autoCat.CategorizeGame( g );
@@ -851,7 +851,7 @@ namespace Depressurizer {
             int named = 0;
             foreach( GameInfo g in currentProfile.GameData.Games.Values ) {
                 if( overwrite || string.IsNullOrEmpty( g.Name ) ) {
-                    g.Name = Program.GameDB.GetName( g.Id );
+                    g.Name = InstanceContainer.GameDB.GetName( g.Id );
                     named++;
                 }
             }
@@ -2120,7 +2120,7 @@ namespace Depressurizer {
 
         private void ImportGameUpdateSettings()
         {
-            InstanceContainer.InstalledGames = InstalledGamesLoader.GetGames();
+            InstanceContainer.InstalledGames = InstalledGamesLoader.Import();
         }
 
         private void ExportGameUpdateSettings()

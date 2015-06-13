@@ -31,8 +31,8 @@ namespace DepressurizerUnitTests
         private const string SimpleLocalConfig = "Data/simple_localconfig.vdf";
         private const string ComplexedConfig = "Data/complexed_sharedconfig.vdf";
         private const string ComplexedLocalConfig = "Data/complexed_localconfig.vdf";
-        private const string AppOneConfig = "Data/appmanifest_212680.acf";
-        private const string AppTwoConfig = "Data/appmanifest_244850.acf";
+        private const string AppOneConfig = "Data/steamapps/appmanifest_212680.acf";
+        private const string AppTwoConfig = "Data/steamapps/appmanifest_244850.acf";
 
         [TestClass]
         public class VdfFileNodeTest

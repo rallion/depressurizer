@@ -25,7 +25,7 @@ namespace Rallion {
     /// <summary>
     /// Base class for a settings object. Capable of loading and saving values of all public properties.
     /// </summary>
-    abstract class AppSettings {
+    public abstract class AppSettings {
 
         protected readonly object threadLock = new object();
 
