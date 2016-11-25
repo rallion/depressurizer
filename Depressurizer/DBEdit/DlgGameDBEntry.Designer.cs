@@ -79,9 +79,23 @@ namespace Depressurizer {
             this.numReviewScore = new System.Windows.Forms.NumericUpDown();
             this.numReviewCount = new System.Windows.Forms.NumericUpDown();
             this.lblReviewScorePct = new System.Windows.Forms.Label();
+            this.lblAchievements = new System.Windows.Forms.Label();
+            this.numAchievements = new System.Windows.Forms.NumericUpDown();
+            this.grpHltb = new System.Windows.Forms.GroupBox();
+            this.numHltbCompletionist = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.numHltbExtras = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.numHltbMain = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this.grpPlat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numReviewScore)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReviewCount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAchievements)).BeginInit();
+            this.grpHltb.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numHltbCompletionist)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHltbExtras)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHltbMain)).BeginInit();
             this.SuspendLayout();
             // 
             // lblId
@@ -294,6 +308,79 @@ namespace Depressurizer {
             resources.ApplyResources(this.lblReviewScorePct, "lblReviewScorePct");
             this.lblReviewScorePct.Name = "lblReviewScorePct";
             // 
+            // lblAchievements
+            // 
+            resources.ApplyResources(this.lblAchievements, "lblAchievements");
+            this.lblAchievements.Name = "lblAchievements";
+            // 
+            // numAchievements
+            // 
+            resources.ApplyResources(this.numAchievements, "numAchievements");
+            this.numAchievements.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.numAchievements.Name = "numAchievements";
+            // 
+            // grpHltb
+            // 
+            resources.ApplyResources(this.grpHltb, "grpHltb");
+            this.grpHltb.Controls.Add(this.numHltbCompletionist);
+            this.grpHltb.Controls.Add(this.label3);
+            this.grpHltb.Controls.Add(this.numHltbExtras);
+            this.grpHltb.Controls.Add(this.label2);
+            this.grpHltb.Controls.Add(this.numHltbMain);
+            this.grpHltb.Controls.Add(this.label1);
+            this.grpHltb.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.grpHltb.Name = "grpHltb";
+            this.grpHltb.TabStop = false;
+            // 
+            // numHltbCompletionist
+            // 
+            resources.ApplyResources(this.numHltbCompletionist, "numHltbCompletionist");
+            this.numHltbCompletionist.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.numHltbCompletionist.Name = "numHltbCompletionist";
+            // 
+            // label3
+            // 
+            resources.ApplyResources(this.label3, "label3");
+            this.label3.Name = "label3";
+            // 
+            // numHltbExtras
+            // 
+            resources.ApplyResources(this.numHltbExtras, "numHltbExtras");
+            this.numHltbExtras.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.numHltbExtras.Name = "numHltbExtras";
+            // 
+            // label2
+            // 
+            resources.ApplyResources(this.label2, "label2");
+            this.label2.Name = "label2";
+            // 
+            // numHltbMain
+            // 
+            resources.ApplyResources(this.numHltbMain, "numHltbMain");
+            this.numHltbMain.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.numHltbMain.Name = "numHltbMain";
+            // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
+            // 
             // GameDBEntryDialog
             // 
             this.AcceptButton = this.cmdSave;
@@ -301,6 +388,9 @@ namespace Depressurizer {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ControlBox = false;
+            this.Controls.Add(this.grpHltb);
+            this.Controls.Add(this.numAchievements);
+            this.Controls.Add(this.lblAchievements);
             this.Controls.Add(this.lblReviewScorePct);
             this.Controls.Add(this.numReviewCount);
             this.Controls.Add(this.numReviewScore);
@@ -343,6 +433,12 @@ namespace Depressurizer {
             this.grpPlat.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numReviewScore)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReviewCount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAchievements)).EndInit();
+            this.grpHltb.ResumeLayout(false);
+            this.grpHltb.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numHltbCompletionist)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHltbExtras)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHltbMain)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -387,5 +483,14 @@ namespace Depressurizer {
         private System.Windows.Forms.NumericUpDown numReviewScore;
         private System.Windows.Forms.NumericUpDown numReviewCount;
         private System.Windows.Forms.Label lblReviewScorePct;
+        private System.Windows.Forms.Label lblAchievements;
+        private System.Windows.Forms.NumericUpDown numAchievements;
+        private System.Windows.Forms.GroupBox grpHltb;
+        private System.Windows.Forms.NumericUpDown numHltbCompletionist;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown numHltbExtras;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown numHltbMain;
+        private System.Windows.Forms.Label label1;
     }
 }

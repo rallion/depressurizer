@@ -1064,4 +1064,139 @@ If a game does not match any rules, no category will be assigned.</value>
   <data name="AutoCatUserScore_Preset_Steam_Positive4" xml:space="preserve">
     <value>Overwhelmingly Positive</value>
   </data>
+  <data name="AutoMode_Help_Export" xml:space="preserve">
+    <value>Export your categories to Steam after running autocats.
+If this is disabled, changes will not show up in the Steam client.
+Recommended: Enabled</value>
+  </data>
+  <data name="AutoMode_Help_ImportCats" xml:space="preserve">
+    <value>Import existing categories from Steam before running autocat operations.
+If this is disabled, manual categorizations done through the client may be lost.</value>
+  </data>
+  <data name="AutoMode_Help_Launch" xml:space="preserve">
+    <value>Will launch Steam after completing autocats.</value>
+  </data>
+  <data name="AutoMode_Help_Output" xml:space="preserve">
+    <value>If set to Normal, the output window will remain open until you close it.
+If set to Quiet, the output window will automatically close unless errors are encountered.
+If set to Silent, the output window will always automatically close.</value>
+  </data>
+  <data name="AutoMode_Help_SaveDB" xml:space="preserve">
+    <value>Save the database if any changes are made to it.
+Recommended: Enabled</value>
+  </data>
+  <data name="AutoMode_Help_SaveProfile" xml:space="preserve">
+    <value>Save the profile after running autocats.
+Recommended: Enabled</value>
+  </data>
+  <data name="AutoMode_Help_SteamCheck" xml:space="preserve">
+    <value>If set to Check and Close, attempt to close Steam if it is running. (Recommended.)
+If set to Check and Abort, stop AutoCat operation if Steam is running.
+If set to Skip, don't check whether Steam is running.</value>
+  </data>
+  <data name="AutoMode_Help_Tolerant" xml:space="preserve">
+    <value>If disabled, will terminate after any error.
+If enabled, will continue if non-fatal errors are encountered.
+Recommended: Enabled</value>
+  </data>
+  <data name="AutoMode_Help_UpdateAppInfo" xml:space="preserve">
+    <value>Update the database with information from the local database before running autocat operations.
+Note that this data is not currently used for autocategorization, so it is unimportant.</value>
+  </data>
+  <data name="AutoMode_Help_UpdateLib" xml:space="preserve">
+    <value>Update your library with new games before running autocat operations.
+Will obey profile settings for update data source.
+Recommended: Enabled</value>
+  </data>
+  <data name="AutoMode_Help_UpdateWeb" xml:space="preserve">
+    <value>Attempt to download information for any games not found in the database.
+Can be slow, but will only download information for games that need it.
+If this is unchecked, newer games may not be categorized.
+Recommended: Enabled</value>
+  </data>
+  <data name="MainForm_NoFlags" xml:space="preserve">
+    <value>&lt;No Flags&gt;</value>
+  </data>
+  <data name="MainForm_NoGenres" xml:space="preserve">
+    <value>&lt;No Genres&gt;</value>
+  </data>
+  <data name="MainForm_NoTags" xml:space="preserve">
+    <value>&lt;No Tags&gt;</value>
+  </data>
+  <data name="MainForm_Unknown" xml:space="preserve">
+    <value>&lt;Unknown&gt;</value>
+  </data>
+  <data name="GameDB_RedirectsToItself" xml:space="preserve">
+    <value>Scraping {0}: Redirects to itself</value>
+  </data>
+  <data name="GameDB_TooManyRedirects" xml:space="preserve">
+    <value>Scraping {0}: Too Many Redirects</value>
+  </data>
+  <data name="MainForm_Hidden" xml:space="preserve">
+    <value>&lt;Hidden&gt;</value>
+  </data>
+  <data name="MainForm_Log_ExceptionHltb" xml:space="preserve">
+    <value>Exception when auto-updating DB from HLTB.</value>
+  </data>
+  <data name="MainForm_Msg_ErrorHltb" xml:space="preserve">
+    <value>Error encountered when updating database from HLTB: {0}</value>
+  </data>
+  <data name="MainForm_Status_HltbAutoupdate" xml:space="preserve">
+    <value>Updated {0} DB entries from HLTB.</value>
+  </data>
+  <data name="AutoMode_Help_UpdateHltb" xml:space="preserve">
+    <value>Update the database with information from HLTB before running any autocat operations.
+Only updates if an update didn't occur for more than half a week.
+Slows operation by about 15-20 secs if an update occurs.
+Recommended: Enabled.</value>
+  </data>
+  <data name="CDlgHltb_Title" xml:space="preserve">
+    <value>Updating HLTB times</value>
+  </data>
+  <data name="CDlgHltb_UpdateHltb" xml:space="preserve">
+    <value>Updating HowLongToBeat.com times...</value>
+  </data>
+  <data name="DBEditDlg_CanceledHltbUpdate" xml:space="preserve">
+    <value>Canceled HLTB update.</value>
+  </data>
+  <data name="DBEditDlg_ErrorUpdatingHltb" xml:space="preserve">
+    <value>Error updating from HLTB.</value>
+  </data>
+  <data name="DBEditDlg_ErrorWhileUpdatingHltb" xml:space="preserve">
+    <value>An error occured while updating from howlongtobeatsteam.com: {0}</value>
+  </data>
+  <data name="DBEditDlg_HltbUpdateFailed" xml:space="preserve">
+    <value>Failed to update from HLTB: {0}</value>
+  </data>
+  <data name="DBEditDlg_Log_ExceptionHltb" xml:space="preserve">
+    <value>Exception when updating from HLTB: {0}</value>
+  </data>
+  <data name="DBEditDlg_Status_UpdatedHltb" xml:space="preserve">
+    <value>Updated {0} entries from HLTB.</value>
+  </data>
+  <data name="DlgOptions_Help_IncludeImputedTimes" xml:space="preserve">
+    <value>Whether to use imputed (statistically probable) times from howlongtobeatsteam.com for missing times. </value>
+  </data>
+  <data name="MainForm_NoHltbTime" xml:space="preserve">
+    <value>--</value>
+  </data>
+  <data name="AutoCat_Name_Hltb" xml:space="preserve">
+    <value>HLTB time</value>
+  </data>
+  <data name="AutocatHltb_Help_Unknown" xml:space="preserve">
+    <value>If checked, games with no times in all 3 types will be autocategorized with the name below.
+If unchecked, games with no times will be skipped.</value>
+  </data>
+  <data name="MainForm_Msg_UpdateFound" xml:space="preserve">
+    <value>There is a new update to depressurizer. Do you want to visit the download page?</value>
+  </data>
+  <data name="MainForm_Log_ExceptionDepressurizerUpdate" xml:space="preserve">
+    <value>Exception while checking for new updates to depressurizer.</value>
+  </data>
+  <data name="MainForm_Msg_ErrorDepressurizerUpdate" xml:space="preserve">
+    <value>Error encountered while checking for new updates to depressurizer: {0}</value>
+  </data>
+  <data name="MainForm_Msg_UpdateFoundTitle" xml:space="preserve">
+    <value>Update Found</value>
+  </data>
 </root>

@@ -80,6 +80,14 @@
     <StartupObject>Depressurizer.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ObjectListView, Version=2.8.1.33936, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectListView.Official.2.8.1\lib\net20\ObjectListView.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -115,6 +123,12 @@
     <Compile Include="AutoCat\AutoCatConfigPanel_Tags.Designer.cs">
       <DependentUpon>AutoCatConfigPanel_Tags.cs</DependentUpon>
     </Compile>
+    <Compile Include="AutoCat\AutoCatConfigPanel_Hltb.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AutoCat\AutoCatConfigPanel_Hltb.Designer.cs">
+      <DependentUpon>AutoCatConfigPanel_Hltb.cs</DependentUpon>
+    </Compile>
     <Compile Include="AutoCat\AutoCatConfigPanel_UserScore.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -130,6 +144,7 @@
     <Compile Include="AutoCat\AutoCatFlags.cs" />
     <Compile Include="AutoCat\AutoCatGenre.cs" />
     <Compile Include="AutoCat\AutoCatTags.cs" />
+    <Compile Include="AutoCat\AutoCatHltb.cs" />
     <Compile Include="AutoCat\AutoCatUserScore.cs" />
     <Compile Include="AutoCat\AutoCatYear.cs" />
     <Compile Include="AutomaticModeForm.cs">
@@ -137,6 +152,9 @@
     </Compile>
     <Compile Include="AutomaticModeForm.Designer.cs">
       <DependentUpon>AutomaticModeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DBEdit\CDlgHltb.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="DlgAbout.cs">
       <SubType>Form</SubType>
@@ -155,6 +173,12 @@
     </Compile>
     <Compile Include="DlgAutoCatCreate.Designer.cs">
       <DependentUpon>DlgAutoCatCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DlgAutomaticModeHelper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgAutomaticModeHelper.Designer.cs">
+      <DependentUpon>DlgAutomaticModeHelper.cs</DependentUpon>
     </Compile>
     <Compile Include="Lib\ExtListView.cs">
       <SubType>Component</SubType>
@@ -278,6 +302,9 @@
     <EmbeddedResource Include="AutoCat\AutoCatConfigPanel_Tags.resx">
       <DependentUpon>AutoCatConfigPanel_Tags.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AutoCat\AutoCatConfigPanel_Hltb.resx">
+      <DependentUpon>AutoCatConfigPanel_Hltb.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AutoCat\AutoCatConfigPanel_UserScore.resx">
       <DependentUpon>AutoCatConfigPanel_UserScore.cs</DependentUpon>
     </EmbeddedResource>
@@ -295,6 +322,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DlgAutoCatCreate.resx">
       <DependentUpon>DlgAutoCatCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DlgAutomaticModeHelper.resx">
+      <DependentUpon>DlgAutomaticModeHelper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GlobalStrings.es.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -428,7 +458,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

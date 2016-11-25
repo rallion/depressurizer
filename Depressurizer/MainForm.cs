@@ -22,9 +22,13 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using BrightIdeasSoftware;
+using Newtonsoft.Json.Linq;
 
 namespace Depressurizer {
 
@@ -48,6 +52,8 @@ namespace Depressurizer {
 
         StringBuilder statusBuilder = new StringBuilder();
 
+        TypedObjectListView<GameInfo> tlstGames;
+
         // Allow visual feedback when dragging over the cat list
         bool isDragging;
         int dragOldCat;
@@ -64,18 +70,11 @@ namespace Depressurizer {
             advFilterRequire = new SortedSet<Category>(),
             advFilterExclude = new SortedSet<Category>();
         AdvancedFilterState advFilterUncatState = AdvancedFilterState.None;
+        AdvancedFilterState advFilterHiddenState = AdvancedFilterState.None;
         #endregion
 
-        #region VirtualMode List Backing and Sorting Fields
+        #region List Backing Field
         private List<GameInfo> displayedGames = new List<GameInfo>();
-        private GameInfoSorter displayedGamesSorter = new GameInfoSorter();
-        private Dictionary<int, GameInfoSorter.SortModes> columnSortMap = new Dictionary<int, GameInfoSorter.SortModes>() {
-            {0, GameInfoSorter.SortModes.Id},
-            {1, GameInfoSorter.SortModes.Name},
-            {2, GameInfoSorter.SortModes.Cats},
-            {3, GameInfoSorter.SortModes.Favorite},
-            {4, GameInfoSorter.SortModes.Hidden},
-        };
         #endregion
 
         #endregion
@@ -102,9 +101,196 @@ namespace Depressurizer {
         public FormMain() {
             InitializeComponent();
 
-            int initialSortCol = 1;
-            displayedGamesSorter.SetSortMode( columnSortMap[initialSortCol], 1 );
-            lstGames.SetSortIcon( initialSortCol, ( displayedGamesSorter.SortDirection > 0 ) ? SortOrder.Ascending : SortOrder.Descending );
+            InitializeLstGames();
+        }
+
+        /// <summary>
+        /// Initializes the lstGames Control.
+        /// </summary>
+        private void InitializeLstGames()
+        {
+            tlstGames = new TypedObjectListView<GameInfo>(this.lstGames);
+            //Aspect Getters
+            tlstGames.GenerateAspectGetters();
+            colGameID.AspectToStringConverter = delegate(object obj)
+            {
+                int id = (int)obj;
+                return (id < 0) ? GlobalStrings.MainForm_External : id.ToString();
+            };
+            colCategories.AspectGetter = delegate(Object g) { return ((GameInfo)g).GetCatString(GlobalStrings.MainForm_Uncategorized); };
+            colFavorite.AspectGetter = delegate(Object g) { return ((GameInfo)g).IsFavorite() ? "X" : String.Empty; };
+            colHidden.AspectGetter = delegate(Object g) { return ((GameInfo)g).Hidden ? "X" : String.Empty; };
+            colGenres.AspectGetter = delegate(Object g)
+            {
+                int id = ((GameInfo)g).Id;
+                if (Program.GameDB.Games.ContainsKey(id) && Program.GameDB.Games[id].Genres != null)
+                    return string.Join(", ", Program.GameDB.Games[id].Genres);
+                return GlobalStrings.MainForm_NoGenres;
+            };
+            colFlags.AspectGetter = delegate(Object g)
+            {
+                int id = ((GameInfo)g).Id;
+                if (Program.GameDB.Games.ContainsKey(id) && Program.GameDB.Games[id].Flags != null)
+                    return string.Join(", ", Program.GameDB.Games[id].Flags);
+                return GlobalStrings.MainForm_NoFlags;
+            };
+            colTags.AspectGetter = delegate(Object g)
+            {
+                int id = ((GameInfo)g).Id;
+                if (Program.GameDB.Games.ContainsKey(id) && Program.GameDB.Games[id].Tags != null)
+                    return string.Join(", ", Program.GameDB.Games[id].Tags);
+                return GlobalStrings.MainForm_NoTags;
+            };
+            colYear.AspectGetter = delegate(object g)
+            {
+                int id = ((GameInfo)g).Id;
+                DateTime releaseDate;
+                if (Program.GameDB.Games.ContainsKey(id) && DateTime.TryParse(Program.GameDB.Games[id].SteamReleaseDate, out releaseDate))
+                        return releaseDate.Year.ToString();
+                return GlobalStrings.MainForm_Unknown;
+            };
+            colAchievements.AspectGetter = delegate(object g)
+            {
+                int id = ((GameInfo)g).Id;
+                return Program.GameDB.Games.ContainsKey(id) ? Program.GameDB.Games[id].Achievements : 0;
+            };
+            colPlatforms.AspectGetter = delegate(Object g) { return Program.GameDB.Games[((GameInfo)g).Id].Platforms.ToString(); };
+            colDevelopers.AspectGetter = delegate(Object g)
+            {
+                int id = ((GameInfo)g).Id;
+                if (Program.GameDB.Games.ContainsKey(id) && Program.GameDB.Games[id].Developers != null)
+                    return string.Join(", ", Program.GameDB.Games[id].Developers);
+                return GlobalStrings.MainForm_Unknown;
+            };
+            colPublishers.AspectGetter = delegate(Object g)
+            {
+                int id = ((GameInfo)g).Id;
+                if (Program.GameDB.Games.ContainsKey(id) && Program.GameDB.Games[id].Publishers != null)
+                    return string.Join(", ", Program.GameDB.Games[id].Publishers);
+                return GlobalStrings.MainForm_Unknown;
+            };
+            colNumberOfReviews.AspectGetter = delegate(object g)
+            {
+                int id = ((GameInfo)g).Id;
+                return Program.GameDB.Games.ContainsKey(id) ? Program.GameDB.Games[id].ReviewTotal : 0;
+            };
+            colReviewScore.AspectGetter = delegate(object g)
+            {
+                int id = ((GameInfo)g).Id;
+                return Program.GameDB.Games.ContainsKey(id) ? Program.GameDB.Games[id].ReviewPositivePercentage : 0;
+            };
+            colReviewLabel.AspectGetter = delegate(object g)
+            {
+                int id = ((GameInfo)g).Id;
+                if (Program.GameDB.Games.ContainsKey(id))
+                {
+                    int reviewTotal = Program.GameDB.Games[id].ReviewTotal;
+                    int reviewPositivePercentage = Program.GameDB.Games[id].ReviewPositivePercentage;
+                    if (reviewTotal <= 0) return -1;
+                    if (reviewPositivePercentage >= 95 && reviewTotal >= 500)
+                        return 9;
+                    else if (reviewPositivePercentage >= 85 && reviewTotal >= 50)
+                        return 8;
+                    else if (reviewPositivePercentage >= 80)
+                        return 7;
+                    else if (reviewPositivePercentage >= 70)
+                        return 6;
+                    else if (reviewPositivePercentage >= 40)
+                        return 5;
+                    else if (reviewPositivePercentage >= 20)
+                        return 4;
+                    else if (reviewTotal >= 500)
+                        return 3;
+                    else if (reviewTotal >= 50)
+                        return 2;
+                    else return 1;
+                }
+                return 0;
+            };
+            colHltbMain.AspectGetter = delegate(object g)
+            {
+                int id = ((GameInfo)g).Id;
+                return Program.GameDB.Games.ContainsKey(id) ? Program.GameDB.Games[id].HltbMain : 0;
+            };
+            colHltbExtras.AspectGetter = delegate(object g)
+            {
+                int id = ((GameInfo)g).Id;
+                return Program.GameDB.Games.ContainsKey(id) ? Program.GameDB.Games[id].HltbExtras : 0;
+            };
+            colHltbCompletionist.AspectGetter = delegate(object g)
+            {
+                int id = ((GameInfo)g).Id;
+                return Program.GameDB.Games.ContainsKey(id) ? Program.GameDB.Games[id].HltbCompletionist : 0;
+            };
+
+
+            //Aspect to String Converters
+            colNumberOfReviews.AspectToStringConverter = delegate(object obj)
+            {
+                int reviewTotal = (int)obj;
+                return (reviewTotal <= 0) ? "0" : reviewTotal.ToString();
+            };
+            colReviewScore.AspectToStringConverter = delegate(object obj)
+            {
+                int reviewScore = (int)obj;
+                return (reviewScore <= 0) ? GlobalStrings.MainForm_Unknown : reviewScore.ToString() + '%';
+            };
+            colReviewLabel.AspectToStringConverter = delegate(object obj)
+            {
+                int index = (int)obj;
+                Dictionary<int, String> reviewLabels = new Dictionary<int, String>
+           {
+                {9, "Overwhelmingly Positive"},
+                {8, "Very Positive"},
+                {7, "Positive"},
+                {6, "Mostly Positive"},
+                {5, "Mixed"},
+                {4, "Mostly Negative"},
+                {3, "Negative"},
+                {2, "Very Negative"},
+                {1, "Overwhelmingly Negative"},
+            };
+                return reviewLabels.ContainsKey(index) ? reviewLabels[index] : GlobalStrings.MainForm_Unknown;
+            };
+            AspectToStringConverterDelegate hltb = delegate(object obj)
+            {
+                int time = (int)obj;
+                if (time <= 0) return GlobalStrings.MainForm_NoHltbTime;
+                if (time < 60) return time + "m";
+                int hours = time / 60;
+                int mins = time % 60;
+                if (mins == 0) return hours + "h";
+                return hours + "h " + mins + "m";
+            };
+            colHltbMain.AspectToStringConverter = delegate(object obj)
+            {
+                int time = (int)obj;
+                if (time <= 0) return GlobalStrings.MainForm_NoHltbTime;
+                if (time < 60) return time + "m";
+                int hours = time / 60;
+                int mins = time % 60;
+                if (mins == 0) return hours + "h";
+                return hours + "h " + mins + "m";
+            };
+            colHltbExtras.AspectToStringConverter = hltb;
+            colHltbCompletionist.AspectToStringConverter = hltb;
+
+            //Filtering
+            colCategories.ClusteringStrategy = new CommaClusteringStrategy();
+            colGenres.ClusteringStrategy = new CommaClusteringStrategy();
+            colFlags.ClusteringStrategy = new CommaClusteringStrategy();
+            colTags.ClusteringStrategy = new CommaClusteringStrategy();
+            colPlatforms.ClusteringStrategy = new CommaClusteringStrategy();
+
+            //Formating
+            lstGames.RowFormatter = delegate(OLVListItem lvi)
+            {
+                if (((GameInfo)lvi.RowObject).Id < 0)
+                    lvi.Font = new Font(lvi.Font, lvi.Font.Style | FontStyle.Italic);
+            };
+
+            lstGames.PrimarySortColumn = colTitle;
+            lstGames.RestoreState(Convert.FromBase64String(Settings.Instance.LstGamesState));
         }
 
         private void FormMain_Load( object sender, EventArgs e ) {
@@ -127,6 +313,16 @@ namespace Depressurizer {
             }
             if( Settings.Instance.UpdateAppInfoOnStart ) {
                 UpdateGameDBFromAppInfo();
+            }
+            int threePointFiveDaysInSecs = 84*60*60;
+            if (Settings.Instance.UpdateHltbOnStart && Utility.GetCurrentUTime() > (Program.GameDB.LastHltbUpdate + threePointFiveDaysInSecs))
+            {
+                UpdateGameDBFromHltb();
+            }
+
+            if (Settings.Instance.CheckForDepressurizerUpdates)
+            {
+                CheckForDepressurizerUpdates();
             }
 
             switch( Settings.Instance.StartupAction ) {
@@ -199,6 +395,27 @@ namespace Depressurizer {
             } catch( Exception e ) {
                 Program.Logger.WriteException( GlobalStrings.MainForm_Log_ExceptionAppInfo, e );
                 MessageBox.Show( GlobalStrings.MainForm_Msg_ErrorAppInfo, e.Message );
+            }
+        }
+
+        /// <summary>
+        /// Updates the database using data from howlongtobeatsteam.com. Displays an error message on failure. Saves the DB afterwards if AutosaveDB is set.
+        /// </summary>
+        private void UpdateGameDBFromHltb()
+        {
+            try
+            {
+                int num = Program.GameDB.UpdateFromHltb(Settings.Instance.IncludeImputedTimes);
+                AddStatus(string.Format(GlobalStrings.MainForm_Status_HltbAutoupdate, num));
+                if (num > 0 && Settings.Instance.AutosaveDB)
+                {
+                    SaveGameDB();
+                }
+            }
+            catch (Exception e)
+            {
+                Program.Logger.WriteException(GlobalStrings.MainForm_Log_ExceptionHltb, e);
+                MessageBox.Show(GlobalStrings.MainForm_Msg_ErrorHltb, e.Message);
             }
         }
 
@@ -346,6 +563,7 @@ namespace Depressurizer {
             if( currentProfile.AutoExport ) {
                 ExportConfig();
             }
+            Settings.Instance.LstGamesState = Convert.ToBase64String(lstGames.SaveState());
             try {
                 if( path == null ) {
                     currentProfile.Save();
@@ -592,7 +810,7 @@ namespace Depressurizer {
                                         break;
                                     }
                                 }
-                                    AddStatus( string.Format( GlobalStrings.MainForm_CategoryRenamed, c.Name ) );
+                                AddStatus( string.Format( GlobalStrings.MainForm_CategoryRenamed, c.Name ) );
                                 return true;
                             }
                         }
@@ -625,8 +843,9 @@ namespace Depressurizer {
         /// Edits the first selected game. Displays game dialog.
         /// </summary>
         void EditGame() {
-            if( lstGames.SelectedIndices.Count > 0 ) {
-                GameInfo g = displayedGames[lstGames.SelectedIndices[0]];
+            if (lstGames.SelectedObjects.Count > 0)
+            {
+                GameInfo g = tlstGames.SelectedObjects[0];
                 DlgGame dlg = new DlgGame( currentProfile.GameData, g );
                 if( dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
                     OnGameChange( true );
@@ -640,14 +859,15 @@ namespace Depressurizer {
         /// Removes all selected games. Prompts for confirmation.
         /// </summary>
         void RemoveGames() {
-            int selectCount = lstGames.SelectedIndices.Count;
+            int selectCount = lstGames.SelectedObjects.Count;
             if( selectCount > 0 ) {
                 if( MessageBox.Show( string.Format( GlobalStrings.MainForm_RemoveGame, selectCount, ( selectCount == 1 ) ? "" : "s" ), GlobalStrings.DBEditDlg_Confirm, MessageBoxButtons.YesNo, MessageBoxIcon.Question )
                     == DialogResult.Yes ) {
                     int ignored = 0;
                     int removed = 0;
-                    foreach( int index in lstGames.SelectedIndices ) {
-                        GameInfo g = displayedGames[index];
+                    foreach (GameInfo g in tlstGames.SelectedObjects)
+                    {
+                        g.ClearCategories(true);
                         if( currentProfile.GameData.Games.Remove( g.Id ) ) {
                             removed++;
                         }
@@ -677,9 +897,9 @@ namespace Depressurizer {
         /// <param name="refreshCatList">If true, refresh category views afterwards</param>
         /// <param name="forceClearOthers">If true, remove other categories from the affected games.</param>
         void AddCategoryToSelectedGames( Category cat, bool refreshCatList, bool forceClearOthers ) {
-            if( lstGames.SelectedIndices.Count > 0 ) {
-                foreach( int index in lstGames.SelectedIndices ) {
-                    GameInfo g = displayedGames[index];
+            if (lstGames.SelectedObjects.Count > 0)
+            {
+                foreach( GameInfo g in tlstGames.SelectedObjects ) {
                     if( g != null ) {
                         if( forceClearOthers || Settings.Instance.SingleCatMode ) {
                             g.ClearCategories( alsoClearFavorite: false );
@@ -701,9 +921,10 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="cat">Category to remove.</param>
         void RemoveCategoryFromSelectedGames( Category cat ) {
-            if( lstGames.SelectedIndices.Count > 0 ) {
-                foreach( int index in lstGames.SelectedIndices ) {
-                    GameInfo g = displayedGames[index];
+            if (lstGames.SelectedObjects.Count > 0)
+            {
+                foreach (GameInfo g in tlstGames.SelectedObjects)
+                {
                     g.RemoveCategory( cat );
                 }
                 OnGameChange( false );
@@ -716,9 +937,10 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="fav">True to turn fav on, false to turn it off.</param>
         void AssignFavoriteToSelectedGames( bool fav ) {
-            if( lstGames.SelectedIndices.Count > 0 ) {
-                foreach( int index in lstGames.SelectedIndices ) {
-                    GameInfo g = displayedGames[index];
+            if (lstGames.SelectedObjects.Count > 0)
+            {
+                foreach (GameInfo g in tlstGames.SelectedObjects)
+                {
                     g.SetFavorite( fav );
                 }
                 OnGameChange( false );
@@ -731,10 +953,11 @@ namespace Depressurizer {
         /// </summary>
         /// <param name="hidden">Whether the games should be hidden</param>
         void AssignHiddenToSelectedGames( bool hidden ) {
-            if( lstGames.SelectedIndices.Count > 0 ) {
-                foreach( int index in lstGames.SelectedIndices ) {
-                    GameInfo g = displayedGames[index];
-                    g.Hidden = hidden;
+            if (lstGames.SelectedObjects.Count > 0)
+            {
+                foreach (GameInfo g in tlstGames.SelectedObjects)
+                {
+                    g.SetHidden(hidden);
                 }
                 OnGameChange( false );
                 MakeChange( true );
@@ -766,8 +989,8 @@ namespace Depressurizer {
             List<GameInfo> gamesToUpdate = new List<GameInfo>();
 
             if( selectedOnly ) {
-                foreach( int index in lstGames.SelectedIndices ) {
-                    GameInfo g = displayedGames[index];
+                foreach (GameInfo g in tlstGames.SelectedObjects)
+                {
                     if( g.Id > 0 ) {
                         gamesToUpdate.Add( g );
                     }
@@ -816,7 +1039,7 @@ namespace Depressurizer {
                     updated++;
                 }
             }
-            
+
             autoCat.DeProcess();
             AddStatus( string.Format( GlobalStrings.MainForm_UpdatedCategories, updated ) );
             if( gamesToUpdate.Count > updated ) AddStatus( string.Format( GlobalStrings.MainForm_FailedToUpdate, gamesToUpdate.Count - updated ) );
@@ -863,7 +1086,6 @@ namespace Depressurizer {
         }
 
         #endregion
-
         #region UI Updaters
         #region Status and text updaters
 
@@ -895,7 +1117,7 @@ namespace Depressurizer {
         /// Updates the text displaying the number of items in the game list
         /// </summary>
         private void UpdateSelectedStatusText() {
-            statusSelection.Text = string.Format( GlobalStrings.MainForm_SelectedDisplayed, lstGames.SelectedIndices.Count, lstGames.VirtualListSize );
+            statusSelection.Text = string.Format(GlobalStrings.MainForm_SelectedDisplayed, lstGames.SelectedObjects.Count, lstGames.GetItemCount());
         }
 
         /// <summary>
@@ -921,12 +1143,6 @@ namespace Depressurizer {
         #endregion
         #region List updaters
 
-        private void InvalidateAllListItems() {
-            if( lstGames.VirtualListSize > 0 ) {
-                lstGames.RedrawItems( 0, lstGames.VirtualListSize - 1, true );
-            }
-        }
-
         /// <summary>
         /// Does all list-updating that should be done when adding, removing, or renaming a category.
         /// </summary>
@@ -946,6 +1162,7 @@ namespace Depressurizer {
             if( catCreationPossible ) {
                 OnCategoryChange();
             } else {
+                FillCategoryList();
                 UpdateGameList();
             }
         }
@@ -977,45 +1194,22 @@ namespace Depressurizer {
             if( currentProfile != null ) {
                 foreach( GameInfo g in currentProfile.GameData.Games.Values ) {
                     if( ShouldDisplayGame( g ) ) {
-                        displayedGames.Add( g );
+                        displayedGames.Add(g);
                     }
-
 					if ( g.Name == null ) {
 						g.Name = string.Empty;
-						displayedGames.Add( g );
+                        displayedGames.Add(g);
 					}
                 }
-                displayedGames.Sort( displayedGamesSorter );
             }
-            lstGames.VirtualListSize = displayedGames.Count;
-            InvalidateAllListItems();
 
-            SelectGameSet( selectedIds );
+            this.lstGames.Objects = displayedGames;
 
-            UpdateSelectedStatusText();
-            UpdateGameCheckStates();
-            UpdateEnabledStatesForGames();
-            lstGames.EndUpdate();
-        }
+           lstGames.BuildList();
 
-        /// <summary>
-        /// Creates a ListViewItem for the given game.
-        /// </summary>
-        /// <param name="g">The game the new entry should represent.</param>
-        private ListViewItem CreateListItem( GameInfo g ) {
+           SelectGameSet(selectedIds);
 
-            ListViewItem item = new ListViewItem( new string[] {
-                ( g.Id < 0 ) ? GlobalStrings.MainForm_External : g.Id.ToString(),
-                g.Name,
-                g.GetCatString( GlobalStrings.MainForm_Uncategorized ),
-                g.IsFavorite() ? "X" : String.Empty,
-                g.Hidden ? "X" : String.Empty
-            } );
-
-            // Shortcut games show with italic font. 
-            if( g.Id < 0 ) item.Font = new Font( item.Font, item.Font.Style | FontStyle.Italic );
-
-            return item;
+           lstGames.EndUpdate();
         }
 
         /// <summary>
@@ -1023,45 +1217,21 @@ namespace Depressurizer {
         /// Try to avoid calling this directly. Look at OnCategoryChange, OnGameChange, OnViewChange, and FullListRefresh.
         /// </summary>
         private void FillAllCategoryLists() {
-            object selected = ( lstCategories.SelectedItems.Count > 0 ) ? lstCategories.SelectedItems[0].Tag : null;
-            int selectedIndex = ( lstCategories.SelectedItems.Count > 0 ) ? lstCategories.SelectedIndices[0] : -1;
 
-            lstCategories.Items.Clear();
             contextGameAddCat.Items.Clear();
             contextGameAddCat.Items.Add( contextGameAddCat_Create );
             contextGameRemCat.Items.Clear();
             lstMultiCat.Items.Clear();
 
-            if( !ProfileLoaded ) return;
+            if (!ProfileLoaded)
+            {
+                lstCategories.Items.Clear();
+                return;
+            }
 
             currentProfile.GameData.Categories.Sort();
 
-            lstCategories.BeginUpdate();
-            lstCategories.Items.Clear();
-            if( !AdvancedCategoryFilter ) {
-                lstCategories.Items.Add( GlobalStrings.MainForm_All );
-            }
-            lstCategories.Items.Add( GlobalStrings.MainForm_Uncategorized );
-
-            foreach( Category c in currentProfile.GameData.Categories ) {
-                lstCategories.Items.Add( CreateCategoryListViewItem( c ) );
-            }
-
-            if( selected == null ) {
-                if( selectedIndex >= 0 ) {
-                    lstCategories.SelectedIndices.Add( selectedIndex );
-                } else {
-                    lstCategories.SelectedIndices.Add( 0 );
-                }
-            } else {
-                for( int i = 2; i < lstCategories.Items.Count; i++ ) {
-                    if( lstCategories.Items[i].Tag == selected ) {
-                        lstCategories.SelectedIndices.Add( i );
-                        break;
-                    }
-                }
-            }
-            lstCategories.EndUpdate();
+            FillCategoryList();
 
             lstMultiCat.BeginUpdate();
             foreach( Category c in currentProfile.GameData.Categories ) {
@@ -1085,8 +1255,80 @@ namespace Depressurizer {
             lstMultiCat.EndUpdate();
         }
 
+        /// <summary>
+        /// Completely repopulates the category list. Maintains selection.
+        /// Try to avoid calling this directly. Look at OnCategoryChange, OnGameChange, OnViewChange, and FullListRefresh.
+        /// </summary>
+        private void FillCategoryList()
+        {
+            object selected = (lstCategories.SelectedItems.Count > 0) ? lstCategories.SelectedItems[0].Tag : null;
+            int selectedIndex = (lstCategories.SelectedItems.Count > 0) ? lstCategories.SelectedIndices[0] : -1;
+
+            lstCategories.Items.Clear();
+
+            if (!ProfileLoaded) return;
+
+            currentProfile.GameData.Categories.Sort();
+
+            lstCategories.BeginUpdate();
+            lstCategories.Items.Clear();
+
+            //calculate number of hidden and uncategorized games
+            int hidden = 0, uncategorized = 0;
+            foreach (GameInfo g in currentProfile.GameData.Games.Values)
+            {
+                if (g.Hidden)
+                    hidden++;
+                else if (!g.HasCategories())
+                    uncategorized++;
+            }
+            if (!AdvancedCategoryFilter)
+            {
+                ListViewItem i = new ListViewItem(GlobalStrings.MainForm_All + " (" + (currentProfile.GameData.Games.Count - hidden) + ")");
+                i.Tag = GlobalStrings.MainForm_All;
+                lstCategories.Items.Add(i);
+            }
+
+            ListViewItem lvi = new ListViewItem(GlobalStrings.MainForm_Uncategorized + " (" + uncategorized + ")");
+            lvi.Tag = GlobalStrings.MainForm_Uncategorized;
+            lstCategories.Items.Add(lvi);
+
+            lvi = new ListViewItem(GlobalStrings.MainForm_Hidden + " (" + hidden + ")");
+            lvi.Tag = GlobalStrings.MainForm_Hidden;
+            lstCategories.Items.Add(lvi);
+
+            foreach (Category c in currentProfile.GameData.Categories)
+            {
+                lstCategories.Items.Add(CreateCategoryListViewItem(c));
+            }
+
+            if (selected == null)
+            {
+                if (selectedIndex >= 0)
+                {
+                    lstCategories.SelectedIndices.Add(selectedIndex);
+                }
+                else
+                {
+                    lstCategories.SelectedIndices.Add(0);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < lstCategories.Items.Count; i++)
+                {
+                    if (lstCategories.Items[i].Tag == selected)
+                    {
+                        lstCategories.SelectedIndices.Add(i);
+                        break;
+                    }
+                }
+            }
+            lstCategories.EndUpdate();
+        }
+
         private ListViewItem CreateCategoryListViewItem( Category c ) {
-            ListViewItem i = new ListViewItem( c.Name );
+            ListViewItem i = new ListViewItem(c.Name + " (" + c.Count + ")");
             i.Tag = c;
             return i;
         }
@@ -1098,12 +1340,13 @@ namespace Depressurizer {
                 item.StateImageIndex = 0;
             }
 
-            if( lstGames.SelectedIndices.Count == 0 ) {
+            if (lstGames.SelectedObjects.Count == 0)
+            {
                 lstMultiCat.Enabled = false;
             } else {
                 lstMultiCat.Enabled = true;
-                foreach( int displayIndex in lstGames.SelectedIndices ) {
-                    GameInfo game = displayedGames[displayIndex];
+                foreach (GameInfo game in tlstGames.SelectedObjects)
+                {
                     if( game != null ) {
                         AddGameToMultiCatCheckStates( game, first );
                         AddGameToCheckboxStates( game, first );
@@ -1160,30 +1403,35 @@ namespace Depressurizer {
         /// Try to avoid calling this directly. Look at OnCategoryChange, OnGameChange, OnViewChange, and FullListRefresh.
         /// </summary>
         void UpdateGameList() {
-            SortedSet<int> selectedGameIds = GetSelectedGameIds();
+            SortedSet<int> selectedIds = GetSelectedGameIds();
 
             displayedGames.RemoveAll( ShouldHideGame );
-            lstGames.VirtualListSize = displayedGames.Count;
-            InvalidateAllListItems();
+            lstGames.SetObjects(displayedGames);
+            lstGames.BuildList();
 
-            SelectGameSet( selectedGameIds );
-
-            UpdateSelectedStatusText();
+            SelectGameSet(selectedIds);
         }
 
-        private SortedSet<int> GetSelectedGameIds() {
+        private SortedSet<int> GetSelectedGameIds()
+        {
             SortedSet<int> selectedGameIds = new SortedSet<int>();
-            foreach( int index in lstGames.SelectedIndices ) {
-                selectedGameIds.Add( displayedGames[index].Id );
+            foreach (GameInfo g in tlstGames.SelectedObjects)
+            {
+                selectedGameIds.Add(g.Id);
             }
             return selectedGameIds;
         }
 
-        private void SelectGameSet( SortedSet<int> selectedGameIds ) {
-            lstGames.SelectedIndices.Clear();
-            for( int i = 0; i < displayedGames.Count; i++ ) {
-                if( selectedGameIds.Contains( displayedGames[i].Id ) ) lstGames.SelectedIndices.Add( i );
+        private void SelectGameSet(SortedSet<int> selectedGameIds)
+        {
+            lstGames.DeselectAll();
+            List<GameInfo> stillSelected = new List<GameInfo>();
+            foreach (GameInfo g in tlstGames.Objects)
+            {
+                if (selectedGameIds.Contains(g.Id)) 
+                    stillSelected.Add(g);
             }
+            lstGames.SelectedObjects = stillSelected;
         }
 
         private bool ShouldHideGame( GameInfo g ) {
@@ -1259,7 +1507,7 @@ namespace Depressurizer {
         /// Updates enabled states for all game and category buttons
         /// </summary>
         void UpdateEnabledStatesForGames() {
-            bool gamesSelected = lstGames.SelectedIndices.Count > 0;
+            bool gamesSelected = lstGames.SelectedObjects.Count > 0;
 
             foreach( Control c in splitGame.Panel2.Controls ) {
                 if( !( c == cmdGameAdd || c == cmbAutoCatType ) ) {
@@ -1301,6 +1549,7 @@ namespace Depressurizer {
                 advFilterExclude.Clear();
                 advFilterRequire.Clear();
                 advFilterUncatState = AdvancedFilterState.None;
+                advFilterHiddenState = AdvancedFilterState.None;
             } else {
                 lstCategories.StateImageList = null;
             }
@@ -1368,24 +1617,31 @@ namespace Depressurizer {
                     }
                     OnGameChange( false );
                     MakeChange( true );
-                } else {
-                    if( dropItem.Text == GlobalStrings.MainForm_Uncategorized ) {
+                } else if ( (string) dropItem.Tag == GlobalStrings.MainForm_Uncategorized)
+                    {
                         currentProfile.GameData.ClearGameCategories( (int[])e.Data.GetData( typeof( int[] ) ), true );
                         OnGameChange( false );
                         MakeChange( true );
                     }
+                 else if ( (string) dropItem.Tag == GlobalStrings.MainForm_Hidden)
+                    {
+                        currentProfile.GameData.HideGames( (int[])e.Data.GetData( typeof( int[] ) ), true );
+                        OnGameChange( false );
+                        MakeChange( true );
                 }
 
                 FlushStatus();
             }
         }
 
-        private void lstGames_ItemDrag( object sender, ItemDragEventArgs e ) {
-            int[] selectedGames = new int[lstGames.SelectedIndices.Count];
-            for( int i = 0; i < lstGames.SelectedIndices.Count; i++ ) {
-                selectedGames[i] = displayedGames[lstGames.SelectedIndices[i]].Id;
+        private void lstGames_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            int[] selectedGames = new int[lstGames.SelectedObjects.Count];
+            for (int i = 0; i < lstGames.SelectedObjects.Count; i++)
+            {
+                selectedGames[i] = tlstGames.SelectedObjects[i].Id;
             }
-            lstGames.DoDragDrop( selectedGames, DragDropEffects.Move | DragDropEffects.Copy | DragDropEffects.Link );
+            lstGames.DoDragDrop(selectedGames, DragDropEffects.Move | DragDropEffects.Copy | DragDropEffects.Link);
         }
 
         private void lstCategories_DragOver( object sender, DragEventArgs e ) {
@@ -1550,10 +1806,13 @@ namespace Depressurizer {
                     // jpodadera. Because a framework bug, names of ColumnHeader objects are empty. 
                     // Resolved by saving names to Tag property.
                     foreach( ColumnHeader cHeader in ( c as ListView ).Columns )
+                        if ( cHeader.Tag !=null)
                         resources.ApplyResources( cHeader, cHeader.Tag.ToString(), newCulture );
-                } else {
-                    foreach( Control childControl in c.Controls )
-                        changeLanguageControls( childControl, resources, newCulture );
+                }
+                else
+                {
+                    foreach (Control childControl in c.Controls)
+                        changeLanguageControls(childControl, resources, newCulture);
                 }
                 resources.ApplyResources( c, c.Name, newCulture );
             }
@@ -1605,9 +1864,6 @@ namespace Depressurizer {
                 }
 
                 FullListRefresh();
-
-                // reload new strings for status bar
-                UpdateSelectedStatusText();
             }
 
             FlushStatus();
@@ -1629,7 +1885,7 @@ namespace Depressurizer {
         }
 
         private void contextGame_Opening( object sender, System.ComponentModel.CancelEventArgs e ) {
-            bool selectedGames = lstGames.SelectedIndices.Count > 0;
+            bool selectedGames = lstGames.SelectedObjects.Count > 0;
             contextGame_Edit.Enabled = selectedGames;
             contextGame_Remove.Enabled = selectedGames;
             contextGame_AddCat.Enabled = selectedGames;
@@ -1681,8 +1937,9 @@ namespace Depressurizer {
         }
 
         private void contextGame_VisitStore_Click( object sender, EventArgs e ) {
-            if( lstGames.SelectedIndices.Count > 0 ) {
-                Utility.LaunchStorePage( displayedGames[lstGames.SelectedIndices[0]].Id );
+            if (lstGames.SelectedObjects.Count > 0)
+            {
+                Utility.LaunchStorePage(tlstGames.SelectedObjects[0].Id);
             }
         }
 
@@ -1737,12 +1994,13 @@ namespace Depressurizer {
 
         private void cmdGameLaunch_Click( object sender, EventArgs e ) {
             ClearStatus();
-            if( lstGames.SelectedIndices.Count > 0 ) {
-                LaunchGame( displayedGames[lstGames.SelectedIndices[0]] );
+            if (lstGames.SelectedObjects.Count > 0)
+            {
+                LaunchGame(tlstGames.SelectedObjects[0]);
             }
             FlushStatus();
         }
-
+        
         private void cmdAddCatAndAssign_Click( object sender, EventArgs e ) {
             if( ValidateCategoryName( txtAddCatAndAssign.Text ) ) {
                 Category cat = currentProfile.GameData.GetCategory( txtAddCatAndAssign.Text );
@@ -1807,11 +2065,13 @@ namespace Depressurizer {
                 ListViewItem overItem = lstCategories.GetItemAt( e.X, e.Y );
                 if( overItem != null )
                     overItem.Selected = true;
-
-            } else if( e.Button == System.Windows.Forms.MouseButtons.Left ) {
-                if( AdvancedCategoryFilter ) {
-                    ListViewItem i = lstCategories.GetItemAt( e.X, e.Y );
-                    HandleAdvancedCategoryItemActivation( i, Control.ModifierKeys == Keys.Shift );
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                if (AdvancedCategoryFilter)
+                {
+                    ListViewItem i = lstCategories.GetItemAt(e.X, e.Y);
+                    HandleAdvancedCategoryItemActivation(i, Control.ModifierKeys == Keys.Shift);
                 }
             }
         }
@@ -1833,18 +2093,26 @@ namespace Depressurizer {
 
             Category c = i.Tag as Category;
 
-            if( c == null ) {
+            if (i.Tag.ToString() == GlobalStrings.MainForm_Uncategorized)
+            {
                 advFilterUncatState = (AdvancedFilterState)i.StateImageIndex;
-            } else {
-                switch( oldState ) {
+            }
+            else if (i.Tag.ToString() == GlobalStrings.MainForm_Hidden)
+            {
+                advFilterHiddenState = (AdvancedFilterState)i.StateImageIndex;
+            }
+            else
+            {
+                switch (oldState)
+                {
                     case (int)AdvancedFilterState.Allow:
-                        advFilterAllow.Remove( c );
+                        advFilterAllow.Remove(c);
                         break;
                     case (int)AdvancedFilterState.Require:
-                        advFilterRequire.Remove( c );
+                        advFilterRequire.Remove(c);
                         break;
                     case (int)AdvancedFilterState.Exclude:
-                        advFilterExclude.Remove( c );
+                        advFilterExclude.Remove(c);
                         break;
                 }
 
@@ -1864,35 +2132,14 @@ namespace Depressurizer {
             if( updateView ) OnViewChange();
         }
 
-        private void lstGames_RetrieveVirtualItem( object sender, RetrieveVirtualItemEventArgs e ) {
-            e.Item = CreateListItem( displayedGames[e.ItemIndex] );
-        }
-
-        private void lstGames_SearchForVirtualItem( object sender, SearchForVirtualItemEventArgs e ) {
-            for( int i = e.StartIndex; i < displayedGames.Count; i++ ) {
-                if( displayedGames[i].Name.StartsWith( e.Text, StringComparison.CurrentCultureIgnoreCase ) ) {
-                    e.Index = i;
-                    return;
-                }
-            }
-            for( int i = 0; i < e.StartIndex; i++ ) {
-                if( displayedGames[i].Name.StartsWith( e.Text, StringComparison.CurrentCultureIgnoreCase ) ) {
-                    e.Index = i;
-                    return;
-                }
-            }
-        }
-
-        private void lstGames_ColumnClick( object sender, ColumnClickEventArgs e ) {
-            if( columnSortMap.ContainsKey( e.Column ) ) {
-                displayedGamesSorter.SetSortMode( columnSortMap[e.Column] );
-                lstGames.SetSortIcon( e.Column, ( displayedGamesSorter.SortDirection > 0 ) ? SortOrder.Ascending : SortOrder.Descending );
-                displayedGames.Sort( displayedGamesSorter );
-                InvalidateAllListItems();
-            }
-        }
-
         private void lstGames_SelectionChanged( object sender, EventArgs e ) {
+            UpdateSelectedStatusText();
+            UpdateEnabledStatesForGames();
+            UpdateGameCheckStates();
+        }
+
+        private void lstGames_ItemsChanged(object sender, ItemsChangedEventArgs e)
+        {
             UpdateSelectedStatusText();
             UpdateEnabledStatesForGames();
             UpdateGameCheckStates();
@@ -1915,13 +2162,6 @@ namespace Depressurizer {
                     break;
                 case Keys.Enter:
                     EditGame();
-                    break;
-                case Keys.A:
-                    if( e.Control ) {
-                        for( int i = 0; i < lstGames.VirtualListSize; i++ ) {
-                            lstGames.SelectedIndices.Add( i );
-                        }
-                    }
                     break;
             }
             FlushStatus();
@@ -2044,38 +2284,55 @@ namespace Depressurizer {
 
             if( lstCategories.SelectedItems.Count == 0 ) return false;
 
+
             if( AdvancedCategoryFilter ) {
                 return ShouldDisplayGameAdvanced( g );
-            } else {
-                if( lstCategories.SelectedItems[0].Tag is Category ) {
-                    return g.ContainsCategory( lstCategories.SelectedItems[0].Tag as Category );
-                } else {
-                    if( lstCategories.SelectedItems[0].Text == GlobalStrings.MainForm_All ) {
-                        return true;
-                    }
-                    if( lstCategories.SelectedItems[0].Text == GlobalStrings.MainForm_Uncategorized ) {
-                        return !g.HasCategories();
-                    }
-                }
-
-                return false;
             }
+
+            if (g.Hidden)
+            {
+                return (lstCategories.SelectedItems[0].Tag.ToString() == GlobalStrings.MainForm_Hidden);
+            }
+
+
+            if( lstCategories.SelectedItems[0].Tag is Category ) {
+                return g.ContainsCategory( lstCategories.SelectedItems[0].Tag as Category );
+            } else {
+                if( lstCategories.SelectedItems[0].Tag.ToString() == GlobalStrings.MainForm_All ) {
+                    return true;
+                }
+                if( lstCategories.SelectedItems[0].Tag.ToString() == GlobalStrings.MainForm_Uncategorized ) {
+                    return !g.HasCategories();
+                }
+            }
+
+            return false;
         }
 
         bool ShouldDisplayGameAdvanced( GameInfo g ) {
             bool isCategorized = false;
+            bool isHidden = false;
             if( advFilterUncatState != AdvancedFilterState.None ) isCategorized = g.HasCategories();
+            if (advFilterHiddenState != AdvancedFilterState.None) isHidden = g.Hidden;
 
-            if( advFilterUncatState == AdvancedFilterState.Allow || advFilterAllow.Count > 0 ) {
-                if( !( advFilterUncatState == AdvancedFilterState.Allow && !isCategorized ) ) {
-                    if( !g.Categories.Overlaps( advFilterAllow ) ) return false;
+            if (advFilterUncatState == AdvancedFilterState.Require && isCategorized) return false;
+            if (advFilterHiddenState == AdvancedFilterState.Require && !isHidden) return false;
+
+            if (advFilterUncatState == AdvancedFilterState.Exclude && !isCategorized) return false;
+            if (advFilterHiddenState == AdvancedFilterState.Exclude && isHidden) return false;
+
+            if (advFilterUncatState == AdvancedFilterState.Allow || advFilterHiddenState == AdvancedFilterState.Allow || advFilterAllow.Count > 0)
+            {
+                if( advFilterUncatState != AdvancedFilterState.Allow || isCategorized ) {
+                    if ( advFilterHiddenState != AdvancedFilterState.Allow || !isHidden )
+                    {
+                        if (!g.Categories.Overlaps(advFilterAllow)) return false;
+                    }
                 }
             }
 
-            if( advFilterUncatState == AdvancedFilterState.Require && isCategorized ) return false;
             if( !g.Categories.IsSupersetOf( advFilterRequire ) ) return false;
 
-            if( advFilterUncatState == AdvancedFilterState.Exclude && !isCategorized ) return false;
             if( g.Categories.Overlaps( advFilterExclude ) ) return false;
 
             return true;
@@ -2108,7 +2365,7 @@ namespace Depressurizer {
         /// <param name="name">Name to check</param>
         /// <returns>True if valid, false otherwise</returns>
         private bool ValidateCategoryName( string name ) {
-            if( name == null || name == string.Empty ) {
+            if( string.IsNullOrEmpty(name) ) {
                 MessageBox.Show( GlobalStrings.MainForm_CategoryNamesNotEmpty, GlobalStrings.Gen_Warning, MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 return false;
             } else {
@@ -2116,6 +2373,61 @@ namespace Depressurizer {
             }
         }
 
+        /// <summary>
+        /// Clustering strategy for columns with comma-seperated strings. (Tags, Categories, Flags, Genres etc)
+        /// </summary>
+        public class CommaClusteringStrategy : ClusteringStrategy
+        {
+            public override object GetClusterKey(object model)
+            {
+                return ((string)this.Column.GetValue(model)).Replace(", ", ",").Split(',');
+            }
+        }
+
+        /// <summary>
+        /// Checks github for newer versions of depressurizer.
+        /// </summary>
+        /// <returns>True if there is a newer release, false otherwise</returns>
+        private void CheckForDepressurizerUpdates()
+        {
+            Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            try
+            {
+                Version githubVersion;
+                string url;
+                using (WebClient wc = new WebClient())
+                {
+                    wc.Headers.Set("User-Agent", "Depressurizer");
+                    string json = wc.DownloadString("https://api.github.com/repos/Theo47/depressurizer/releases/latest");
+                    JObject parsedJson = JObject.Parse(json);
+                    githubVersion = new Version(((string) parsedJson.SelectToken("tag_name")).Replace("v", ""));
+                    url = (string)parsedJson.SelectToken("html_url");
+                }
+                if (githubVersion > currentVersion)
+                {
+                    if (
+                        MessageBox.Show(
+                            GlobalStrings.MainForm_Msg_UpdateFound, GlobalStrings.MainForm_Msg_UpdateFoundTitle,
+                            MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start(url);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Program.Logger.WriteException(GlobalStrings.MainForm_Log_ExceptionDepressurizerUpdate, e);
+                MessageBox.Show(GlobalStrings.MainForm_Msg_ErrorDepressurizerUpdate, e.Message);
+                Program.Logger.WriteException(GlobalStrings.MainForm_Log_ExceptionAppInfo, e);
+                MessageBox.Show(GlobalStrings.MainForm_Msg_ErrorAppInfo, e.Message);
+            }
+        }
+
+
         #endregion
+
+        private void autoModeHelperToolStripMenuItem_Click( object sender, EventArgs e ) {
+            (new DlgAutomaticModeHelper(currentProfile)).ShowDialog();
+        }
     }
 }
