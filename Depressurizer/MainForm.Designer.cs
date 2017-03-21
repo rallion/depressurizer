@@ -133,10 +133,13 @@ namespace Depressurizer {
             this.menu_Tools_Sep3 = new System.Windows.Forms.ToolStripSeparator();
             this.menu_Tools_SingleCat = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_Tools_Settings = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_About = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusMsg = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusSelection = new System.Windows.Forms.ToolStripStatusLabel();
             this.ttHelp = new Depressurizer.Lib.ExtToolTip();
+            this.autoModeHelperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_Tools_Sep1 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -627,7 +630,8 @@ namespace Depressurizer {
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menu_File,
             this.menu_Profile,
-            this.menu_Tools});
+            this.menu_Tools,
+            this.menu_About});
             resources.ApplyResources(this.menuStrip, "menuStrip");
             this.menuStrip.Name = "menuStrip";
             // 
@@ -770,6 +774,8 @@ namespace Depressurizer {
             this.menu_Tools_AutocatAll,
             this.menu_Tools_AutonameAll,
             this.menu_Tools_RemoveEmpty,
+            this.menu_Tools_Sep1,
+            this.autoModeHelperToolStripMenuItem,
             this.menu_Tools_Sep2,
             this.menu_Tools_DBEdit,
             this.menu_Tools_Sep3,
@@ -830,6 +836,13 @@ namespace Depressurizer {
             resources.ApplyResources(this.menu_Tools_Settings, "menu_Tools_Settings");
             this.menu_Tools_Settings.Click += new System.EventHandler(this.menu_Tools_Settings_Click);
             // 
+            // menu_About
+            // 
+            this.menu_About.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.menu_About.Name = "menu_About";
+            resources.ApplyResources(this.menu_About, "menu_About");
+            this.menu_About.Click += new System.EventHandler(this.menu_About_Click);
+            // 
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -849,6 +862,17 @@ namespace Depressurizer {
             resources.ApplyResources(this.statusSelection, "statusSelection");
             this.statusSelection.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
             this.statusSelection.Name = "statusSelection";
+            // 
+            // autoModeHelperToolStripMenuItem
+            // 
+            this.autoModeHelperToolStripMenuItem.Name = "autoModeHelperToolStripMenuItem";
+            resources.ApplyResources(this.autoModeHelperToolStripMenuItem, "autoModeHelperToolStripMenuItem");
+            this.autoModeHelperToolStripMenuItem.Click += new System.EventHandler(this.autoModeHelperToolStripMenuItem_Click);
+            // 
+            // menu_Tools_Sep1
+            // 
+            this.menu_Tools_Sep1.Name = "menu_Tools_Sep1";
+            resources.ApplyResources(this.menu_Tools_Sep1, "menu_Tools_Sep1");
             // 
             // FormMain
             // 
@@ -984,6 +1008,9 @@ namespace Depressurizer {
         private System.Windows.Forms.ImageList imglistFilter;
         private System.Windows.Forms.Label helpAdvancedCategories;
         private Lib.ExtToolTip ttHelp;
+        private System.Windows.Forms.ToolStripMenuItem menu_About;
+        private System.Windows.Forms.ToolStripSeparator menu_Tools_Sep1;
+        private System.Windows.Forms.ToolStripMenuItem autoModeHelperToolStripMenuItem;
     }
 }
 
